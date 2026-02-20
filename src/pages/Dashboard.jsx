@@ -53,23 +53,23 @@ const Dashboard = () => {
                     const members = await memRes.json();
 
                     const totalAmount = invoices.reduce(
-                        (sum, inv) => sum + (parseFloat(inv.total) || 0),
+                        (sum, inv) => sum + (parseFloat(inv.total_Amount) || 0),
                         0
                     );
 
                     const totalCollected = invoices.reduce(
-                        (sum, inv) => sum + (parseFloat(inv.paidAmount) || 0),
+                        (sum, inv) => sum + ((parseFloat(inv.total_Amount) || 0) - (parseFloat(inv.balance_due) || 0)),
                         0
                     );
 
                     const totalPending = totalAmount - totalCollected;
 
                     const paidInvoices = invoices.filter(
-                        inv => inv.paymentStatus === 'Paid'
+                        inv => (parseFloat(inv.balance_due) || 0) <= 0
                     );
 
                     const pendingInvoices = invoices.filter(
-                        inv => ['Due', 'PartiallyPaid', 'Overdue'].includes(inv.paymentStatus)
+                        inv => (parseFloat(inv.balance_due) || 0) > 0
                     );
 
                     setStats({
@@ -99,14 +99,26 @@ const Dashboard = () => {
                     const monthlyMap = {};
 
                     invoices.forEach(inv => {
-                        const date = new Date(inv.invoiceDate);
+                        const dateText = inv.invoiceDate || inv.createdAt;
+                        if (!dateText) return;
+
+                        // Handle DD-MM-YYYY
+                        let date;
+                        if (typeof dateText === 'string' && dateText.includes('-') && dateText.split('-')[0].length === 2) {
+                            const [dd, mm, yyyy] = dateText.split('-');
+                            date = new Date(`${yyyy}-${mm}-${dd}`);
+                        } else {
+                            date = new Date(dateText);
+                        }
+
+                        if (isNaN(date.getTime())) return;
                         const month = date.toLocaleString('default', { month: 'short' });
 
                         if (!monthlyMap[month]) {
                             monthlyMap[month] = 0;
                         }
 
-                        monthlyMap[month] += parseFloat(inv.total) || 0;
+                        monthlyMap[month] += parseFloat(inv.total_Amount) || 0;
                     });
 
                     const monthlyData = Object.keys(monthlyMap).map(month => ({
