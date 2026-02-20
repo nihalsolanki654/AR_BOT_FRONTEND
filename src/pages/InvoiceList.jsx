@@ -229,7 +229,9 @@ const InvoiceList = () => {
                                         </td>
 
                                         <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base max-w-[200px]">
-                                            <div className="truncate font-medium" title={invoice.description || ''}>{invoice.description || '-'}</div>
+                                            <div className="max-h-16 overflow-y-auto font-medium scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-slate-700">
+                                                {invoice.description || '-'}
+                                            </div>
                                         </td>
                                         <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base text-center whitespace-nowrap font-medium">{invoice.quantity ?? '-'}</td>
                                         <td className="px-5 py-4 text-gray-800 dark:text-slate-200 text-base whitespace-nowrap font-bold">₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}</td>
@@ -361,8 +363,10 @@ const InvoiceList = () => {
                                     <p className="text-[10px] font-bold text-slate-400 uppercase mb-3">Item Details</p>
                                     {inv.description && (
                                         <div className="flex items-start gap-2 mb-2">
-                                            <FileText size={14} className="text-slate-400 mt-0.5 shrink-0" />
-                                            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{inv.description}</p>
+                                            <FileText size={14} className="text-slate-400 mt-1 shrink-0" />
+                                            <div className="max-h-32 overflow-y-auto text-sm text-slate-700 dark:text-slate-300 leading-relaxed scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700 pr-2">
+                                                {inv.description}
+                                            </div>
                                         </div>
                                     )}
                                     <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
