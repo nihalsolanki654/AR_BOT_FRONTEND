@@ -56,7 +56,7 @@ const AddInvoice = () => {
 
     // Auto-calculate Financials and handle Status synchronization
     useEffect(() => {
-        const qty = parseFloat(formData.quantity) || 1;
+        const qty = parseFloat(formData.quantity) || 0;
         const price = parseFloat(formData.total_price) || 0;
         const gstRate = parseFloat(formData.GST) || 0;
 
@@ -66,7 +66,7 @@ const AddInvoice = () => {
 
         let newPaid = parseFloat(formData.paidAmount) || 0;
 
-        // If status is Paid, ALWAYS force paidAmount to total
+        // Sync paidAmount based on status
         if (formData.paymentStatus === 'Paid') {
             newPaid = total;
         } else if (formData.paymentStatus === 'Due') {
@@ -75,12 +75,12 @@ const AddInvoice = () => {
 
         const newBalance = Math.max(0, total - newPaid);
 
-        // Update state if calculations vary
+        // Update state ONLY if values actually differ to prevent infinite loops
         if (
-            formData.GST_Amount !== gstAmt ||
-            formData.total_Amount !== total ||
-            formData.balance_due !== newBalance ||
-            formData.paidAmount !== newPaid
+            Math.abs((formData.GST_Amount || 0) - gstAmt) > 0.1 ||
+            Math.abs((formData.total_Amount || 0) - total) > 0.1 ||
+            Math.abs((formData.balance_due || 0) - newBalance) > 0.1 ||
+            Math.abs((formData.paidAmount || 0) - newPaid) > 0.1
         ) {
             setFormData(prev => ({
                 ...prev,
@@ -321,13 +321,7 @@ const AddInvoice = () => {
                                 {['Due', 'Paid', 'PartiallyPaid'].map((status) => (
                                     <button
                                         key={status} type="button"
-                                        onClick={() => {
-                                            const total = parseFloat(formData.total_Amount) || 0;
-                                            let newPaid = formData.paidAmount;
-                                            if (status === 'Paid') newPaid = total;
-                                            if (status === 'Due') newPaid = 0;
-                                            setFormData(prev => ({ ...prev, paymentStatus: status, paidAmount: newPaid }));
-                                        }}
+                                        onClick={() => setFormData(prev => ({ ...prev, paymentStatus: status }))}
                                         className={`px-6 py-2.5 rounded-xl font-semibold text-xs transition-all ${formData.paymentStatus === status
                                             ? 'bg-blue-600 text-white shadow-md'
                                             : 'bg-white dark:bg-slate-900 text-gray-500 dark:text-slate-400 border border-gray-200 dark:border-slate-800 hover:border-gray-300 dark:hover:border-slate-700'
