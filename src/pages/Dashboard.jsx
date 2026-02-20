@@ -64,12 +64,36 @@ const Dashboard = () => {
 
                     const totalPending = totalAmount - totalCollected;
 
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    const parseInvoiceDate = (dateText) => {
+                        if (!dateText) return null;
+                        if (typeof dateText === 'string' && dateText.includes('-') && dateText.split('-')[0].length === 2) {
+                            const [dd, mm, yyyy] = dateText.split('-');
+                            return new Date(`${yyyy}-${mm}-${dd}`);
+                        }
+                        return new Date(dateText);
+                    };
+
+                    const overdueInvoices = invoices.filter(inv => {
+                        const balance = parseFloat(inv.balance_due) || 0;
+                        if (balance <= 0) return false;
+                        const due = parseInvoiceDate(inv.dueDate);
+                        return due && due < today;
+                    });
+
+                    const overdueAmount = overdueInvoices.reduce(
+                        (sum, inv) => sum + (parseFloat(inv.balance_due) || 0),
+                        0
+                    );
+
                     const paidInvoices = invoices.filter(
                         inv => (parseFloat(inv.balance_due) || 0) <= 0
                     );
 
                     const pendingInvoices = invoices.filter(
-                        inv => (parseFloat(inv.balance_due) || 0) > 0
+                        inv => (parseFloat(inv.balance_due) || 0) > 0 && !overdueInvoices.find(o => o._id === inv._id)
                     );
 
                     setStats({
@@ -77,8 +101,10 @@ const Dashboard = () => {
                         totalAmount,
                         paidAmount: totalCollected,
                         pendingAmount: totalPending,
+                        overdueAmount,
                         paidCount: paidInvoices.length,
                         pendingCount: pendingInvoices.length,
+                        overdueCount: overdueInvoices.length,
                         totalMembers: members.length
                     });
 
@@ -86,13 +112,15 @@ const Dashboard = () => {
                     setRevenueData([
                         { name: "Total", amount: totalAmount },
                         { name: "Collected", amount: totalCollected },
-                        { name: "Pending", amount: totalPending }
+                        { name: "Pending", amount: totalPending },
+                        { name: "Overdue", amount: overdueAmount }
                     ]);
 
                     // 🥧 Status Pie Chart Data
                     setStatusData([
                         { name: "Paid", value: paidInvoices.length },
-                        { name: "Pending", value: pendingInvoices.length }
+                        { name: "Pending", value: pendingInvoices.length },
+                        { name: "Overdue", value: overdueInvoices.length }
                     ]);
 
                     // 📈 Monthly Trend Calculation (Dynamic)
@@ -100,18 +128,8 @@ const Dashboard = () => {
 
                     invoices.forEach(inv => {
                         const dateText = inv.invoiceDate || inv.createdAt;
-                        if (!dateText) return;
-
-                        // Handle DD-MM-YYYY
-                        let date;
-                        if (typeof dateText === 'string' && dateText.includes('-') && dateText.split('-')[0].length === 2) {
-                            const [dd, mm, yyyy] = dateText.split('-');
-                            date = new Date(`${yyyy}-${mm}-${dd}`);
-                        } else {
-                            date = new Date(dateText);
-                        }
-
-                        if (isNaN(date.getTime())) return;
+                        const date = parseInvoiceDate(dateText);
+                        if (!date || isNaN(date.getTime())) return;
                         const month = date.toLocaleString('default', { month: 'short' });
 
                         if (!monthlyMap[month]) {
@@ -140,7 +158,7 @@ const Dashboard = () => {
 
     }, []);
 
-    const COLORS = ["#10B981", "#F59E0B"];
+    const COLORS = ["#10B981", "#F59E0B", "#EF4444"];
 
     const StatCard = ({ title, value, icon: Icon, colorClass, bgColorClass, subText }) => (
         <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-xl transition-all duration-300">
@@ -171,7 +189,7 @@ const Dashboard = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6 mb-8 md:mb-10">
                 <StatCard
                     title="Total Revenue"
                     value={`₹${Math.round(stats.totalAmount).toLocaleString('en-IN')}`}
@@ -188,8 +206,16 @@ const Dashboard = () => {
                     subText="Team members"
                 />
                 <StatCard
+                    title="Overdue"
+                    value={`₹${Math.round(stats.overdueAmount).toLocaleString('en-IN')}`}
+                    icon={Clock}
+                    colorClass="text-rose-600"
+                    bgColorClass="bg-rose-50"
+                    subText={`${stats.overdueCount} Invoices`}
+                />
+                <StatCard
                     title="Pending Dues"
-                    value={`₹${Math.round(stats.pendingAmount).toLocaleString('en-IN')}`}
+                    value={`₹${Math.round(stats.pendingAmount - stats.overdueAmount).toLocaleString('en-IN')}`}
                     icon={Clock}
                     colorClass="text-amber-600"
                     bgColorClass="bg-amber-50"
@@ -218,7 +244,7 @@ const Dashboard = () => {
                                 outerRadius={80}
                                 cx="50%"
                                 cy="50%"
-                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                label={({ name, percent }) => percent > 0 ? `${name} ${(percent * 100).toFixed(0)}%` : ''}
                             >
                                 {statusData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
