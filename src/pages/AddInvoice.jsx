@@ -321,7 +321,15 @@ const AddInvoice = () => {
                                 {['Due', 'Paid', 'PartiallyPaid'].map((status) => (
                                     <button
                                         key={status} type="button"
-                                        onClick={() => setFormData(prev => ({ ...prev, paymentStatus: status }))}
+                                        onClick={() => {
+                                            const nextData = { ...formData, paymentStatus: status };
+                                            const results = calculateFinancials(nextData);
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                paymentStatus: status,
+                                                ...results
+                                            }));
+                                        }}
                                         className={`px-6 py-2.5 rounded-xl font-semibold text-xs transition-all ${formData.paymentStatus === status
                                             ? 'bg-blue-600 text-white shadow-md'
                                             : 'bg-white dark:bg-slate-900 text-gray-500 dark:text-slate-400 border border-gray-200 dark:border-slate-800 hover:border-gray-300 dark:hover:border-slate-700'
