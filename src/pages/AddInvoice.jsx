@@ -42,15 +42,11 @@ const AddInvoice = () => {
         const diffTime = end.getTime() - start.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        let terms = formData.Terms;
+        let terms = '';
         if (diffDays <= 0) {
             terms = 'Due on Receipt';
-        } else if (diffDays <= 15) {
-            terms = 'Net 15';
-        } else if (diffDays <= 30) {
-            terms = 'Net 30';
-        } else if (diffDays <= 45) {
-            terms = 'Net 45';
+        } else {
+            terms = `${diffDays} days`;
         }
 
         if (terms !== formData.Terms) {
@@ -183,15 +179,10 @@ const AddInvoice = () => {
                             </div>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-semibold text-gray-500 dark:text-slate-500 ml-1">Payment Terms</label>
-                                <select
-                                    required name="Terms" value={formData.Terms} onChange={handleChange}
-                                    className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-800 dark:text-slate-200 font-medium focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all"
-                                >
-                                    <option value="Net 15">Net 15</option>
-                                    <option value="Net 30">Net 30</option>
-                                    <option value="Net 45">Net 45</option>
-                                    <option value="Due on Receipt">Due on Receipt</option>
-                                </select>
+                                <input
+                                    type="text" value={formData.Terms} readOnly
+                                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-800 dark:text-slate-200 font-medium cursor-not-allowed outline-none"
+                                />
                             </div>
                         </div>
                     </section>

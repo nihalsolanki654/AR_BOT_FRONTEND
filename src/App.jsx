@@ -31,12 +31,17 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? <Layout>{children}</Layout> : <Navigate to="/" />;
 };
 
+const HomeRoute = () => {
+  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  return isAuthenticated ? <Navigate to="/dashboard" /> : <Login />;
+};
+
 function App() {
   return (
     <ThemeProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<HomeRoute />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/add-invoice" element={<ProtectedRoute><AddInvoice /></ProtectedRoute>} />
           <Route path="/invoices" element={<ProtectedRoute><InvoiceList /></ProtectedRoute>} />
