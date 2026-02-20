@@ -228,8 +228,8 @@ const InvoiceList = () => {
                                                     : '-'}
                                         </td>
 
-                                        <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base max-w-[200px]">
-                                            <div className="max-h-16 overflow-y-auto font-medium scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-slate-700">
+                                        <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base max-w-[250px]">
+                                            <div className="line-clamp-2 font-medium leading-relaxed text-sm text-slate-600 dark:text-slate-400" title={invoice.description || ''}>
                                                 {invoice.description || '-'}
                                             </div>
                                         </td>
@@ -358,20 +358,24 @@ const InvoiceList = () => {
                                     </div>
                                 </div>
 
-                                {/* Item / Description */}
-                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-3">Item Details</p>
-                                    {inv.description && (
-                                        <div className="flex items-start gap-2 mb-2">
-                                            <FileText size={14} className="text-slate-400 mt-1 shrink-0" />
-                                            <div className="max-h-32 overflow-y-auto text-sm text-slate-700 dark:text-slate-300 leading-relaxed scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700 pr-2">
-                                                {inv.description}
+                                {/* Work Description Detailed View */}
+                                <div className="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-5 border border-slate-200/60 dark:border-slate-700/50 shadow-sm transition-all hover:bg-white dark:hover:bg-slate-800/60 hover:shadow-md">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center gap-2">
+                                            <div className="p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                                <FileText size={16} className="text-blue-600 dark:text-blue-400" />
                                             </div>
+                                            <h3 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Work Description</h3>
                                         </div>
-                                    )}
-                                    <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                                        <Package size={13} className="shrink-0" />
-                                        <span>Quantity: <span className="font-bold text-slate-800 dark:text-slate-200">{inv.quantity ?? 1}</span></span>
+                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-[11px] font-bold text-slate-600 dark:text-slate-400">
+                                            <Package size={12} />
+                                            Qty: {inv.quantity ?? 1}
+                                        </div>
+                                    </div>
+                                    <div className="relative pl-2 border-l-2 border-blue-500/20 dark:border-blue-500/10">
+                                        <div className="max-h-48 overflow-y-auto text-sm text-slate-600 dark:text-slate-300 leading-7 font-medium scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700 pr-4 whitespace-pre-wrap">
+                                            {inv.description || "No description provided for this invoice."}
+                                        </div>
                                     </div>
                                 </div>
 

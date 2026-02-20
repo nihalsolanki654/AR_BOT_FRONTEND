@@ -257,7 +257,7 @@ const AddInvoice = () => {
                                 <label className="text-xs font-semibold text-gray-500 dark:text-slate-500 ml-1">Work Description</label>
                                 <textarea
                                     name="description" value={formData.description} onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-800 dark:text-slate-200 font-medium focus:ring-2 focus:ring-blue-100 outline-none transition-all resize-y h-24"
+                                    className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-800 dark:text-slate-200 font-medium focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/20 focus:border-blue-500 outline-none transition-all resize-y h-24 hover:border-gray-300 dark:hover:border-slate-600 shadow-sm"
                                     placeholder="Enter details of service or product..."
                                 />
                             </div>
