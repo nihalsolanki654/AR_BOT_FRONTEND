@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Save, X, IndianRupee, Mail, Phone, User, MapPin, Calendar, Hash, Plus, Trash2, AlertCircle } from 'lucide-react';
+import { Save, X, IndianRupee, Mail, Phone, User, MapPin, Calendar, Hash, Plus, Trash2, AlertCircle, Check } from 'lucide-react';
 
 const indianStates = [
     "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
@@ -85,38 +85,18 @@ const AddInvoice = () => {
 
     // Auto-calculate Financials and handle Status synchronization
     useEffect(() => {
-        const qty = parseFloat(formData.quantity) || 0;
-        const price = parseFloat(formData.total_price) || 0;
-        const gstRate = parseFloat(formData.GST) || 0;
-
-        const subtotal = price * qty;
-        const gstAmt = Math.round(subtotal * (gstRate / 100));
-        const total = subtotal + gstAmt;
-
-        let newPaid = parseFloat(formData.paidAmount) || 0;
-
-        // Sync paidAmount based on status
-        if (formData.paymentStatus === 'Paid') {
-            newPaid = total;
-        } else if (formData.paymentStatus === 'Due') {
-            newPaid = 0;
-        }
-
-        const newBalance = Math.max(0, total - newPaid);
+        const results = calculateFinancials(formData);
 
         // Update state ONLY if values actually differ to prevent infinite loops
         if (
-            Math.abs((formData.GST_Amount || 0) - gstAmt) > 0.1 ||
-            Math.abs((formData.total_Amount || 0) - total) > 0.1 ||
-            Math.abs((formData.balance_due || 0) - newBalance) > 0.1 ||
-            Math.abs((formData.paidAmount || 0) - newPaid) > 0.1
+            Math.abs((formData.GST_Amount || 0) - results.GST_Amount) > 0.1 ||
+            Math.abs((formData.total_Amount || 0) - results.total_Amount) > 0.1 ||
+            Math.abs((formData.balance_due || 0) - results.balance_due) > 0.1 ||
+            Math.abs((formData.paidAmount || 0) - results.paidAmount) > 0.1
         ) {
             setFormData(prev => ({
                 ...prev,
-                GST_Amount: gstAmt,
-                total_Amount: total,
-                balance_due: newBalance,
-                paidAmount: newPaid
+                ...results
             }));
         }
     }, [formData.total_price, formData.quantity, formData.GST, formData.paymentStatus, formData.paidAmount]);
