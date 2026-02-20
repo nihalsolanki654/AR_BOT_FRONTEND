@@ -65,6 +65,8 @@ const AddInvoice = () => {
         const total = subtotal + gstAmt;
 
         let newPaid = parseFloat(formData.paidAmount) || 0;
+
+        // If status is Paid, ALWAYS force paidAmount to total
         if (formData.paymentStatus === 'Paid') {
             newPaid = total;
         } else if (formData.paymentStatus === 'Due') {
@@ -318,7 +320,14 @@ const AddInvoice = () => {
                             <div className="flex flex-wrap gap-3">
                                 {['Due', 'Paid', 'PartiallyPaid'].map((status) => (
                                     <button
-                                        key={status} type="button" onClick={() => setFormData(prev => ({ ...prev, paymentStatus: status }))}
+                                        key={status} type="button"
+                                        onClick={() => {
+                                            const total = parseFloat(formData.total_Amount) || 0;
+                                            let newPaid = formData.paidAmount;
+                                            if (status === 'Paid') newPaid = total;
+                                            if (status === 'Due') newPaid = 0;
+                                            setFormData(prev => ({ ...prev, paymentStatus: status, paidAmount: newPaid }));
+                                        }}
                                         className={`px-6 py-2.5 rounded-xl font-semibold text-xs transition-all ${formData.paymentStatus === status
                                             ? 'bg-blue-600 text-white shadow-md'
                                             : 'bg-white dark:bg-slate-900 text-gray-500 dark:text-slate-400 border border-gray-200 dark:border-slate-800 hover:border-gray-300 dark:hover:border-slate-700'
