@@ -32,7 +32,7 @@ const AddMember = () => {
 
     const fetchMembers = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/members');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/members`);
             if (response.ok) {
                 const data = await response.json();
                 setMembers(data);
@@ -53,8 +53,8 @@ const AddMember = () => {
         setLoading(true);
 
         const url = editingId
-            ? `http://localhost:5000/api/members/${editingId}`
-            : 'http://localhost:5000/api/members';
+            ? `${import.meta.env.VITE_API_URL}/api/members/${editingId}`
+            : `${import.meta.env.VITE_API_URL}/api/members`;
 
         const method = editingId ? 'PUT' : 'POST';
 
@@ -118,7 +118,7 @@ const AddMember = () => {
         if (!window.confirm('Are you sure you want to delete this member?')) return;
 
         try {
-            const response = await fetch(`http://localhost:5000/api/members/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/members/${id}`, {
                 method: 'DELETE',
             });
             if (response.ok) {

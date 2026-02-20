@@ -43,8 +43,8 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 const [invRes, memRes] = await Promise.all([
-                    fetch('http://localhost:5000/api/invoices', { cache: 'no-cache' }),
-                    fetch('http://localhost:5000/api/members', { cache: 'no-cache' })
+                    fetch(`${import.meta.env.VITE_API_URL}/api/invoices`, { cache: 'no-cache' }),
+                    fetch(`${import.meta.env.VITE_API_URL}/api/members`, { cache: 'no-cache' })
                 ]);
 
                 if (invRes.ok && memRes.ok) {

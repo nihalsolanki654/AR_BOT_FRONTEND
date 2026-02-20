@@ -47,7 +47,7 @@ const AddInvoice = () => {
     useEffect(() => {
         const fetchLatestInvoice = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/invoices/latest');
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices/latest`);
                 if (response.ok) {
                     const latestInvoice = await response.json();
                     if (!latestInvoice) {
@@ -111,7 +111,7 @@ const AddInvoice = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/invoices', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

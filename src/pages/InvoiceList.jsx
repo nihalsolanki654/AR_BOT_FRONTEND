@@ -14,7 +14,7 @@ const InvoiceList = () => {
     useEffect(() => {
         const fetchInvoices = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/invoices');
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices`);
                 if (response.ok) {
                     const data = await response.json();
                     setInvoices(data);
@@ -30,7 +30,7 @@ const InvoiceList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this invoice?')) {
             try {
-                const response = await fetch(`http://localhost:5000/api/invoices/${id}`, {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices/${id}`, {
                     method: 'DELETE',
                 });
                 if (response.ok) {
@@ -44,7 +44,7 @@ const InvoiceList = () => {
 
     const handleMarkAsPaid = async (invoice) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/invoices/${invoice._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices/${invoice._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ const InvoiceList = () => {
         const newStatus = newPaidAmount >= totalAmount ? 'Paid' : 'PartiallyPaid';
 
         try {
-            const response = await fetch(`http://localhost:5000/api/invoices/${invoice._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices/${invoice._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
