@@ -15,6 +15,35 @@ const indianStates = [
 const AddInvoice = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+
+    // Helper to calculate all financials at once
+    const calculateFinancials = (data) => {
+        const qty = parseFloat(data.quantity) || 0;
+        const price = parseFloat(data.total_price) || 0;
+        const gstRate = parseFloat(data.GST) || 0;
+        const subtotal = price * qty;
+        const gstAmt = Math.round(subtotal * (gstRate / 100));
+        const total = subtotal + gstAmt;
+
+        let newPaid = parseFloat(data.paidAmount) || 0;
+        if (data.paymentStatus === 'Paid') {
+            newPaid = total;
+        } else if (data.paymentStatus === 'Due') {
+            newPaid = 0;
+        } else if (data.paymentStatus === 'PartiallyPaid') {
+            newPaid = Math.min(newPaid, total);
+        }
+
+        const newBalance = Math.max(0, total - newPaid);
+
+        return {
+            GST_Amount: gstAmt,
+            total_Amount: total,
+            balance_due: newBalance,
+            paidAmount: newPaid
+        };
+    };
+
     const [formData, setFormData] = useState({
         invoiceNumber: '',
         invoiceDate: new Date().toISOString().split('T')[0],
@@ -295,15 +324,15 @@ const AddInvoice = () => {
                             <div className="w-full md:w-80 space-y-3">
                                 <div className="flex justify-between items-center text-sm font-medium text-gray-500 dark:text-slate-400">
                                     <span>Subtotal</span>
-                                    <span>₹{(formData.total_price * formData.quantity).toLocaleString('en-IN')}</span>
+                                    <span>₹{(parseFloat(formData.total_price || 0) * parseFloat(formData.quantity || 0)).toLocaleString('en-IN')}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-sm font-medium text-gray-500 dark:text-slate-400">
                                     <span>GST Amount ({formData.GST}%)</span>
-                                    <span>₹{formData.GST_Amount.toLocaleString('en-IN')}</span>
+                                    <span>₹{(formData.GST_Amount || 0).toLocaleString('en-IN')}</span>
                                 </div>
                                 <div className="flex justify-between items-center pt-3 border-t border-gray-200 dark:border-slate-700">
                                     <span className="text-sm font-bold text-gray-800 dark:text-white">Grand Total</span>
-                                    <span className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">₹{formData.total_Amount.toLocaleString('en-IN')}</span>
+                                    <span className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">₹{(formData.total_Amount || 0).toLocaleString('en-IN')}</span>
                                 </div>
                             </div>
                         </div>
