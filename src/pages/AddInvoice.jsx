@@ -33,7 +33,31 @@ const AddInvoice = () => {
         paidAmount: 0
     });
 
-    // Auto-calculate Financials
+    // Auto-calculate Terms based on Dates
+    useEffect(() => {
+        if (!formData.invoiceDate || !formData.dueDate) return;
+
+        const start = new Date(formData.invoiceDate);
+        const end = new Date(formData.dueDate);
+        const diffTime = end.getTime() - start.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        let terms = formData.Terms;
+        if (diffDays <= 0) {
+            terms = 'Due on Receipt';
+        } else if (diffDays <= 15) {
+            terms = 'Net 15';
+        } else if (diffDays <= 30) {
+            terms = 'Net 30';
+        } else if (diffDays <= 45) {
+            terms = 'Net 45';
+        }
+
+        if (terms !== formData.Terms) {
+            setFormData(prev => ({ ...prev, Terms: terms }));
+        }
+    }, [formData.invoiceDate, formData.dueDate]);
+
     useEffect(() => {
         const qty = parseFloat(formData.quantity) || 1;
         const price = parseFloat(formData.total_price) || 0;
