@@ -149,17 +149,17 @@ const Dashboard = () => {
         <div className="p-6 md:p-10 max-w-[1600px] mx-auto bg-transparent dark:bg-slate-950 min-h-screen">
 
             {/* Header */}
-            <div className="mb-10">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="mb-8 md:mb-10 text-center md:text-left">
+                <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                     Financial Analytics Dashboard
                 </h1>
-                <p className="text-gray-500 dark:text-slate-400 mt-2">
+                <p className="text-sm text-gray-500 dark:text-slate-400 mt-2">
                     Real-time financial performance overview
                 </p>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-10">
                 <StatCard
                     title="Total Revenue"
                     value={`₹${Math.round(stats.totalAmount).toLocaleString('en-IN')}`}
@@ -192,27 +192,31 @@ const Dashboard = () => {
             </div>
 
             {/* Invoice Status */}
-            <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800">
-                <h2 className="text-lg font-bold mb-6 text-gray-900 dark:text-white">
+            <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800">
+                <h2 className="text-base md:text-lg font-bold mb-6 text-gray-900 dark:text-white">
                     Invoice Status Distribution
                 </h2>
-                <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                        <Pie
-                            data={statusData}
-                            dataKey="value"
-                            nameKey="name"
-                            outerRadius={100}
-                            label
-                        >
-                            {statusData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Pie>
-                        <Tooltip />
-                        <Legend />
-                    </PieChart>
-                </ResponsiveContainer>
+                <div className="w-full h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={statusData}
+                                dataKey="value"
+                                nameKey="name"
+                                outerRadius={80}
+                                cx="50%"
+                                cy="50%"
+                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            >
+                                {statusData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend verticalAlign="bottom" height={36} />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
             </div>
 
 

@@ -138,7 +138,7 @@ const AddInvoice = () => {
                 {/* Header */}
 
 
-                <form onSubmit={handleSubmit} className="p-8 space-y-10">
+                <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8 md:y-10">
                     {/* Section 1: Basic Info */}
                     <section>
                         <div className="flex items-center justify-between mb-6 pb-2 border-b border-gray-100 dark:border-slate-800">
@@ -146,10 +146,8 @@ const AddInvoice = () => {
                                 <Hash size={18} className="text-blue-500" />
                                 <h2 className="text-sm font-semibold text-gray-600 dark:text-slate-300">Invoice Details</h2>
                             </div>
-
-
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-semibold text-gray-500 dark:text-slate-500 ml-1">Invoice Number</label>
                                 <input
@@ -180,7 +178,7 @@ const AddInvoice = () => {
                             <User size={18} className="text-blue-500" />
                             <h2 className="text-sm font-semibold text-gray-600 dark:text-slate-300">Client Information</h2>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-semibold text-gray-500 dark:text-slate-500 ml-1">Customer Name</label>
                                 <div className="relative">
@@ -233,12 +231,12 @@ const AddInvoice = () => {
                     </section>
 
                     {/* Section 3: Financials */}
-                    <section className="bg-gray-50 dark:bg-slate-800/20 -mx-8 px-8 py-10 border-y border-gray-100 dark:border-slate-800">
+                    <section className="bg-gray-50 dark:bg-slate-800/20 px-6 py-8 md:px-8 md:py-10 border-y border-gray-100 dark:border-slate-800">
                         <div className="flex items-center gap-2 mb-6 pb-2 border-b border-gray-200 dark:border-slate-700">
                             <IndianRupee size={18} className="text-blue-500" />
                             <h2 className="text-sm font-semibold text-gray-600 dark:text-slate-300">Financial Details</h2>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-semibold text-gray-500 dark:text-slate-500">Gross Amount</label>
                                 <input
@@ -281,7 +279,7 @@ const AddInvoice = () => {
                                 </div>
                                 <div className="flex justify-between items-center pt-3 border-t border-gray-200 dark:border-slate-700">
                                     <span className="text-sm font-bold text-gray-800 dark:text-white">Grand Total</span>
-                                    <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">₹{Math.round(formData.total || 0).toLocaleString('en-IN')}</span>
+                                    <span className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">₹{Math.round(formData.total || 0).toLocaleString('en-IN')}</span>
                                 </div>
                             </div>
                         </div>

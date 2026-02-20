@@ -11,11 +11,13 @@ import AddMember from './pages/AddMember';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
 const Layout = ({ children }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-slate-950 font-sans transition-colors duration-300">
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <div className="flex-1 flex flex-col min-w-0">
-        <Navbar />
+        <Navbar onMenuClick={() => setIsSidebarOpen(true)} />
         <main className="flex-1 overflow-auto bg-gray-50/50 dark:bg-slate-900/50">
           {children}
         </main>

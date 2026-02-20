@@ -166,25 +166,25 @@ const AddMember = () => {
             </div>
 
             {/* Header section */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Team Members</h1>
-                    <p className="text-gray-500 dark:text-slate-400 mt-2 font-medium transition-colors">Manage team access and profile details</p>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
+                <div className="text-center md:text-left">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white transition-colors">Team Members</h1>
+                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-2 font-medium transition-colors">Manage team access and profile details</p>
                 </div>
-                <div className="flex items-center gap-4">
-                    <div className="relative group">
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                    <div className="relative group w-full sm:w-auto">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
                         <input
                             type="text"
                             placeholder="Search team..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-12 pr-6 py-4 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 font-bold text-sm w-full md:w-72 shadow-sm transition-all outline-none dark:text-slate-200"
+                            className="pl-12 pr-6 py-3 md:py-4 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 font-bold text-sm w-full sm:w-64 lg:w-72 shadow-sm transition-all outline-none dark:text-slate-200"
                         />
                     </div>
                     <button
                         onClick={() => { resetForm(); setShowModal(true); }}
-                        className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-blue-500/10 text-sm"
+                        className="flex items-center justify-center gap-2 px-6 md:px-8 py-3 md:py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-blue-500/10 text-sm w-full sm:w-auto"
                     >
                         <Plus size={20} />
                         Add Member
@@ -193,76 +193,76 @@ const AddMember = () => {
             </div>
 
             {/* Premium Listing Table */}
-            <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-colors">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl md:rounded-[40px] shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-colors">
                 <div className="overflow-x-auto">
-                    <table className="w-full">
+                    <table className="w-full min-w-[800px] md:min-w-full">
                         <thead>
-                            <tr className="bg-gray-50/50 dark:bg-slate-800/50 text-gray-400 dark:text-slate-500 text-xs font-bold border-b border-gray-100 dark:border-slate-800">
-                                <th className="px-10 py-6 text-left">Member</th>
-                                <th className="px-10 py-6 text-left">Personal Info</th>
-                                <th className="px-10 py-6 text-left">Access & Status</th>
-                                <th className="px-10 py-6 text-right pr-12">Control</th>
+                            <tr className="bg-gray-50/50 dark:bg-slate-800/50 text-gray-400 dark:text-slate-500 text-[10px] md:text-xs font-bold border-b border-gray-100 dark:border-slate-800 uppercase tracking-widest">
+                                <th className="px-6 md:px-10 py-4 md:py-6 text-left">Member</th>
+                                <th className="px-6 md:px-10 py-4 md:py-6 text-left hidden sm:table-cell">Personal Info</th>
+                                <th className="px-6 md:px-10 py-4 md:py-6 text-left">Access & Status</th>
+                                <th className="px-6 md:px-10 py-4 md:py-6 text-right pr-12">Control</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50 dark:divide-slate-800">
                             {filteredMembers.map((member) => (
                                 <tr key={member._id} className="hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-all group">
-                                    <td className="px-10 py-8">
-                                        <div className="flex items-center gap-5">
-                                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/20">
+                                    <td className="px-6 md:px-10 py-6 md:py-8">
+                                        <div className="flex items-center gap-4 md:gap-5">
+                                            <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-lg md:text-xl shadow-lg shadow-blue-500/20">
                                                 {member.name.charAt(0)}
                                             </div>
                                             <div>
-                                                <p className="font-semibold text-gray-900 dark:text-white text-base leading-tight transition-colors">{member.name}</p>
-                                                <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mt-1">@{member.username}</p>
+                                                <p className="font-bold text-gray-900 dark:text-white text-sm md:text-base leading-tight transition-colors">{member.name}</p>
+                                                <p className="text-[10px] md:text-xs text-blue-600 dark:text-blue-400 font-medium mt-1">@{member.username}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-10 py-8">
+                                    <td className="px-6 md:px-10 py-6 md:py-8 hidden sm:table-cell">
                                         <div className="space-y-2">
-                                            <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-slate-400">
-                                                <Mail size={14} className="text-gray-400 dark:text-slate-500 group-hover:text-blue-500 transition-colors" />
+                                            <div className="flex items-center gap-2 text-xs md:text-sm font-medium text-gray-600 dark:text-slate-400">
+                                                <Mail size={12} className="text-gray-400 dark:text-slate-500 group-hover:text-blue-500 transition-colors" />
                                                 {member.email}
                                             </div>
-                                            <div className="flex items-center gap-2 text-sm font-medium text-gray-400 dark:text-slate-500">
-                                                <Phone size={14} />
+                                            <div className="flex items-center gap-2 text-xs font-medium text-gray-400 dark:text-slate-500">
+                                                <Phone size={12} />
                                                 {member.phone}
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-10 py-8">
-                                        <div className="flex flex-col gap-3">
-                                            <div className="flex items-center gap-2 text-sm font-black text-gray-700">
-                                                <div className={`p-1 w-fit rounded-lg ${member.role === 'Admin' ? 'bg-purple-100 text-purple-600' :
-                                                    member.role === 'Manager' ? 'bg-blue-100 text-blue-600' :
-                                                        'bg-gray-100 text-gray-600'
+                                    <td className="px-6 md:px-10 py-6 md:py-8">
+                                        <div className="flex flex-col gap-2 md:gap-3">
+                                            <div className="flex items-center gap-2 text-xs md:text-sm font-black text-gray-700 dark:text-white">
+                                                <div className={`p-1 w-fit rounded-lg ${member.role === 'Admin' ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' :
+                                                    member.role === 'Manager' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' :
+                                                        'bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-slate-400'
                                                     }`}>
-                                                    <Shield size={14} />
+                                                    <Shield size={12} />
                                                 </div>
-                                                {member.role}
+                                                {member.role.toUpperCase()}
                                             </div>
-                                            <span className={`w-fit px-4 py-1.5 rounded-full text-[10px] font-bold transition-colors ${member.status === 'Active'
+                                            <span className={`w-fit px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black transition-colors ${member.status === 'Active'
                                                 ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20'
                                                 : 'bg-gray-50 dark:bg-slate-800 text-gray-400 dark:text-slate-500 border border-gray-100 dark:border-slate-700'
                                                 }`}>
-                                                {member.status}
+                                                {member.status.toUpperCase()}
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="px-10 py-8 text-right pr-12 space-x-3">
+                                    <td className="px-6 md:px-10 py-6 md:py-8 text-right pr-6 md:pr-12 space-x-2 md:space-x-3">
                                         <button
                                             onClick={() => handleEdit(member)}
-                                            className="p-4 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl text-amber-500 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-100 dark:hover:border-amber-900/50 hover:scale-110 active:scale-95 transition-all group/btn"
+                                            className="p-2 md:p-3 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl md:rounded-2xl text-amber-500 shadow-sm transition-all"
                                             title="Edit Member"
                                         >
-                                            <Edit2 size={18} />
+                                            <Edit2 size={16} />
                                         </button>
                                         <button
                                             onClick={() => handleDelete(member._id)}
-                                            className="p-4 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl text-rose-500 shadow-sm hover:shadow-xl hover:shadow-rose-500/10 hover:border-rose-100 dark:hover:border-rose-900/50 hover:scale-110 active:scale-95 transition-all group/btn"
+                                            className="p-2 md:p-3 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl md:rounded-2xl text-rose-500 shadow-sm transition-all"
                                             title="Delete Member"
                                         >
-                                            <Trash2 size={18} />
+                                            <Trash2 size={16} />
                                         </button>
                                     </td>
                                 </tr>
@@ -274,40 +274,40 @@ const AddMember = () => {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setShowModal(false)}></div>
-                    <div className="relative bg-white dark:bg-slate-950 w-full max-w-2xl rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-gray-100 dark:border-slate-800">
-                        <div className="p-10">
-                            <div className="flex items-center justify-between mb-10">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+                    <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setShowModal(false)}></div>
+                    <div className="relative bg-white dark:bg-slate-950 w-full max-w-2xl rounded-2xl md:rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-gray-100 dark:border-slate-800">
+                        <div className="p-6 md:p-10">
+                            <div className="flex items-center justify-between mb-8 md:mb-10">
                                 <div>
-                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                                        <div className={`p-3 rounded-2xl ${editingId ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
-                                            {editingId ? <Edit2 size={22} /> : <UserPlus size={22} />}
+                                    <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                                        <div className={`p-2 md:p-3 rounded-xl md:rounded-2xl ${editingId ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
+                                            {editingId ? <Edit2 size={20} /> : <UserPlus size={20} />}
                                         </div>
                                         {editingId ? 'Edit Team Member' : 'Register New Member'}
                                     </h2>
-                                    <p className="text-gray-500 dark:text-slate-400 mt-2 font-medium">Please enter member identity details</p>
+                                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-2 font-medium">Please enter member identity details</p>
                                 </div>
-                                <button onClick={() => setShowModal(false)} className="p-3 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-2xl text-gray-400 dark:text-slate-500 transition-all">
-                                    <X size={24} />
+                                <button onClick={() => setShowModal(false)} className="p-2 md:p-3 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl text-gray-400 dark:text-slate-500 transition-all">
+                                    <X size={20} />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-8">
-                                <div className="grid md:grid-cols-2 gap-8">
+                            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 text-left">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-[0.2em] text-gray-400 dark:text-slate-500 ml-1">Full Identity</label>
+                                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-slate-500 ml-1">Full Identity</label>
                                         <input
                                             type="text" name="name" value={formData.name} onChange={handleChange} required
-                                            className="w-full p-5 bg-gray-50 border-none rounded-[20px] focus:ring-4 focus:ring-blue-500/10 focus:bg-white dark:focus:bg-slate-900 font-bold text-gray-800 dark:text-slate-200 transition-all outline-none border dark:border-slate-800 dark:bg-slate-900/50"
+                                            className="w-full p-4 md:p-5 bg-gray-50 border-none rounded-xl md:rounded-[20px] focus:ring-4 focus:ring-blue-500/10 focus:bg-white dark:focus:bg-slate-900 font-bold text-gray-800 dark:text-slate-200 transition-all outline-none border dark:border-slate-800 dark:bg-slate-900/50"
                                             placeholder="Enter name"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-[0.2em] text-gray-400 dark:text-slate-500 ml-1">Unique Username</label>
+                                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-slate-500 ml-1">Unique Username</label>
                                         <input
                                             type="text" name="username" value={formData.username} onChange={handleChange} required
-                                            className="w-full p-5 bg-gray-50 border-none rounded-[20px] focus:ring-4 focus:ring-blue-500/10 focus:bg-white dark:focus:bg-slate-900 font-bold text-gray-800 dark:text-slate-200 transition-all outline-none border dark:border-slate-800 dark:bg-slate-900/50"
+                                            className="w-full p-4 md:p-5 bg-gray-50 border-none rounded-xl md:rounded-[20px] focus:ring-4 focus:ring-blue-500/10 focus:bg-white dark:focus:bg-slate-900 font-bold text-gray-800 dark:text-slate-200 transition-all outline-none border dark:border-slate-800 dark:bg-slate-900/50"
                                             placeholder="Username"
                                         />
                                     </div>

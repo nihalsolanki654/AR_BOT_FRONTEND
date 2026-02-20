@@ -138,40 +138,39 @@ const InvoiceList = () => {
 
     return (
         <div className="p-6 md:p-10 max-w-7xl mx-auto dark:bg-slate-950 min-h-screen transition-colors duration-300">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-800">Invoices</h1>
-                    <p className="text-gray-500 mt-1">Manage and track all your invoices</p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
+                <div className="text-center md:text-left">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Invoices</h1>
+                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Manage and track all your invoices</p>
                 </div>
-
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-all duration-300">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-all duration-300">
                 {/* Filters Bar */}
-                <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50/50 dark:bg-slate-800/20">
-                    <div className="relative w-full md:w-96">
+                <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex flex-col lg:flex-row gap-4 justify-between items-center bg-gray-50/50 dark:bg-slate-800/20">
+                    <div className="relative w-full lg:max-w-md">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         <input
                             type="text"
                             placeholder="Search invoice # or customer..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 w-full text-sm outline-none transition-all dark:text-slate-200"
+                            className="pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 w-full text-sm outline-none transition-all dark:text-slate-200"
                         />
                     </div>
 
-                    <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
-                        <Filter size={18} className="text-gray-400" />
+                    <div className="flex items-center gap-2 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
+                        <Filter size={18} className="text-gray-400 hidden sm:block" />
                         {['All', 'Paid', 'Due', 'PartiallyPaid'].map(status => (
                             <button
                                 key={status}
                                 onClick={() => setFilterStatus(status)}
-                                className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${filterStatus === status
+                                className={`px-4 py-2 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all ${filterStatus === status
                                     ? 'bg-white dark:bg-slate-700 text-gray-800 dark:text-white shadow-sm border border-gray-200 dark:border-slate-600'
                                     : 'text-gray-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-gray-700 dark:hover:text-slate-200'
                                     }`}
                             >
-                                {status === 'PartiallyPaid' ? 'Partially Paid' : status}
+                                {status === 'PartiallyPaid' ? 'Partial' : status}
                             </button>
                         ))}
                     </div>
@@ -179,67 +178,55 @@ const InvoiceList = () => {
 
                 {/* Table */}
                 <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50 dark:bg-slate-800/50 text-gray-600 dark:text-slate-500 text-xs font-semibold">
+                    <table className="w-full min-w-[800px] md:min-w-full">
+                        <thead className="bg-gray-50 dark:bg-slate-800/50 text-gray-600 dark:text-slate-500 text-[10px] md:text-xs font-semibold uppercase tracking-wider">
                             <tr>
-                                <th className="px-6 py-4 text-left">Invoice #</th>
-                                <th className="px-6 py-4 text-left">Customer</th>
-                                <th className="px-6 py-4 text-left">Invoice Date</th>
-                                <th className="px-6 py-4 text-left">Due Date</th>
-                                <th className="px-6 py-4 text-left">Days Left</th>
-                                <th className="px-6 py-4 text-left">Amount</th>
-                                <th className="px-6 py-4 text-left">Status</th>
-                                <th className="px-6 py-4 text-right">Actions</th>
+                                <th className="px-4 md:px-6 py-4 text-left">Invoice #</th>
+                                <th className="px-4 md:px-6 py-4 text-left">Customer</th>
+                                <th className="px-4 md:px-6 py-4 text-left hidden sm:table-cell">Dates</th>
+                                <th className="px-4 md:px-6 py-4 text-left">Amount</th>
+                                <th className="px-4 md:px-6 py-4 text-left">Status</th>
+                                <th className="px-4 md:px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                             {filteredInvoices.length > 0 ? (
                                 filteredInvoices.map((invoice) => (
                                     <tr key={invoice._id} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-gray-800 dark:text-slate-200">{invoice.invoiceNumber}</td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-4 md:px-6 py-4 font-bold text-gray-800 dark:text-slate-200 text-sm">{invoice.invoiceNumber}</td>
+                                        <td className="px-4 md:px-6 py-4">
                                             <div>
-                                                <div className="font-medium text-gray-800 dark:text-slate-200">{invoice.customerName}</div>
-                                                <div className="text-xs text-gray-400 dark:text-slate-500">{invoice.customerState}</div>
+                                                <div className="font-semibold text-gray-800 dark:text-slate-200 text-sm">{invoice.customerName}</div>
+                                                <div className="text-[10px] md:text-xs text-gray-400 dark:text-slate-500">{invoice.customerState}</div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-600 dark:text-slate-400 text-sm">{invoice.invoiceDate}</td>
-                                        <td className="px-6 py-4 text-gray-600 dark:text-slate-400 text-sm">{invoice.dueDate}</td>
-                                        <td className="px-6 py-4 text-gray-600 dark:text-slate-400 text-sm">
-                                            {invoice.paymentStatus === 'Paid' ? (
-                                                <span className="font-medium text-gray-400 dark:text-slate-500">-</span>
-                                            ) : (
-                                                <span className={`font-medium ${calculateDaysLeft(invoice.dueDate) < 0 ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}>
-                                                    {calculateDaysLeft(invoice.dueDate)} days
-                                                </span>
-                                            )}
+                                        <td className="px-4 md:px-6 py-4 hidden sm:table-cell">
+                                            <div className="flex flex-col gap-1">
+                                                <div className="text-[10px] text-gray-400 uppercase font-bold">Due {invoice.dueDate}</div>
+                                                <div className={`text-xs font-medium ${calculateDaysLeft(invoice.dueDate) < 0 ? 'text-red-500' : 'text-gray-600 dark:text-slate-400'}`}>
+                                                    {invoice.paymentStatus === 'Paid' ? 'Completed' : `${calculateDaysLeft(invoice.dueDate)} days left`}
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td className="px-6 py-4 font-bold text-gray-800 dark:text-slate-200">₹{Math.round(invoice.total).toLocaleString('en-IN')}</td>
-                                        <td className="px-6 py-4">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(invoice.paymentStatus)}`}>
-                                                {invoice.paymentStatus}
+                                        <td className="px-4 md:px-6 py-4 font-black text-gray-900 dark:text-white text-sm">₹{Math.round(invoice.total).toLocaleString('en-IN')}</td>
+                                        <td className="px-4 md:px-6 py-4">
+                                            <span className={`px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-black border ${getStatusColor(invoice.paymentStatus)}`}>
+                                                {invoice.paymentStatus === 'PartiallyPaid' ? 'PARTIAL' : invoice.paymentStatus.toUpperCase()}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-1 md:gap-2">
                                                 <button
                                                     onClick={() => { setSelectedInvoice(invoice); setShowViewModal(true); }}
-                                                    className="p-2 text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-all"
+                                                    className="p-1.5 md:p-2 text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-all"
                                                 >
-                                                    <Eye size={18} />
-                                                </button>
-                                                <button
-                                                    onClick={() => alert('Send Mail functionality coming soon!')}
-                                                    className="p-2 text-gray-400 dark:text-slate-500 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-slate-800 rounded-lg transition-all"
-                                                    title="Send Invoice via Email"
-                                                >
-                                                    <Mail size={18} />
+                                                    <Eye size={16} />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(invoice._id)}
-                                                    className="p-2 text-gray-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-slate-800 rounded-lg transition-all"
+                                                    className="p-1.5 md:p-2 text-gray-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-slate-800 rounded-lg transition-all"
                                                 >
-                                                    <Trash2 size={18} />
+                                                    <Trash2 size={16} />
                                                 </button>
                                             </div>
                                         </td>
@@ -247,8 +234,8 @@ const InvoiceList = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="8" className="px-6 py-12 text-center text-gray-400">
-                                        <div className="flex flex-col items-center justify-center gap-2">
+                                    <td colSpan="6" className="px-6 py-12 text-center text-gray-400">
+                                        <div className="flex flex-col items-center justify-center gap-2 font-medium">
                                             <Search size={32} className="opacity-20" />
                                             <p>No invoices found</p>
                                         </div>
@@ -262,48 +249,48 @@ const InvoiceList = () => {
 
             {/* Clean Minimalist Invoice View Modal */}
             {showViewModal && selectedInvoice && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
                     <div
-                        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+                        className="fixed inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
                         onClick={() => setShowViewModal(false)}
                     ></div>
 
-                    <div className="relative bg-white dark:bg-slate-900 w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-                        {/* Simple Clean Header */}
-                        <div className="bg-white dark:bg-slate-900 px-6 py-4 border-b-2 border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                                    <Receipt size={24} className="text-blue-600 dark:text-blue-400" />
+                    <div className="relative bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+                        {/* Header */}
+                        <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
+                                    <Receipt size={20} className="text-blue-600 dark:text-blue-400" />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{selectedInvoice.invoiceNumber}</h2>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400">Invoice Details</p>
+                                    <h2 className="text-lg md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{selectedInvoice.invoiceNumber}</h2>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mt-1">Invoice Details</p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setShowViewModal(false)}
-                                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                className="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors text-slate-400"
                             >
-                                <X size={20} className="text-slate-400 dark:text-slate-500" />
+                                <X size={20} />
                             </button>
                         </div>
 
-                        <div className="p-6 space-y-5 max-h-[calc(100vh-250px)] overflow-y-auto">
-                            {/* Status and Dates Row */}
-                            <div className="grid grid-cols-3 gap-3">
-                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-800">
-                                    <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Status</p>
-                                    <span className={`inline-block px-2.5 py-1 rounded-md text-xs font-bold ${getStatusColor(selectedInvoice.paymentStatus)}`}>
-                                        {selectedInvoice.paymentStatus === 'PartiallyPaid' ? 'Partial' : selectedInvoice.paymentStatus}
+                        <div className="p-6 md:p-8 space-y-6 max-h-[70vh] overflow-y-auto scrollbar-hide">
+                            {/* Summary Grid */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 text-center sm:text-left">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
+                                    <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-black border ${getStatusColor(selectedInvoice.paymentStatus)}`}>
+                                        {selectedInvoice.paymentStatus.toUpperCase()}
                                     </span>
                                 </div>
-                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-800">
-                                    <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Issue Date</p>
-                                    <p className="text-sm font-bold text-slate-900 dark:text-white">{selectedInvoice.invoiceDate}</p>
+                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 text-center sm:text-left">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Issue Date</p>
+                                    <p className="text-sm font-black text-slate-900 dark:text-white">{selectedInvoice.invoiceDate}</p>
                                 </div>
-                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-800">
-                                    <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Due Date</p>
-                                    <p className="text-sm font-bold text-slate-900 dark:text-white">{selectedInvoice.dueDate}</p>
+                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 text-center sm:text-left">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Due Date</p>
+                                    <p className="text-sm font-black text-slate-900 dark:text-white">{selectedInvoice.dueDate}</p>
                                 </div>
                             </div>
 
