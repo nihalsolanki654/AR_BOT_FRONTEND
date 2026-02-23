@@ -187,7 +187,7 @@ const InvoiceList = () => {
                         <div ref={headerScrollRef} className="overflow-x-auto scrollbar-hide">
                             <div className="flex items-center min-w-max px-2">
                                 <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Invoice #</div>
-                                <div className="w-[220px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Company</div>
+                                <div className="w-[300px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Company</div>
                                 <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Inv. Date</div>
                                 <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Due Date</div>
                                 <div className="w-[100px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Terms</div>
@@ -229,8 +229,8 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Company */}
-                                            <div className="w-[220px] px-4">
-                                                <div className="font-bold text-gray-900 dark:text-slate-100 truncate text-sm" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
+                                            <div className="w-[300px] px-4">
+                                                <div className="font-bold text-gray-900 dark:text-slate-100 text-sm whitespace-normal" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
                                                 <div className="text-[11px] text-gray-400 truncate uppercase tracking-tight">{invoice.State || ''}</div>
                                             </div>
 
