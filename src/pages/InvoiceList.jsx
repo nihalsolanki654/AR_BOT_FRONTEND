@@ -204,7 +204,7 @@ const InvoiceList = () => {
                             const daysLeft = calculateDaysLeft(invoice.dueDate);
                             return (
                                 <div key={invoice._id} className="group hover:bg-gray-50/30 dark:hover:bg-slate-800/20 transition-all duration-200">
-                                    <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-slate-700 hover:scrollbar-thumb-blue-400 dark:hover:scrollbar-thumb-blue-500 scroll-smooth">
+                                    <div className="overflow-x-auto scrollbar-hide group-hover:scrollbar-default scroll-smooth">
                                         <div className="flex items-center min-w-max px-2 py-3">
                                             {/* Invoice # */}
                                             <div className="w-[120px] px-4 font-bold text-gray-900 dark:text-slate-100 text-sm">
