@@ -173,101 +173,157 @@ const InvoiceList = () => {
                 </div>
 
                 {/* Table */}
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50 dark:bg-slate-800/50 text-gray-600 dark:text-slate-500 text-sm font-bold">
-                            <tr>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Invoice #</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Company</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Invoice Date</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Due Date</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Terms</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Today</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Status</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Days Left</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Description</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Qty</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Unit Price</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">GST %</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">GST Amt</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Total Amount</th>
-                                <th className="px-5 py-4 text-left whitespace-nowrap">Balance Due</th>
-                                <th className="px-5 py-4 text-right whitespace-nowrap">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                            {filteredInvoices.length > 0 ? filteredInvoices.map((invoice) => {
-                                const status = getPaymentStatus(invoice);
-                                const daysLeft = calculateDaysLeft(invoice.dueDate);
-                                return (
-                                    <tr key={invoice._id} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                        <td className="px-5 py-4 font-bold text-gray-900 dark:text-slate-100 whitespace-nowrap text-base">{getInvoiceNumber(invoice)}</td>
-                                        <td className="px-5 py-4">
-                                            <div className="font-bold text-gray-900 dark:text-slate-100 whitespace-nowrap text-base">{invoice.companyName || 'N/A'}</div>
-                                            <div className="text-sm text-gray-400 whitespace-nowrap">{invoice.State || ''}</div>
-                                        </td>
-                                        <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base whitespace-nowrap font-medium">{invoice.invoiceDate || '-'}</td>
-                                        <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base whitespace-nowrap font-medium">{invoice.dueDate || '-'}</td>
-                                        <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base whitespace-nowrap font-medium">{invoice.Terms || '-'}</td>
-                                        <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base whitespace-nowrap font-medium">
-                                            {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
-                                        </td>
-                                        <td className="px-5 py-4 whitespace-nowrap">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(status)}`}>
-                                                {status === 'PartiallyPaid' ? 'Partially Paid' : status}
-                                            </span>
-                                        </td>
+                {/* Scrollable Records List */}
+                <div className="flex flex-col">
+                    {/* Header - Fixed structure to match records */}
+                    <div className="hidden lg:block bg-gray-50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800 sticky top-0 z-10 transition-colors">
+                        <div className="flex items-center min-w-max px-2">
+                            <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Invoice #</div>
+                            <div className="w-[220px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Company</div>
+                            <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Inv. Date</div>
+                            <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Due Date</div>
+                            <div className="w-[100px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Terms</div>
+                            <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Today</div>
+                            <div className="w-[140px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Status</div>
+                            <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Days Left</div>
+                            <div className="w-[250px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Description</div>
+                            <div className="w-[80px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Qty</div>
+                            <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Unit Price</div>
+                            <div className="w-[80px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">GST %</div>
+                            <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">GST Amt</div>
+                            <div className="w-[150px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Total</div>
+                            <div className="w-[150px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Balance</div>
+                            <div className="w-[150px] px-4 py-4 text-right text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider pr-6">Actions</div>
+                        </div>
+                    </div>
 
-                                        <td className="px-5 py-4 text-base whitespace-nowrap font-bold">
-                                            {status === 'Paid'
-                                                ? <span className="text-gray-400">-</span>
-                                                : daysLeft !== null
-                                                    ? <span className={daysLeft < 0 ? 'text-red-500' : 'text-emerald-600 dark:text-emerald-400'}>
-                                                        {daysLeft < 0 ? `${daysLeft} days` : `${daysLeft} days`}
-                                                    </span>
-                                                    : '-'}
-                                        </td>
-
-                                        <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base max-w-[250px]">
-                                            <div className="line-clamp-2 font-medium leading-relaxed text-sm text-slate-600 dark:text-slate-400" title={invoice.description || ''}>
-                                                {invoice.description || '-'}
+                    {/* Body */}
+                    <div className="divide-y divide-gray-100 dark:divide-slate-800">
+                        {filteredInvoices.length > 0 ? filteredInvoices.map((invoice) => {
+                            const status = getPaymentStatus(invoice);
+                            const daysLeft = calculateDaysLeft(invoice.dueDate);
+                            return (
+                                <div key={invoice._id} className="group hover:bg-gray-50/30 dark:hover:bg-slate-800/20 transition-all duration-200">
+                                    <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-slate-700 hover:scrollbar-thumb-blue-400 dark:hover:scrollbar-thumb-blue-500 scroll-smooth">
+                                        <div className="flex items-center min-w-max px-2 py-3">
+                                            {/* Invoice # */}
+                                            <div className="w-[120px] px-4 font-bold text-gray-900 dark:text-slate-100 text-sm">
+                                                {getInvoiceNumber(invoice)}
                                             </div>
-                                        </td>
-                                        <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base text-center whitespace-nowrap font-medium">{invoice.quantity ?? '-'}</td>
-                                        <td className="px-5 py-4 text-gray-800 dark:text-slate-200 text-base whitespace-nowrap font-bold">₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}</td>
-                                        <td className="px-5 py-4 text-gray-700 dark:text-slate-300 text-base whitespace-nowrap font-medium">
-                                            {invoice.GST ? `${invoice.GST}%` : '-'}
-                                        </td>
-                                        <td className="px-5 py-4 text-gray-800 dark:text-slate-200 text-base whitespace-nowrap font-bold">₹{parseFloat(invoice.GST_Amount || 0).toLocaleString('en-IN')}</td>
-                                        <td className="px-5 py-4 font-black text-gray-900 dark:text-white text-lg whitespace-nowrap">₹{parseFloat(invoice.total_Amount || 0).toLocaleString('en-IN')}</td>
-                                        <td className="px-5 py-4 font-black text-indigo-600 dark:text-indigo-400 text-lg whitespace-nowrap">₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}</td>
-                                        <td className="px-5 py-4 text-right whitespace-nowrap">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button onClick={() => { setSelectedInvoice(invoice); setShowViewModal(true); }}
-                                                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-all" title="View">
-                                                    <Eye size={18} />
-                                                </button>
-                                                <button onClick={() => alert('Send Mail coming soon!')}
-                                                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-slate-800 rounded-lg transition-all" title="Email">
-                                                    <Mail size={18} />
-                                                </button>
-                                                <button onClick={() => handleDelete(invoice._id)}
-                                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-slate-800 rounded-lg transition-all" title="Delete">
-                                                    <Trash2 size={18} />
-                                                </button>
+
+                                            {/* Company */}
+                                            <div className="w-[220px] px-4">
+                                                <div className="font-bold text-gray-900 dark:text-slate-100 truncate text-sm" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
+                                                <div className="text-[11px] text-gray-400 truncate uppercase tracking-tight">{invoice.State || ''}</div>
                                             </div>
-                                        </td>
-                                    </tr>
-                                );
-                            }) : (
 
-                                <tr><td colSpan="15" className="px-6 py-12 text-center text-gray-400">
-                                    <div className="flex flex-col items-center gap-2"><Search size={32} className="opacity-20" /><p>No invoices found</p></div>
-                                </td></tr>
-                            )}
+                                            {/* Invoice Date */}
+                                            <div className="w-[120px] px-4 text-sm text-gray-700 dark:text-slate-300 font-medium">
+                                                {invoice.invoiceDate || '-'}
+                                            </div>
 
-                        </tbody>
-                    </table>
+                                            {/* Due Date */}
+                                            <div className="w-[120px] px-4 text-sm text-gray-700 dark:text-slate-300 font-medium">
+                                                {invoice.dueDate || '-'}
+                                            </div>
+
+                                            {/* Terms */}
+                                            <div className="w-[100px] px-4 text-sm text-gray-700 dark:text-slate-300 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+                                                {invoice.Terms || '-'}
+                                            </div>
+
+                                            {/* Today */}
+                                            <div className="w-[120px] px-4 text-sm text-gray-700 dark:text-slate-300 font-medium whitespace-nowrap">
+                                                {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
+                                            </div>
+
+                                            {/* Status */}
+                                            <div className="w-[140px] px-4">
+                                                <span className={`px-3 py-1 rounded-full text-[10px] font-black border uppercase tracking-wider ${getStatusColor(status)}`}>
+                                                    {status === 'PartiallyPaid' ? 'Partial' : status}
+                                                </span>
+                                            </div>
+
+                                            {/* Days Left */}
+                                            <div className="w-[120px] px-4 text-[13px] font-bold whitespace-nowrap">
+                                                {status === 'Paid'
+                                                    ? <span className="text-gray-400">Fixed</span>
+                                                    : daysLeft !== null
+                                                        ? <span className={daysLeft < 0 ? 'text-red-500 bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded' : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded'}>
+                                                            {daysLeft < 0 ? `${daysLeft} days` : `${daysLeft} days`}
+                                                        </span>
+                                                        : '-'}
+                                            </div>
+
+                                            {/* Description */}
+                                            <div className="w-[250px] px-4">
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 italic font-medium" title={invoice.description || ''}>
+                                                    {invoice.description || 'No description'}
+                                                </div>
+                                            </div>
+
+                                            {/* Qty */}
+                                            <div className="w-[80px] px-4 text-center text-sm text-gray-700 dark:text-slate-300 font-medium">
+                                                {invoice.quantity ?? '-'}
+                                            </div>
+
+                                            {/* Unit Price */}
+                                            <div className="w-[130px] px-4 text-sm text-gray-800 dark:text-slate-200 font-bold whitespace-nowrap">
+                                                ₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}
+                                            </div>
+
+                                            {/* GST % */}
+                                            <div className="w-[80px] px-4 text-center text-sm text-gray-700 dark:text-slate-300 font-medium">
+                                                {invoice.GST ? `${invoice.GST}%` : '-'}
+                                            </div>
+
+                                            {/* GST Amt */}
+                                            <div className="w-[130px] px-4 text-sm text-gray-800 dark:text-slate-200 font-bold whitespace-nowrap">
+                                                ₹{parseFloat(invoice.GST_Amount || 0).toLocaleString('en-IN')}
+                                            </div>
+
+                                            {/* Total Amount */}
+                                            <div className="w-[150px] px-4 font-black text-gray-900 dark:text-white text-base whitespace-nowrap">
+                                                ₹{parseFloat(invoice.total_Amount || 0).toLocaleString('en-IN')}
+                                            </div>
+
+                                            {/* Balance Due */}
+                                            <div className="w-[150px] px-4 font-black text-indigo-600 dark:text-indigo-400 text-base whitespace-nowrap">
+                                                ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
+                                            </div>
+
+                                            {/* Actions */}
+                                            <div className="w-[150px] px-4 pr-6">
+                                                <div className="flex items-center justify-end gap-1.5">
+                                                    <button onClick={() => { setSelectedInvoice(invoice); setShowViewModal(true); }}
+                                                        className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all" title="View">
+                                                        <Eye size={16} />
+                                                    </button>
+                                                    <button onClick={() => alert('Send Mail coming soon!')}
+                                                        className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all" title="Email">
+                                                        <Mail size={16} />
+                                                    </button>
+                                                    <button onClick={() => handleDelete(invoice._id)}
+                                                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all" title="Delete">
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        }) : (
+                            <div className="py-20 text-center text-gray-400 bg-white dark:bg-slate-900">
+                                <div className="flex flex-col items-center gap-4">
+                                    <div className="w-16 h-16 bg-gray-50 dark:bg-slate-800 rounded-full flex items-center justify-center">
+                                        <Search size={32} className="opacity-20" />
+                                    </div>
+                                    <p className="text-sm font-medium">No invoices found matching your criteria</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
