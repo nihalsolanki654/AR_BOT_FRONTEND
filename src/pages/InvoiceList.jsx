@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Trash2, Eye, X, MapPin, Receipt, Wallet, Check, Mail, FileText, Tag, Building2, Package, Percent } from 'lucide-react';
 
@@ -9,6 +9,13 @@ const InvoiceList = () => {
     const [selectedInvoice, setSelectedInvoice] = useState(null);
     const [showViewModal, setShowViewModal] = useState(false);
     const [paymentInput, setPaymentInput] = useState('');
+    const headerScrollRef = useRef(null);
+
+    const handleRowScroll = (e) => {
+        if (headerScrollRef.current) {
+            headerScrollRef.current.scrollLeft = e.target.scrollLeft;
+        }
+    };
 
     useEffect(() => {
         const fetchInvoices = async () => {
@@ -176,24 +183,26 @@ const InvoiceList = () => {
                 {/* Scrollable Records List */}
                 <div className="flex flex-col">
                     {/* Header - Fixed structure to match records */}
-                    <div className="hidden lg:block bg-gray-50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800 sticky top-0 z-10 transition-colors">
-                        <div className="flex items-center min-w-max px-2">
-                            <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Invoice #</div>
-                            <div className="w-[220px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Company</div>
-                            <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Inv. Date</div>
-                            <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Due Date</div>
-                            <div className="w-[100px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Terms</div>
-                            <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Today</div>
-                            <div className="w-[140px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Status</div>
-                            <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Days Left</div>
-                            <div className="w-[250px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Description</div>
-                            <div className="w-[80px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Qty</div>
-                            <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Unit Price</div>
-                            <div className="w-[80px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">GST %</div>
-                            <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">GST Amt</div>
-                            <div className="w-[150px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Total</div>
-                            <div className="w-[150px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Balance</div>
-                            <div className="w-[150px] px-4 py-4 text-right text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider pr-6">Actions</div>
+                    <div className="hidden lg:block bg-gray-50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800 sticky top-0 z-30 transition-colors">
+                        <div ref={headerScrollRef} className="overflow-x-auto scrollbar-hide">
+                            <div className="flex items-center min-w-max px-2">
+                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Invoice #</div>
+                                <div className="w-[220px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Company</div>
+                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Inv. Date</div>
+                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Due Date</div>
+                                <div className="w-[100px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Terms</div>
+                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Today</div>
+                                <div className="w-[140px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Status</div>
+                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Days Left</div>
+                                <div className="w-[250px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Description</div>
+                                <div className="w-[80px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Qty</div>
+                                <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Unit Price</div>
+                                <div className="w-[80px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">GST %</div>
+                                <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">GST Amt</div>
+                                <div className="w-[150px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Total</div>
+                                <div className="w-[150px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Balance</div>
+                                <div className="w-[150px] px-4 py-4 text-right text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider pr-6">Actions</div>
+                            </div>
                         </div>
                     </div>
 
@@ -203,8 +212,16 @@ const InvoiceList = () => {
                             const status = getPaymentStatus(invoice);
                             const daysLeft = calculateDaysLeft(invoice.dueDate);
                             return (
-                                <div key={invoice._id} className="group hover:bg-gray-50/30 dark:hover:bg-slate-800/20 transition-all duration-200">
-                                    <div className="overflow-x-auto scrollbar-hide group-hover:scrollbar-default scroll-smooth">
+                                <div key={invoice._id}
+                                    onMouseEnter={(e) => {
+                                        const scrollContainer = e.currentTarget.querySelector('.overflow-x-auto');
+                                        if (scrollContainer && headerScrollRef.current) {
+                                            headerScrollRef.current.scrollLeft = scrollContainer.scrollLeft;
+                                        }
+                                    }}
+                                    className="group hover:bg-gray-50/30 dark:hover:bg-slate-800/20 transition-all duration-200">
+                                    <div className="overflow-x-auto scrollbar-hide group-hover:scrollbar-default scroll-smooth"
+                                        onScroll={handleRowScroll}>
                                         <div className="flex items-center min-w-max px-2 py-3">
                                             {/* Invoice # */}
                                             <div className="w-[120px] px-4 font-bold text-gray-900 dark:text-slate-100 text-sm">
