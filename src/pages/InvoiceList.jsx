@@ -26,6 +26,7 @@ const InvoiceList = () => {
     const [mailRecipients, setMailRecipients] = useState({ to: [], cc: [] });
     const [mailInvoice, setMailInvoice] = useState(null);
     const [fetchingRecipientsId, setFetchingRecipientsId] = useState(null);
+    const [previewHtml, setPreviewHtml] = useState('');
 
     const showToast = useCallback((message, type = 'success') => {
         setToast({ message, type });
@@ -35,14 +36,29 @@ const InvoiceList = () => {
     const prepareMail = useCallback(async (invoice) => {
         setFetchingRecipientsId(invoice._id);
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/customer-emails/by-company/${encodeURIComponent(invoice.companyName)}`);
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || 'Could not find recipients for this company.');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+            // 1. Fetch Recipients
+            const recRes = await fetch(`${import.meta.env.VITE_API_URL}/api/customer-emails/by-company/${encodeURIComponent(invoice.companyName)}`);
+            const recData = await recRes.json();
+            if (!recRes.ok) throw new Error(recData.message || 'Could not find recipients for this company.');
+
+            // 2. Fetch HTML Preview
+            const prevRes = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/preview/${invoice._id}?senderName=${user.name}&fromEmail=${user.email}&senderPhone=${user.phone}`);
+            const prevData = await prevRes.json();
+            if (!prevRes.ok) throw new Error(prevData.message || 'Failed to generate email preview.');
 
             setMailRecipients({
-                to: data.toEmails?.filter(Boolean) || [],
-                cc: data.ccEmails?.filter(Boolean) || []
+                to: recData.toEmails?.filter(Boolean) || [],
+                cc: recData.ccEmails?.filter(Boolean) || []
             });
+
+            // Inject public image paths for front-end preview since CID won't work in browser directly
+            let browserHtml = prevData.html;
+            browserHtml = browserHtml.replace('cid:logo1', '/image/Picture1.png');
+            browserHtml = browserHtml.replace('cid:logo2', '/image/Picture2.png');
+
+            setPreviewHtml(browserHtml);
             setMailInvoice(invoice);
             setShowMailModal(true);
         } catch (err) {
@@ -681,62 +697,70 @@ const InvoiceList = () => {
                     );
                 })()}
 
-                {/* ── Mail Confirmation Modal ── */}
+                {/* ── Mail Confirmation Modal (Live Preview) ── */}
                 {showMailModal && mailInvoice && (
                     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
                         <div className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onClick={() => setShowMailModal(false)} />
-                        <div className="relative bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                        <div className="relative bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[28px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col max-h-[90vh]">
                             {/* Header */}
-                            <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shadow-sm">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl flex items-center justify-center text-emerald-600">
-                                        <Mail size={20} />
+                            <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-sm border border-emerald-100 dark:border-emerald-500/20">
+                                        <Mail size={22} />
                                     </div>
                                     <div>
-                                        <h2 className="text-lg font-bold text-slate-900 dark:text-white">Send Invoice</h2>
-                                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Review Recipients</p>
+                                        <h2 className="text-xl font-bold text-slate-900 dark:text-white font-outfit">Email Preview</h2>
+                                        <div className="flex items-center gap-2 mt-0.5">
+                                            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Ready for delivery</span>
+                                            <div className="w-1 h-1 bg-emerald-400 rounded-full animate-pulse" />
+                                        </div>
                                     </div>
                                 </div>
-                                <button onClick={() => setShowMailModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors group">
+                                <button onClick={() => setShowMailModal(false)} className="p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all group border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
                                     <X size={20} className="text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
                                 </button>
                             </div>
 
-                            {/* Modal Body */}
-                            <div className="p-6 space-y-6">
-                                {/* Context Card */}
-                                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
-                                    <div className="flex items-center gap-3 mb-1">
-                                        <Building2 size={14} className="text-slate-400" />
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Company</span>
-                                    </div>
-                                    <p className="text-[15px] font-bold text-slate-900 dark:text-white mb-2">{mailInvoice.companyName}</p>
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-bold text-slate-500">
-                                            <Receipt size={12} />
-                                            {getInvoiceNumber(mailInvoice)}
+                            {/* Modal Body - Scrollable */}
+                            <div className="flex-1 overflow-y-auto p-0 flex flex-col xl:flex-row divide-y xl:divide-y-0 xl:divide-x dark:divide-slate-800">
+
+                                {/* Sidebar: Recipients & Meta */}
+                                <div className="w-full xl:w-80 p-8 space-y-8 bg-slate-50/50 dark:bg-slate-800/30 shrink-0">
+                                    <div>
+                                        <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-4">Destination</p>
+                                        <div className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
+                                            <div className="flex items-center gap-3 mb-1.5">
+                                                <div className="p-1.5 bg-blue-50 dark:bg-blue-500/10 rounded-lg">
+                                                    <Building2 size={14} className="text-blue-600 dark:text-blue-400" />
+                                                </div>
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Company</span>
+                                            </div>
+                                            <p className="text-[15px] font-bold text-slate-900 dark:text-white leading-tight mb-2">{mailInvoice.companyName}</p>
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-full text-[10px] font-bold text-slate-500 uppercase">
+                                                    <Tag size={12} />
+                                                    Statement
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Email Grid */}
-                                <div className="space-y-5">
                                     <div>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Recipients (TO)</p>
-                                            <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-500/10 rounded text-[9px] font-black text-emerald-600 uppercase">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Recipients (TO)</p>
+                                            <span className="px-2.5 py-1 bg-emerald-500/10 rounded-full text-[9px] font-black text-emerald-600 uppercase border border-emerald-500/20">
                                                 {mailRecipients.to.length} Active
                                             </span>
                                         </div>
-                                        <div className="flex flex-wrap gap-2">
+                                        <div className="flex flex-col gap-2.5">
                                             {mailRecipients.to.length > 0 ? mailRecipients.to.map((email, i) => (
-                                                <div key={email + i} className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2 group cursor-default hover:border-emerald-200 dark:hover:border-emerald-800 transition-colors">
-                                                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-                                                    {email}
+                                                <div key={email + i} className="group px-4 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[13px] font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-3 transition-all hover:border-emerald-200 dark:hover:border-emerald-800 shadow-sm">
+                                                    <div className="w-2 h-2 bg-emerald-400 rounded-full ring-4 ring-emerald-500/10" />
+                                                    <span className="truncate">{email}</span>
                                                 </div>
                                             )) : (
-                                                <div className="w-full p-4 bg-rose-50 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-900/20 rounded-xl text-center">
-                                                    <p className="text-xs text-rose-600 dark:text-rose-400 font-bold italic tracking-wide">No recipients found. Please edit company contacts in Sidebar.</p>
+                                                <div className="p-4 bg-rose-50 dark:bg-rose-500/5 border border-rose-100 dark:border-rose-500/20 rounded-2xl">
+                                                    <p className="text-xs text-rose-600 dark:text-rose-400 font-bold italic">Missing Recipients</p>
                                                 </div>
                                             )}
                                         </div>
@@ -744,10 +768,10 @@ const InvoiceList = () => {
 
                                     {mailRecipients.cc.length > 0 && (
                                         <div>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Carbon Copy (CC)</p>
+                                            <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-4">CC Group</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {mailRecipients.cc.map((email, i) => (
-                                                    <div key={email + i} className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-dashed border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                    <div key={email + i} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-xl text-[11px] font-bold text-slate-500 dark:text-slate-400 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
                                                         {email}
                                                     </div>
                                                 ))}
@@ -755,33 +779,59 @@ const InvoiceList = () => {
                                         </div>
                                     )}
                                 </div>
+
+                                {/* Main Content: Live Preview */}
+                                <div className="flex-1 bg-white dark:bg-white/5 p-8 flex flex-col min-h-0">
+                                    <div className="flex items-center justify-between mb-6 shrink-0">
+                                        <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Live Content Preview</p>
+                                        <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400">
+                                            <div className="flex items-center gap-1.5 uppercase tracking-wider">
+                                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                                                HTML Output
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1 bg-gray-50/50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[24px] p-8 overflow-y-auto custom-scrollbar shadow-inner min-h-[400px]">
+                                        {/* Injecting HTML Preview */}
+                                        <div
+                                            className="email-preview-container bg-white p-10 rounded-xl shadow-sm border border-slate-100/50"
+                                            dangerouslySetInnerHTML={{ __html: previewHtml }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Actions */}
-                            <div className="p-6 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-800 flex gap-3">
-                                <button
-                                    onClick={() => setShowMailModal(false)}
-                                    className="flex-1 py-3.5 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm active:scale-95"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={sendMail}
-                                    disabled={sendingMailId === mailInvoice._id || mailRecipients.to.length === 0}
-                                    className="flex-[2] py-3.5 bg-slate-900 dark:bg-slate-950 text-white rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2 text-sm shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group active:scale-95 overflow-hidden relative"
-                                >
-                                    {sendingMailId === mailInvoice._id ? (
-                                        <>
-                                            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                                            <span>Sending...</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Mail size={16} className="group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
-                                            <span>Send Now</span>
-                                        </>
-                                    )}
-                                </button>
+                            <div className="px-8 py-7 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+                                <p className="hidden sm:block text-[11px] text-slate-400 font-bold uppercase tracking-widest">
+                                    Reviewing {mailRecipients.to.length + mailRecipients.cc.length} Contacts
+                                </p>
+                                <div className="flex gap-4 w-full sm:w-auto">
+                                    <button
+                                        onClick={() => setShowMailModal(false)}
+                                        className="flex-1 sm:px-8 py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-2xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-sm active:scale-95"
+                                    >
+                                        Close Preview
+                                    </button>
+                                    <button
+                                        onClick={sendMail}
+                                        disabled={sendingMailId === mailInvoice._id || mailRecipients.to.length === 0}
+                                        className="flex-[2] sm:px-12 py-4 bg-slate-900 dark:bg-blue-600 text-white rounded-2xl font-bold hover:bg-black dark:hover:bg-blue-700 transition-all flex items-center justify-center gap-3 text-sm shadow-2xl shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed group active:scale-95 overflow-hidden relative"
+                                    >
+                                        {sendingMailId === mailInvoice._id ? (
+                                            <>
+                                                <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                                <span className="font-outfit">Processing Delivery...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="font-outfit">Approve & Send Now</span>
+                                                <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform" />
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
