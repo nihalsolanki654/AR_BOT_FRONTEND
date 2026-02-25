@@ -37,6 +37,7 @@ const AddInvoice = () => {
         const newBalance = Math.max(0, total - newPaid);
 
         return {
+            subtotal: subtotal,
             GST_Amount: gstAmt,
             total_Amount: total,
             balance_due: newBalance,
@@ -52,12 +53,13 @@ const AddInvoice = () => {
         companyName: '',
         State: '',
         total_price: 0,
+        quantity: 1,
+        subtotal: 0,
         GST: 18,
         GST_Amount: 0,
         total_Amount: 0,
         balance_due: 0,
         description: '',
-        quantity: 1,
         paymentStatus: 'Due',
         paidAmount: 0
     });
@@ -114,6 +116,7 @@ const AddInvoice = () => {
 
         // Update state ONLY if values actually differ to prevent infinite loops
         if (
+            Math.abs((formData.subtotal || 0) - results.subtotal) > 0.1 ||
             Math.abs((formData.GST_Amount || 0) - results.GST_Amount) > 0.1 ||
             Math.abs((formData.total_Amount || 0) - results.total_Amount) > 0.1 ||
             Math.abs((formData.balance_due || 0) - results.balance_due) > 0.1 ||

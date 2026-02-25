@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Trash2, Eye, X, MapPin, Receipt, Wallet, Check, Mail, FileText, Tag, Building2, Package, Percent, Calendar } from 'lucide-react';
+import { Plus, Search, Filter, Trash2, Eye, X, MapPin, Receipt, Wallet, Check, Mail, FileText, Tag, Building2, Package, Percent, Calendar } from 'lucide-react';
 
 const InvoiceList = () => {
+    const navigate = useNavigate();
     const [invoices, setInvoices] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('All');
@@ -20,10 +21,10 @@ const InvoiceList = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [pagination, setPagination] = useState({ total: 0, pages: 1, currentPage: 1 });
 
-    const fetchInvoices = async (page = 1) => {
+    const fetchInvoices = async (page = 1, search = searchTerm, status = filterStatus) => {
         setIsLoading(true);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices?page=${page}&limit=50`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices?page=${page}&limit=50&search=${encodeURIComponent(search)}&status=${status}`);
             if (response.ok) {
                 const data = await response.json();
                 setInvoices(data.invoices);
@@ -41,8 +42,17 @@ const InvoiceList = () => {
     };
 
     useEffect(() => {
-        fetchInvoices();
+        // Initial fetch
+        fetchInvoices(1);
     }, []);
+
+    // Debounced search and filter fetch
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            fetchInvoices(1, searchTerm, filterStatus);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm, filterStatus]);
 
     // Helper: get invoice number regardless of old/new field name
     const getInvoiceNumber = (inv) => inv.invoiceNumber || inv.invoice_number || '-';
@@ -140,13 +150,8 @@ const InvoiceList = () => {
         }
     };
 
-    const filteredInvoices = invoices.filter(invoice => {
-        const status = getPaymentStatus(invoice);
-        const num = getInvoiceNumber(invoice).toLowerCase();
-        const matchesSearch = num.includes(searchTerm.toLowerCase()) ||
-            (invoice.companyName || '').toLowerCase().includes(searchTerm.toLowerCase());
-        return matchesSearch && (filterStatus === 'All' || status === filterStatus);
-    });
+    // Use invoices directly since filtering is now server-side
+    const filteredInvoices = invoices;
 
     const calculateDaysLeft = (dueDate) => {
         const due = parseDate(dueDate);
@@ -165,13 +170,22 @@ const InvoiceList = () => {
                     <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Invoices</h1>
                     <p className="text-gray-500 mt-1">Manage and track all your invoices</p>
                 </div>
-                <div className="bg-white dark:bg-slate-900 px-6 py-3 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-3">
-                    <Calendar size={20} className="text-blue-500" />
-                    <div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Today</p>
-                        <p className="text-sm font-bold text-gray-800 dark:text-slate-200">
-                            {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}
-                        </p>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => navigate('/add-invoice')}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 active:scale-95 text-sm"
+                    >
+                        <Plus size={18} />
+                        <span className="hidden sm:inline">New Invoice</span>
+                    </button>
+                    <div className="bg-white dark:bg-slate-900 px-6 py-3 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-3">
+                        <Calendar size={20} className="text-blue-500" />
+                        <div>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Today</p>
+                            <p className="text-sm font-bold text-gray-800 dark:text-slate-200">
+                                {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -209,18 +223,19 @@ const InvoiceList = () => {
                     <div className="hidden lg:block bg-gray-50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800 sticky top-0 z-30 transition-colors">
                         <div ref={headerScrollRef} className="overflow-x-auto scrollbar-hide">
                             <div className="flex items-center min-w-max px-2">
-                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Invoice #</div>
-                                <div className="w-[110px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Inv. Date</div>
+                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Invoice No</div>
+                                <div className="w-[220px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Company</div>
+                                <div className="w-[110px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Invoice Date</div>
                                 <div className="w-[110px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Due Date</div>
                                 <div className="w-[100px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Terms</div>
-                                <div className="w-[220px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Company</div>
-                                <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Total</div>
-                                <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Balance</div>
                                 <div className="w-[220px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Description</div>
-                                <div className="w-[70px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Qty</div>
                                 <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Unit Price</div>
+                                <div className="w-[70px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Qty</div>
+                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Subtotal</div>
                                 <div className="w-[70px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">GST %</div>
                                 <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">GST Amt</div>
+                                <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Total</div>
+                                <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Balance</div>
                                 <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Status</div>
                                 <div className="w-[120px] px-4 py-4 text-right text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider pr-6">Actions</div>
                             </div>
@@ -300,6 +315,11 @@ const InvoiceList = () => {
                                             {/* Qty */}
                                             <div className="w-[70px] px-4 text-center text-sm text-gray-700 dark:text-slate-300 font-medium">
                                                 {invoice.quantity ?? '-'}
+                                            </div>
+
+                                            {/* Subtotal (Unit * Qty) */}
+                                            <div className="w-[120px] px-4 text-sm text-gray-800 dark:text-slate-200 font-bold whitespace-nowrap">
+                                                ₹{parseFloat(invoice.subtotal || (invoice.total_price * (invoice.quantity || 1)) || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* GST % */}
@@ -506,7 +526,7 @@ const InvoiceList = () => {
                                         <p className="text-[10px] font-bold text-slate-400 uppercase mb-3">Financial Breakdown</p>
                                         <div className="space-y-2.5">
                                             <div className="flex justify-between text-sm">
-                                                <span className="text-slate-600 dark:text-slate-400">Total Price (Before GST)</span>
+                                                <span className="text-slate-600 dark:text-slate-400">Subtotal (Unit × Qty)</span>
                                                 <span className="font-bold text-slate-800 dark:text-white">₹{subtotal.toLocaleString('en-IN')}</span>
                                             </div>
                                             <div className="flex justify-between text-sm">
