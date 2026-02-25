@@ -148,9 +148,20 @@ const InvoiceList = () => {
 
     return (
         <div className="p-6 md:p-10 max-w-7xl mx-auto dark:bg-slate-950 min-h-screen transition-colors duration-300">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Invoices</h1>
-                <p className="text-gray-500 mt-1">Manage and track all your invoices</p>
+            <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Invoices</h1>
+                    <p className="text-gray-500 mt-1">Manage and track all your invoices</p>
+                </div>
+                <div className="bg-white dark:bg-slate-900 px-6 py-3 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-3">
+                    <Calendar size={20} className="text-blue-500" />
+                    <div>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Today</p>
+                        <p className="text-sm font-bold text-gray-800 dark:text-slate-200">
+                            {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
@@ -191,9 +202,8 @@ const InvoiceList = () => {
                                 <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Inv. Date</div>
                                 <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Due Date</div>
                                 <div className="w-[100px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Terms</div>
-                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Today</div>
                                 <div className="w-[140px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Status</div>
-                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Days Left</div>
+                                <div className="w-[140px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Days Left</div>
                                 <div className="w-[250px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Description</div>
                                 <div className="w-[80px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Qty</div>
                                 <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Unit Price</div>
@@ -249,11 +259,6 @@ const InvoiceList = () => {
                                                 {invoice.Terms || '-'}
                                             </div>
 
-                                            {/* Today */}
-                                            <div className="w-[120px] px-4 text-sm text-gray-700 dark:text-slate-300 font-medium whitespace-nowrap">
-                                                {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
-                                            </div>
-
                                             {/* Status */}
                                             <div className="w-[140px] px-4">
                                                 <span className={`px-3 py-1 rounded-full text-[10px] font-black border uppercase tracking-wider ${getStatusColor(status)}`}>
@@ -262,12 +267,16 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Days Left */}
-                                            <div className="w-[120px] px-4 text-[13px] font-bold whitespace-nowrap">
+                                            <div className="w-[140px] px-4 text-[13px] font-bold whitespace-nowrap">
                                                 {status === 'Paid'
                                                     ? <span className="text-gray-400">Fixed</span>
                                                     : daysLeft !== null
-                                                        ? <span className={daysLeft < 0 ? 'text-red-500 bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded' : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded'}>
-                                                            {daysLeft < 0 ? `${daysLeft} days` : `${daysLeft} days`}
+                                                        ? <span className={daysLeft < 0
+                                                            ? 'text-red-500 bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded border border-red-200 dark:border-red-500/20'
+                                                            : daysLeft === 0
+                                                                ? 'text-blue-600 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-500/20'
+                                                                : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20'}>
+                                                            {daysLeft < 0 ? `${daysLeft} days` : daysLeft === 0 ? 'TODAY' : `${daysLeft} days left`}
                                                         </span>
                                                         : '-'}
                                             </div>

@@ -62,26 +62,46 @@ const AddInvoice = () => {
         paidAmount: 0
     });
 
-    // Auto-calculate Terms based on Dates
-    useEffect(() => {
-        if (!formData.invoiceDate || !formData.dueDate) return;
+    // Helper to format date as YYYY-MM-DD
+    const formatDate = (date) => {
+        return date.toISOString().split('T')[0];
+    };
 
-        const start = new Date(formData.invoiceDate);
-        const end = new Date(formData.dueDate);
-        const diffTime = end.getTime() - start.getTime();
+    // Auto-calculate Due Date or Terms
+    useEffect(() => {
+        // This effect handles changes to Terms -> Updates DueDate
+        if (formData.invoiceDate && formData.Terms) {
+            const matches = formData.Terms.match(/\d+/);
+            const days = matches ? parseInt(matches[0]) : 0;
+
+            const invDate = new Date(formData.invoiceDate);
+            const dueDate = new Date(invDate);
+            dueDate.setDate(invDate.getDate() + days);
+
+            const newDueDateStr = formatDate(dueDate);
+            if (newDueDateStr !== formData.dueDate) {
+                setFormData(prev => ({ ...prev, dueDate: newDueDateStr }));
+            }
+        }
+    }, [formData.invoiceDate, formData.Terms]);
+
+    const handleDueDateChange = (e) => {
+        const newDueDate = e.target.value;
+        const invDate = new Date(formData.invoiceDate);
+        const due = new Date(newDueDate);
+
+        const diffTime = due.getTime() - invDate.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         let terms = '';
         if (diffDays <= 0) {
             terms = 'Due on Receipt';
         } else {
-            terms = `${diffDays} days`;
+            terms = `Net ${diffDays}`;
         }
 
-        if (terms !== formData.Terms) {
-            setFormData(prev => ({ ...prev, Terms: terms }));
-        }
-    }, [formData.invoiceDate, formData.dueDate]);
+        setFormData(prev => ({ ...prev, dueDate: newDueDate, Terms: terms }));
+    };
 
     // Auto-calculate Financials and handle Status synchronization
     useEffect(() => {
@@ -196,16 +216,27 @@ const AddInvoice = () => {
                             <div className="space-y-1.5">
                                 <label className="text-xs font-semibold text-gray-500 dark:text-slate-500 ml-1">Due Date</label>
                                 <input
-                                    required type="date" name="dueDate" value={formData.dueDate} onChange={handleChange}
+                                    required type="date" name="dueDate" value={formData.dueDate} onChange={handleDueDateChange}
                                     className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-800 dark:text-slate-200 font-medium focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all dark:[color-scheme:dark]"
                                 />
                             </div>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-semibold text-gray-500 dark:text-slate-500 ml-1">Payment Terms</label>
-                                <input
-                                    type="text" value={formData.Terms} readOnly
-                                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-800 dark:text-slate-200 font-medium cursor-not-allowed outline-none"
-                                />
+                                <select
+                                    name="Terms" value={formData.Terms} onChange={handleChange}
+                                    className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-800 dark:text-slate-200 font-medium focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all"
+                                >
+                                    <option value="Due on Receipt">Due on Receipt</option>
+                                    <option value="Net 7">Net 7</option>
+                                    <option value="Net 15">Net 15</option>
+                                    <option value="Net 30">Net 30</option>
+                                    <option value="Net 45">Net 45</option>
+                                    <option value="Net 60">Net 60</option>
+                                    <option value="Net 90">Net 90</option>
+                                    {!['Due on Receipt', 'Net 7', 'Net 15', 'Net 30', 'Net 45', 'Net 60', 'Net 90'].includes(formData.Terms) && (
+                                        <option value={formData.Terms}>{formData.Terms}</option>
+                                    )}
+                                </select>
                             </div>
                         </div>
                     </section>
