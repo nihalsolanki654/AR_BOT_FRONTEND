@@ -239,8 +239,8 @@ const InvoiceList = () => {
                                 <div className="w-[120px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">GST Amt</div>
                                 <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Total</div>
                                 <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Balance</div>
-                                <div className="w-[130px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Status</div>
-                                <div className="w-[120px] shrink-0 px-5 py-5 text-right text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] pr-8">Actions</div>
+                                <div className="w-[180px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Status</div>
+                                <div className="w-[180px] shrink-0 px-5 py-5 text-right text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] pr-12">Actions</div>
                             </div>
                         </div>
                     </div>
@@ -349,7 +349,7 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Status */}
-                                            <div className="w-[130px] shrink-0 px-5 text-center flex items-center justify-center">
+                                            <div className="w-[180px] shrink-0 px-5 text-center flex items-center justify-center">
                                                 <span className={`px-4 py-1.5 rounded-full text-[10px] font-black border uppercase tracking-widest shadow-sm ${status === 'Paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' :
                                                     status === 'Due' ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' :
                                                         status === 'Overdue' ? 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20' :
@@ -361,8 +361,8 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Actions */}
-                                            <div className="w-[120px] shrink-0 px-5 pr-8">
-                                                <div className="flex items-center justify-end gap-2">
+                                            <div className="w-[180px] shrink-0 px-5 pr-12 pl-10">
+                                                <div className="flex items-center justify-end gap-2.5">
                                                     <button onClick={() => { setSelectedInvoice(invoice); setShowViewModal(true); }}
                                                         className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="View Details">
                                                         <Eye size={16} />
