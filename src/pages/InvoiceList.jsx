@@ -289,14 +289,21 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Terms (with dynamic today/overdue status) */}
-                                            <div className="w-[100px] px-4 text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis text-center">
+                                            <div className="w-[100px] px-4 text-sm font-medium whitespace-nowrap text-center">
                                                 {status === 'Paid'
-                                                    ? <span className="text-gray-400">{invoice.Terms || '-'}</span>
+                                                    ? <span className="text-gray-400 text-[11px] font-bold uppercase tracking-tight">{invoice.Terms ? `${invoice.Terms} Days` : '-'}</span>
                                                     : daysLeft === 0
-                                                        ? <span className="text-blue-600 font-bold bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-500/20">TODAY</span>
+                                                        ? <div className="flex flex-col items-center">
+                                                            <span className="text-blue-600 text-[10px] font-black bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-500/20 shadow-sm">DUE TODAY</span>
+                                                        </div>
                                                         : daysLeft < 0
-                                                            ? <span className="text-red-500 font-bold bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded border border-red-200 dark:border-red-500/20">{daysLeft} days</span>
-                                                            : <span className="text-gray-700 dark:text-slate-300">{invoice.Terms || '-'}</span>
+                                                            ? <div className="flex flex-col items-center">
+                                                                <span className="text-rose-600 text-[10px] font-black bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-500/20 shadow-sm">{Math.abs(daysLeft)}D OVERDUE</span>
+                                                            </div>
+                                                            : <div className="flex flex-col items-center gap-0.5">
+                                                                <span className="text-gray-700 dark:text-slate-300 font-bold">{invoice.Terms || '-'}</span>
+                                                                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter">Due in {daysLeft}d</span>
+                                                            </div>
                                                 }
                                             </div>
 
