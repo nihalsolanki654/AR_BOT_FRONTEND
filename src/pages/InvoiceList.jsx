@@ -257,6 +257,12 @@ const InvoiceList = () => {
                                                 {getInvoiceNumber(invoice)}
                                             </div>
 
+                                            {/* Company */}
+                                            <div className="w-[220px] px-4">
+                                                <div className="font-bold text-gray-900 dark:text-slate-100 text-sm whitespace-normal" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
+                                                <div className="text-[11px] text-gray-400 truncate uppercase tracking-tight">{invoice.State || ''}</div>
+                                            </div>
+
                                             {/* Invoice Date */}
                                             <div className="w-[110px] px-4 text-sm text-gray-700 dark:text-slate-300 font-medium">
                                                 {invoice.invoiceDate || '-'}
@@ -279,10 +285,31 @@ const InvoiceList = () => {
                                                 }
                                             </div>
 
-                                            {/* Company */}
+                                            {/* Description */}
                                             <div className="w-[220px] px-4">
-                                                <div className="font-bold text-gray-900 dark:text-slate-100 text-sm whitespace-normal" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
-                                                <div className="text-[11px] text-gray-400 truncate uppercase tracking-tight">{invoice.State || ''}</div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 italic font-medium" title={invoice.description || ''}>
+                                                    {invoice.description || 'No description'}
+                                                </div>
+                                            </div>
+
+                                            {/* Unit Price */}
+                                            <div className="w-[120px] px-4 text-sm text-gray-800 dark:text-slate-200 font-bold whitespace-nowrap">
+                                                ₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}
+                                            </div>
+
+                                            {/* Qty */}
+                                            <div className="w-[70px] px-4 text-center text-sm text-gray-700 dark:text-slate-300 font-medium">
+                                                {invoice.quantity ?? '-'}
+                                            </div>
+
+                                            {/* GST % */}
+                                            <div className="w-[70px] px-4 text-center text-sm text-gray-700 dark:text-slate-300 font-medium">
+                                                {invoice.GST ? `${invoice.GST}%` : '-'}
+                                            </div>
+
+                                            {/* GST Amt */}
+                                            <div className="w-[120px] px-4 text-sm text-gray-800 dark:text-slate-200 font-bold whitespace-nowrap">
+                                                ₹{parseFloat(invoice.GST_Amount || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* Total Amount */}
@@ -295,32 +322,6 @@ const InvoiceList = () => {
                                                 ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
                                             </div>
 
-                                            {/* Description */}
-                                            <div className="w-[220px] px-4">
-                                                <div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 italic font-medium" title={invoice.description || ''}>
-                                                    {invoice.description || 'No description'}
-                                                </div>
-                                            </div>
-
-                                            {/* Qty */}
-                                            <div className="w-[70px] px-4 text-center text-sm text-gray-700 dark:text-slate-300 font-medium">
-                                                {invoice.quantity ?? '-'}
-                                            </div>
-
-                                            {/* Unit Price */}
-                                            <div className="w-[120px] px-4 text-sm text-gray-800 dark:text-slate-200 font-bold whitespace-nowrap">
-                                                ₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}
-                                            </div>
-
-                                            {/* GST % */}
-                                            <div className="w-[70px] px-4 text-center text-sm text-gray-700 dark:text-slate-300 font-medium">
-                                                {invoice.GST ? `${invoice.GST}%` : '-'}
-                                            </div>
-
-                                            {/* GST Amt */}
-                                            <div className="w-[120px] px-4 text-sm text-gray-800 dark:text-slate-200 font-bold whitespace-nowrap">
-                                                ₹{parseFloat(invoice.GST_Amount || 0).toLocaleString('en-IN')}
-                                            </div>
 
                                             {/* Status */}
                                             <div className="w-[130px] px-4">
