@@ -67,23 +67,26 @@ const AddInvoice = () => {
         return date.toISOString().split('T')[0];
     };
 
-    // Auto-calculate Due Date or Terms
+    // Auto-calculate Terms based on Dates
     useEffect(() => {
-        // This effect handles changes to Terms -> Updates DueDate
-        if (formData.invoiceDate && formData.Terms) {
-            const matches = formData.Terms.match(/\d+/);
-            const days = matches ? parseInt(matches[0]) : 0;
-
+        if (formData.invoiceDate && formData.dueDate) {
             const invDate = new Date(formData.invoiceDate);
-            const dueDate = new Date(invDate);
-            dueDate.setDate(invDate.getDate() + days);
+            const dueDate = new Date(formData.dueDate);
 
-            const newDueDateStr = formatDate(dueDate);
-            if (newDueDateStr !== formData.dueDate) {
-                setFormData(prev => ({ ...prev, dueDate: newDueDateStr }));
+            invDate.setHours(0, 0, 0, 0);
+            dueDate.setHours(0, 0, 0, 0);
+
+            const diffTime = dueDate.getTime() - invDate.getTime();
+            const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+            const newTerms = diffDays.toString();
+            if (newTerms !== formData.Terms) {
+                setFormData(prev => ({ ...prev, Terms: newTerms }));
             }
+        } else if (!formData.dueDate && formData.Terms !== '') {
+            setFormData(prev => ({ ...prev, Terms: '' }));
         }
-    }, [formData.invoiceDate, formData.Terms]);
+    }, [formData.invoiceDate, formData.dueDate]);
 
     const handleDueDateChange = (e) => {
         const newDueDate = e.target.value;
@@ -224,21 +227,11 @@ const AddInvoice = () => {
                             </div>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-semibold text-gray-500 dark:text-slate-500 ml-1">Payment Terms</label>
-                                <select
-                                    name="Terms" value={formData.Terms} onChange={handleChange}
-                                    className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-800 dark:text-slate-200 font-medium focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all"
-                                >
-                                    <option value="Due on Receipt">Due on Receipt</option>
-                                    <option value="Net 7">Net 7</option>
-                                    <option value="Net 15">Net 15</option>
-                                    <option value="Net 30">Net 30</option>
-                                    <option value="Net 45">Net 45</option>
-                                    <option value="Net 60">Net 60</option>
-                                    <option value="Net 90">Net 90</option>
-                                    {!['Due on Receipt', 'Net 7', 'Net 15', 'Net 30', 'Net 45', 'Net 60', 'Net 90'].includes(formData.Terms) && (
-                                        <option value={formData.Terms}>{formData.Terms}</option>
-                                    )}
-                                </select>
+                                <input
+                                    type="text" name="Terms" value={formData.Terms} readOnly
+                                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-500 dark:text-slate-500 font-medium cursor-not-allowed outline-none"
+                                    placeholder="Auto-calculated"
+                                />
                             </div>
                         </div>
                     </section>
