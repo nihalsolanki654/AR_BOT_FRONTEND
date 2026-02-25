@@ -44,7 +44,11 @@ const InvoiceList = () => {
             if (!recRes.ok) throw new Error(recData.message || 'Could not find recipients for this company.');
 
             // 2. Fetch HTML Preview
-            const prevRes = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/preview/${invoice._id}?senderName=${user.name}&fromEmail=${user.email}&senderPhone=${user.phone}`);
+            const uName = user.name || '';
+            const uEmail = user.email || '';
+            const uPhone = user.phone || '';
+
+            const prevRes = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/preview/${invoice._id}?senderName=${encodeURIComponent(uName)}&fromEmail=${encodeURIComponent(uEmail)}&senderPhone=${encodeURIComponent(uPhone)}`);
             const prevData = await prevRes.json();
             if (!prevRes.ok) throw new Error(prevData.message || 'Failed to generate email preview.');
 
@@ -73,13 +77,17 @@ const InvoiceList = () => {
         setSendingMailId(mailInvoice._id);
         try {
             const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const uName = user.name || '';
+            const uEmail = user.email || '';
+            const uPhone = user.phone || '';
+
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/send-invoice/${mailInvoice._id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    senderName: user.name,
-                    fromEmail: user.email,
-                    senderPhone: user.phone
+                    senderName: uName,
+                    fromEmail: uEmail,
+                    senderPhone: uPhone
                 })
             });
             const data = await res.json();
@@ -703,10 +711,10 @@ const InvoiceList = () => {
                         <div className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onClick={() => setShowMailModal(false)} />
                         <div className="relative bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[28px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col max-h-[90vh]">
                             {/* Header */}
-                            <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
+                            <div className="px-8 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-sm border border-emerald-100 dark:border-emerald-500/20">
-                                        <Mail size={22} />
+                                    <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-sm border border-emerald-100 dark:border-emerald-500/20">
+                                        <Mail size={20} />
                                     </div>
                                     <div>
                                         <h2 className="text-xl font-bold text-slate-900 dark:text-white font-outfit">Email Preview</h2>
@@ -723,12 +731,11 @@ const InvoiceList = () => {
 
                             {/* Modal Body - Scrollable */}
                             <div className="flex-1 overflow-y-auto p-0 flex flex-col xl:flex-row divide-y xl:divide-y-0 xl:divide-x dark:divide-slate-800">
-
                                 {/* Sidebar: Recipients & Meta */}
-                                <div className="w-full xl:w-80 p-8 space-y-8 bg-slate-50/50 dark:bg-slate-800/30 shrink-0">
+                                <div className="w-full xl:w-72 p-4 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col gap-6 shrink-0 custom-scrollbar overflow-y-auto">
                                     <div>
                                         <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-4">Destination</p>
-                                        <div className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
+                                        <div className="p-4 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
                                             <div className="flex items-center gap-3 mb-1.5">
                                                 <div className="p-1.5 bg-blue-50 dark:bg-blue-500/10 rounded-lg">
                                                     <Building2 size={14} className="text-blue-600 dark:text-blue-400" />
@@ -781,8 +788,8 @@ const InvoiceList = () => {
                                 </div>
 
                                 {/* Main Content: Live Preview */}
-                                <div className="flex-1 bg-white dark:bg-white/5 p-8 flex flex-col min-h-0">
-                                    <div className="flex items-center justify-between mb-6 shrink-0">
+                                <div className="flex-1 bg-white dark:bg-white/5 p-4 flex flex-col min-h-0">
+                                    <div className="flex items-center justify-between mb-4 shrink-0">
                                         <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Live Content Preview</p>
                                         <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400">
                                             <div className="flex items-center gap-1.5 uppercase tracking-wider">
@@ -792,10 +799,10 @@ const InvoiceList = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex-1 bg-gray-50/50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[24px] p-8 overflow-y-auto custom-scrollbar shadow-inner min-h-[400px]">
+                                    <div className="flex-1 bg-gray-50/50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[24px] p-6 overflow-y-auto custom-scrollbar shadow-inner min-h-[400px]">
                                         {/* Injecting HTML Preview */}
                                         <div
-                                            className="email-preview-container bg-white p-10 rounded-xl shadow-sm border border-slate-100/50"
+                                            className="email-preview-container bg-white p-6 rounded-xl shadow-sm border border-slate-100/50"
                                             dangerouslySetInnerHTML={{ __html: previewHtml }}
                                         />
                                     </div>
@@ -803,11 +810,11 @@ const InvoiceList = () => {
                             </div>
 
                             {/* Actions */}
-                            <div className="px-8 py-7 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
-                                <p className="hidden sm:block text-[11px] text-slate-400 font-bold uppercase tracking-widest">
+                            <div className="px-8 py-2.5 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+                                <p className="hidden sm:block text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                                     Reviewing {mailRecipients.to.length + mailRecipients.cc.length} Contacts
                                 </p>
-                                <div className="flex gap-4 w-full sm:w-auto">
+                                <div className="flex gap-3 w-full sm:w-auto">
                                     <button
                                         onClick={() => setShowMailModal(false)}
                                         className="flex-1 sm:px-6 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-xs active:scale-95"
