@@ -164,23 +164,23 @@ const InvoiceList = () => {
 
 
     return (
-        <div className="p-6 md:p-10 max-w-7xl mx-auto dark:bg-slate-950 min-h-screen transition-colors duration-500 font-sans selection:bg-indigo-100 selection:text-indigo-900">
+        <div className="p-6 md:p-10 max-w-7xl mx-auto dark:bg-slate-950 min-h-screen transition-colors duration-500 font-sans selection:bg-slate-200 selection:text-slate-900">
             <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-4xl font-outfit font-bold text-slate-900 dark:text-white tracking-tight">Invoices</h1>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium">Manage and track your financial records</p>
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Invoices</h1>
+                    <p className="text-slate-500 text-sm font-medium">Finance ledger management</p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <button
                         onClick={() => navigate('/add-invoice')}
-                        className="flex items-center gap-2.5 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-semibold hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/25 active:scale-95 text-sm ring-offset-2 ring-indigo-500 focus:ring-2"
+                        className="flex items-center gap-2.5 px-6 py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-bold hover:bg-black dark:hover:bg-slate-700 transition-all text-sm shadow-md active:scale-95"
                     >
-                        <Plus size={20} />
+                        <Plus size={18} />
                         <span>New Invoice</span>
                     </button>
-                    <div className="bg-white dark:bg-slate-900 px-5 py-3 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-800 flex items-center gap-3">
-                        <div className="p-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl">
-                            <Calendar size={18} className="text-indigo-600 dark:text-indigo-400" />
+                    <div className="bg-white dark:bg-slate-900 px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+                        <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                            <Calendar size={18} className="text-slate-500" />
                         </div>
                         <div>
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Today</p>
@@ -192,25 +192,25 @@ const InvoiceList = () => {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/60 dark:border-slate-800 overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
                 {/* Filters */}
-                <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col xl:flex-row gap-6 justify-between items-center bg-slate-50/30 dark:bg-slate-800/20 backdrop-blur-sm">
+                <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col xl:flex-row gap-6 justify-between items-center bg-white dark:bg-slate-900">
                     <div className="relative w-full xl:w-[450px] group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-900 dark:group-focus-within:text-white transition-colors" size={18} />
                         <input
                             type="text"
-                            placeholder="Search by invoice number or customer name..."
+                            placeholder="Search records..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-12 pr-6 py-3.5 bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 w-full text-sm outline-none dark:text-slate-200 transition-all shadow-sm group-hover:border-slate-300 dark:group-hover:border-slate-600"
+                            className="pl-12 pr-6 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-slate-400 w-full text-[13px] outline-none dark:text-slate-200 transition-all shadow-sm"
                         />
                     </div>
-                    <div className="flex items-center gap-1.5 p-1 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 rounded-2xl shadow-inner-sm">
+                    <div className="flex items-center gap-1 p-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
                         {['All', 'Paid', 'Due', 'Overdue', 'PartiallyPaid'].map(s => (
                             <button key={s} onClick={() => setFilterStatus(s)}
-                                className={`px-5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 ${filterStatus === s
-                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 scale-[1.02]'
-                                    : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-800 dark:hover:text-slate-200'}`}>
+                                className={`px-5 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all duration-200 ${filterStatus === s
+                                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}>
                                 {s === 'PartiallyPaid' ? 'Partial' : s}
                             </button>
                         ))}
@@ -291,15 +291,15 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Today Date */}
-                                            <div className="w-[110px] px-5 text-[13px] text-slate-400 dark:text-slate-500 font-medium italic tabular-nums">
+                                            <div className="w-[110px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
                                                 {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
                                             </div>
 
                                             {/* Terms (Simple calculation) */}
-                                            <div className="w-[100px] px-5 text-[13px] font-bold whitespace-nowrap text-center">
+                                            <div className="w-[100px] px-5 text-[13px] font-medium whitespace-nowrap text-center">
                                                 {status === 'Paid'
                                                     ? <span className="text-slate-300">-</span>
-                                                    : <span className={daysLeft < 0 ? 'text-red-500' : 'text-slate-600 dark:text-slate-400'}>
+                                                    : <span className={daysLeft < 0 ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}>
                                                         {daysLeft}
                                                     </span>
                                                 }
@@ -307,52 +307,50 @@ const InvoiceList = () => {
 
                                             {/* Description */}
                                             <div className="w-[220px] px-5">
-                                                <div className="text-[12px] text-slate-500 dark:text-slate-400 line-clamp-1 italic font-medium leading-relaxed" title={invoice.description || ''}>
+                                                <div className="text-[13px] text-slate-600 dark:text-slate-300 line-clamp-1 font-medium leading-relaxed" title={invoice.description || ''}>
                                                     {invoice.description || 'N/A'}
                                                 </div>
                                             </div>
 
                                             {/* Unit Price */}
-                                            <div className="w-[120px] px-5 text-[13px] text-slate-800 dark:text-slate-200 font-bold whitespace-nowrap tabular-nums">
+                                            <div className="w-[120px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* Qty */}
-                                            <div className="w-[70px] px-5 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
+                                            <div className="w-[70px] px-5 text-center text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
                                                 {invoice.quantity ?? '-'}
                                             </div>
 
                                             {/* Subtotal (Unit * Qty) */}
-                                            <div className="w-[120px] px-5 text-[13px] text-indigo-600 dark:text-indigo-400 font-black whitespace-nowrap tabular-nums">
+                                            <div className="w-[120px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.subtotal || (invoice.total_price * (invoice.quantity || 1)) || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* GST % */}
-                                            <div className="w-[70px] px-5 text-center text-[13px] text-slate-500 dark:text-slate-400 font-medium tabular-nums">
+                                            <div className="w-[70px] px-5 text-center text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
                                                 {invoice.GST ? `${invoice.GST}%` : '-'}
                                             </div>
 
                                             {/* GST Amt */}
-                                            <div className="w-[120px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-semibold whitespace-nowrap tabular-nums">
+                                            <div className="w-[120px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.GST_Amount || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* Total Amount */}
-                                            <div className="w-[130px] px-5 font-black text-slate-900 dark:text-white text-[14px] whitespace-nowrap tabular-nums">
+                                            <div className="w-[130px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.total_Amount || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* Balance Due */}
-                                            <div className="w-[130px] px-5 font-black text-indigo-600 dark:text-indigo-300 text-[14px] whitespace-nowrap bg-indigo-50/50 dark:bg-indigo-500/5 py-1 rounded-lg tabular-nums">
+                                            <div className="w-[130px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
                                             </div>
 
 
                                             {/* Status */}
-                                            <div className="w-[130px] px-5">
-                                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black border uppercase tracking-widest ${getStatusColor(status)} shadow-sm`}>
-                                                    {status === 'PartiallyPaid' ? 'Partial' : status}
-                                                </span>
+                                            <div className="w-[130px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium uppercase tracking-tight">
+                                                {status === 'PartiallyPaid' ? 'Partial' : status}
                                             </div>
 
                                             {/* Actions */}
@@ -391,28 +389,28 @@ const InvoiceList = () => {
 
                 {/* Pagination Controls */}
                 {pagination.pages > 1 && (
-                    <div className="px-8 py-5 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50/50 dark:bg-slate-800/20 backdrop-blur-sm">
+                    <div className="px-8 py-5 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div className="text-[13px] text-slate-500 dark:text-slate-400 font-medium">
-                            Showing <span className="font-bold text-slate-900 dark:text-white">Page {pagination.currentPage}</span> of <span className="font-bold text-slate-900 dark:text-white">{pagination.pages}</span>
+                            Showing <span className="text-slate-900 dark:text-white">Page {pagination.currentPage}</span> of <span className="text-slate-900 dark:text-white">{pagination.pages}</span>
                             <span className="mx-2 opacity-30 text-slate-300">|</span>
-                            <span className="tabular-nums font-bold text-slate-400">{pagination.total} total records</span>
+                            <span className="tabular-nums text-slate-400">{pagination.total} total records</span>
                         </div>
-                        <div className="flex gap-3">
+                        <div className="flex gap-2">
                             <button
                                 disabled={pagination.currentPage === 1}
                                 onClick={() => fetchInvoices(pagination.currentPage - 1)}
-                                className={`px-5 py-2 text-xs font-bold rounded-xl transition-all border ${pagination.currentPage === 1
-                                    ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed opacity-50'
-                                    : 'bg-white dark:bg-slate-800 hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 shadow-sm active:scale-95'}`}
+                                className={`px-4 py-2 text-xs font-medium rounded-lg transition-all border ${pagination.currentPage === 1
+                                    ? 'text-slate-300 border-slate-100 cursor-not-allowed'
+                                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'}`}
                             >
                                 Previous
                             </button>
                             <button
                                 disabled={pagination.currentPage === pagination.pages}
                                 onClick={() => fetchInvoices(pagination.currentPage + 1)}
-                                className={`px-5 py-2 text-xs font-bold rounded-xl transition-all border ${pagination.currentPage === pagination.pages
-                                    ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed opacity-50'
-                                    : 'bg-indigo-600 border-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 active:scale-95'}`}
+                                className={`px-4 py-2 text-xs font-medium rounded-lg transition-all border ${pagination.currentPage === pagination.pages
+                                    ? 'text-slate-300 border-slate-100 cursor-not-allowed'
+                                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'}`}
                             >
                                 Next
                             </button>
@@ -439,21 +437,18 @@ const InvoiceList = () => {
                             <div className="relative bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                                 {/* Header */}
-                                <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/50 dark:bg-slate-800/20">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                                            <Receipt size={28} />
+                                <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-500">
+                                            <Receipt size={20} />
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-outfit font-bold text-slate-900 dark:text-white tracking-tight">{getInvoiceNumber(inv)}</h2>
-                                            <div className="flex items-center gap-2 mt-0.5">
-                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Transaction ID</span>
-                                                <span className="text-[11px] font-mono text-indigo-500 font-bold">{inv._id.substring(0, 8).toUpperCase()}</span>
-                                            </div>
+                                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">{getInvoiceNumber(inv)}</h2>
+                                            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Transaction Ledger</p>
                                         </div>
                                     </div>
-                                    <button onClick={() => setShowViewModal(false)} className="p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl transition-all active:scale-95 group">
-                                        <X size={24} className="text-slate-400 group-hover:text-slate-600 transition-colors" />
+                                    <button onClick={() => setShowViewModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                                        <X size={20} className="text-slate-400" />
                                     </button>
                                 </div>
 
@@ -461,64 +456,38 @@ const InvoiceList = () => {
                                 <div className="overflow-y-auto p-6 space-y-4 flex-1">
 
                                     {/* Status / Dates row */}
-                                    <div className="grid grid-cols-3 gap-4">
-                                        <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700/50">
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5">Status</p>
-                                            <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black border tracking-widest uppercase ${getStatusColor(status)}`}>
-                                                {status === 'PartiallyPaid' ? 'Partial' : status}
-                                            </span>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Status</p>
+                                            <p className="text-[13px] font-medium text-slate-600 dark:text-slate-300 uppercase">{status === 'PartiallyPaid' ? 'Partial' : status}</p>
                                         </div>
-                                        <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700/50 shadow-sm">
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 text-center">Invoice Date</p>
-                                            <p className="text-[15px] font-bold text-slate-900 dark:text-white text-center tabular-nums">{inv.invoiceDate || '-'}</p>
+                                        <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Date</p>
+                                            <p className="text-[13px] font-medium text-slate-600 dark:text-slate-300 tabular-nums">{inv.invoiceDate || '-'}</p>
                                         </div>
-                                        <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700/50 shadow-sm">
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 text-center">Due Date</p>
-                                            <p className="text-[15px] font-bold text-indigo-600 dark:text-indigo-400 text-center tabular-nums">{inv.dueDate || '-'}</p>
+                                        <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Due</p>
+                                            <p className="text-[13px] font-medium text-slate-600 dark:text-slate-300 tabular-nums">{inv.dueDate || '-'}</p>
                                         </div>
                                     </div>
 
-                                    {/* Overdue / Days remaining alert */}
+                                    {/* Overdue Alert */}
                                     {status !== 'Paid' && daysLeft !== null && (
-                                        <div className={`rounded-2xl p-4 border flex items-center gap-4 transition-all ${daysLeft < 0
-                                            ? 'bg-rose-50/50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/20 shadow-lg shadow-rose-500/5'
-                                            : 'bg-indigo-50/50 dark:bg-indigo-500/10 border-indigo-200 dark:border-indigo-500/20 shadow-lg shadow-indigo-500/5'}`}>
-                                            <div className={`p-2.5 rounded-xl ${daysLeft < 0 ? 'bg-rose-600' : 'bg-indigo-600'} text-white`}>
-                                                <Calendar size={18} />
-                                            </div>
-                                            <div>
-                                                <p className={`text-base font-black ${daysLeft < 0 ? 'text-rose-700 dark:text-rose-400' : 'text-indigo-700 dark:text-indigo-400'}`}>
-                                                    {daysLeft < 0 ? `${Math.abs(daysLeft)} Days Overdue` : (daysLeft === 0 ? 'Payment Due Today' : `${Math.abs(daysLeft)} Days Remaining`)}
-                                                </p>
-                                                <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-tight">Timeline urgency rating: {daysLeft < -3 ? 'Critical' : (daysLeft < 0 ? 'High' : 'Moderate')}</p>
-                                            </div>
+                                        <div className={`rounded-xl p-3 border ${daysLeft < 0 ? 'bg-red-50 dark:bg-red-900/10 border-red-100' : 'bg-slate-50 dark:bg-slate-800 border-slate-100'}`}>
+                                            <p className={`text-sm font-bold ${daysLeft < 0 ? 'text-red-600' : 'text-slate-600 dark:text-slate-400'}`}>
+                                                {daysLeft < 0 ? `${Math.abs(daysLeft)} Days Overdue` : (daysLeft === 0 ? 'Due Today' : `${Math.abs(daysLeft)} Days Remaining`)}
+                                            </p>
                                         </div>
                                     )}
 
-                                    {/* Company & Terms */}
-                                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700/50 shadow-sm overflow-hidden relative group">
-                                        <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 opacity-50"></div>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Customer Intelligence</p>
-                                        <div className="flex items-center gap-4 mb-5">
-                                            <div className="w-12 h-12 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center text-slate-400">
-                                                <Building2 size={24} />
-                                            </div>
-                                            <div>
-                                                <p className="text-lg font-bold text-slate-900 dark:text-white leading-tight">{inv.companyName || 'Unknown Customer'}</p>
-                                                {inv.State && (
-                                                    <div className="flex items-center gap-1.5 mt-1 text-slate-500">
-                                                        <MapPin size={12} className="text-indigo-500" />
-                                                        <span className="text-[11px] font-bold uppercase tracking-tight">{inv.State}</span>
-                                                    </div>
-                                                )}
-                                            </div>
+                                    {/* Company */}
+                                    <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-5 border border-slate-100 dark:border-slate-700">
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-3">Customer</p>
+                                        <p className="text-lg font-bold text-slate-900 dark:text-white">{inv.companyName || 'N/A'}</p>
+                                        <div className="flex gap-4 mt-2">
+                                            {inv.State && <span className="text-xs text-slate-500">{inv.State}</span>}
+                                            {inv.Terms && <span className="text-xs text-slate-500">Terms: <span className="font-bold text-slate-700 dark:text-slate-300">{inv.Terms} Days</span></span>}
                                         </div>
-                                        {inv.Terms && (
-                                            <div className="flex items-center gap-3 px-4 py-3 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700/30">
-                                                <Tag size={16} className="text-indigo-500 group-hover:rotate-12 transition-transform" />
-                                                <span className="text-xs font-semibold text-slate-500">Payment Window: <span className="font-bold text-slate-900 dark:text-slate-200 tabular-nums ml-1">{inv.Terms} Days</span></span>
-                                            </div>
-                                        )}
                                     </div>
 
                                     {/* Work Description Detailed View */}
@@ -543,65 +512,34 @@ const InvoiceList = () => {
                                     </div>
 
                                     {/* Financial Breakdown */}
-                                    <div className="bg-slate-900 dark:bg-black rounded-[2rem] p-8 text-white shadow-2xl relative overflow-hidden group">
-                                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-                                        <div className="relative z-10 space-y-6">
-                                            <div className="space-y-4">
-                                                <div className="flex justify-between items-center text-slate-400 text-xs font-bold uppercase tracking-widest">
-                                                    <span>Base Components</span>
-                                                    <div className="h-px bg-slate-800 flex-1 mx-4"></div>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-slate-400 italic">Subtotal (Unit × Qty)</span>
-                                                    <span className="font-bold tabular-nums">₹{subtotal.toLocaleString('en-IN')}</span>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="flex items-center gap-2 text-slate-400 italic">
-                                                        <Percent size={14} className="text-indigo-400" /> GST ({gstRate})
-                                                    </span>
-                                                    <span className="font-bold tabular-nums">₹{gstAmt.toLocaleString('en-IN')}</span>
-                                                </div>
+                                    <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 border border-slate-100 dark:border-slate-700">
+                                        <div className="space-y-3">
+                                            <div className="flex justify-between text-[13px] text-slate-500">
+                                                <span>Subtotal</span>
+                                                <span className="font-medium text-slate-800 dark:text-slate-200 tabular-nums">₹{subtotal.toLocaleString('en-IN')}</span>
                                             </div>
-
-                                            <div className="pt-6 border-t border-slate-800 flex justify-between items-end">
-                                                <div>
-                                                    <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-1">Grand Total</p>
-                                                    <p className="text-5xl font-outfit font-black tracking-tighter tabular-nums leading-none">₹{totalAmt.toLocaleString('en-IN')}</p>
-                                                </div>
-                                                <div className="flex flex-col items-end gap-2">
-                                                    <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
-                                                        <Tag size={12} className="text-indigo-400" />
-                                                        <span className="text-[10px] font-bold uppercase tracking-tighter">Gross Margin Intact</span>
-                                                    </div>
-                                                </div>
+                                            <div className="flex justify-between text-[13px] text-slate-500">
+                                                <span>GST ({gstRate})</span>
+                                                <span className="font-medium text-slate-800 dark:text-slate-200 tabular-nums">₹{gstAmt.toLocaleString('en-IN')}</span>
+                                            </div>
+                                            <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center text-slate-900 dark:text-white">
+                                                <span className="text-xs font-bold uppercase tracking-widest">Grand Total</span>
+                                                <span className="text-2xl font-bold tabular-nums">₹{totalAmt.toLocaleString('en-IN')}</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Payment Breakdown (Partially Paid / Paid) */}
+                                    {/* Payment Status Info */}
                                     {(status === 'PartiallyPaid' || status === 'Paid') && (
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl p-5 border border-emerald-100 dark:border-emerald-500/20 shadow-sm relative overflow-hidden">
-                                                <Check className="absolute -right-4 -bottom-4 text-emerald-500/10" size={80} />
-                                                <p className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1.5">Amount Settled</p>
-                                                <p className="text-2xl font-black text-emerald-700 dark:text-emerald-300 tabular-nums leading-none">₹{paidAmt.toLocaleString('en-IN')}</p>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Settled</p>
+                                                <p className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">₹{paidAmt.toLocaleString('en-IN')}</p>
                                             </div>
-                                            <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700/50 shadow-sm relative overflow-hidden">
-                                                <Wallet className="absolute -right-4 -bottom-4 text-indigo-500/10" size={80} />
-                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Outstanding</p>
-                                                <p className="text-2xl font-black text-slate-900 dark:text-white tabular-nums leading-none">₹{balanceDue.toLocaleString('en-IN')}</p>
+                                            <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Balance</p>
+                                                <p className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">₹{balanceDue.toLocaleString('en-IN')}</p>
                                             </div>
-                                        </div>
-                                    )}
-
-                                    {/* Paid badge success banner */}
-                                    {status === 'Paid' && (
-                                        <div className="bg-indigo-600 rounded-[2rem] p-6 flex flex-col items-center text-center text-white relative shadow-2xl shadow-indigo-500/40 animate-in fade-in zoom-in duration-500">
-                                            <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mb-4 border border-white/20">
-                                                <Check size={32} className="text-white drop-shadow-lg" />
-                                            </div>
-                                            <h3 className="text-xl font-outfit font-black tracking-tight mb-1">Invoice Fully Settled</h3>
-                                            <p className="text-indigo-100 text-[13px] font-medium opacity-80 italic">Transaction reconciled and archived in permanentledger</p>
                                         </div>
                                     )}
 
@@ -633,19 +571,19 @@ const InvoiceList = () => {
                                 </div>
 
                                 {/* Footer */}
-                                <div className="px-8 py-6 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0">
+                                <div className="px-8 py-6 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-800 flex gap-2 shrink-0">
                                     {status !== 'Paid' && (
                                         <button onClick={() => handleMarkAsPaid(inv)}
-                                            className="flex-1 py-3.5 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 text-xs shadow-xl shadow-indigo-500/25 active:scale-[0.98]">
-                                            <Check size={18} /> Mark Fully Paid
+                                            className="flex-1 py-3 bg-slate-900 dark:bg-slate-950 text-white rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2 text-sm shadow-lg">
+                                            <Check size={18} /> Mark as Paid
                                         </button>
                                     )}
                                     <button onClick={() => window.print()}
-                                        className="px-8 py-3.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-all flex items-center gap-2 text-xs shadow-sm">
-                                        <Receipt size={16} /> Print Report
+                                        className="px-6 py-3 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center gap-2 text-sm shadow-sm">
+                                        <Receipt size={16} /> Print
                                     </button>
                                     <button onClick={() => setShowViewModal(false)}
-                                        className="px-8 py-3.5 bg-slate-900 dark:bg-slate-950 text-white rounded-2xl font-bold hover:bg-black transition-all text-xs shadow-lg active:scale-95">
+                                        className="px-6 py-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-all text-sm">
                                         Dismiss
                                     </button>
                                 </div>
