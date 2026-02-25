@@ -79,6 +79,7 @@ const InvoiceList = () => {
         if (due) {
             due.setHours(0, 0, 0, 0);
             if (due < today) return 'Overdue';
+            if (due.getTime() === today.getTime()) return 'Due Today';
         }
 
         if (invoice.paymentStatus) return invoice.paymentStatus;
@@ -343,14 +344,20 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Balance Due */}
-                                            <div className="w-[130px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
+                                            <div className="w-[130px] px-5 text-[13px] text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
                                             </div>
 
-
                                             {/* Status */}
-                                            <div className="w-[130px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium uppercase tracking-tight">
-                                                {status === 'PartiallyPaid' ? 'Partial' : status}
+                                            <div className="w-[130px] px-5">
+                                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black border uppercase tracking-widest shadow-sm ${status === 'Paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' :
+                                                    status === 'Due' ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' :
+                                                        status === 'Overdue' ? 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20' :
+                                                            status === 'Due Today' ? 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20' :
+                                                                'bg-slate-50 text-slate-600 border-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                                                    }`}>
+                                                    {status === 'PartiallyPaid' ? 'Partial' : status === 'Due Today' ? 'Today' : status}
+                                                </span>
                                             </div>
 
                                             {/* Actions */}
@@ -538,7 +545,7 @@ const InvoiceList = () => {
                                             </div>
                                             <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
                                                 <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Balance</p>
-                                                <p className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">₹{balanceDue.toLocaleString('en-IN')}</p>
+                                                <p className="text-lg font-bold text-blue-600 dark:text-blue-400 tabular-nums">₹{balanceDue.toLocaleString('en-IN')}</p>
                                             </div>
                                         </div>
                                     )}
@@ -565,7 +572,7 @@ const InvoiceList = () => {
                                                     Add
                                                 </button>
                                             </div>
-                                            <p className="mt-2 text-xs text-slate-500">Balance Due: ₹{balanceDue.toLocaleString('en-IN')}</p>
+                                            <p className="mt-2 text-xs font-medium text-blue-600 dark:text-blue-400">Balance Due: ₹{balanceDue.toLocaleString('en-IN')}</p>
                                         </div>
                                     )}
                                 </div>
