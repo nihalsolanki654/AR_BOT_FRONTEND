@@ -295,25 +295,13 @@ const InvoiceList = () => {
                                                 {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
                                             </div>
 
-                                            {/* Terms (Dynamic calculation: Today - Due Date) */}
-                                            <div className="w-[100px] px-5 text-sm font-medium whitespace-nowrap text-center">
+                                            {/* Terms (Simple calculation) */}
+                                            <div className="w-[100px] px-5 text-[13px] font-bold whitespace-nowrap text-center">
                                                 {status === 'Paid'
-                                                    ? <span className="text-slate-300 font-bold tracking-widest">-</span>
-                                                    : daysLeft === 0
-                                                        ? <div className="flex flex-col items-center">
-                                                            <span className="text-indigo-600 text-[9px] font-black bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-200 dark:border-indigo-500/20 shadow-sm border-dashed">DUE TODAY</span>
-                                                            <span className="text-[10px] text-slate-400 mt-1 font-bold tabular-nums">0</span>
-                                                        </div>
-                                                        : daysLeft < 0
-                                                            ? <div className="flex flex-col items-center">
-                                                                <span className="text-rose-600 text-[9px] font-black bg-rose-50 dark:bg-rose-500/10 px-2.5 py-1 rounded-full border border-rose-200/50 dark:border-rose-500/20 shadow-sm font-outfit uppercase">
-                                                                    {Math.abs(daysLeft)}D
-                                                                </span>
-                                                            </div>
-                                                            : <div className="flex flex-col items-center gap-0.5">
-                                                                <span className="text-slate-700 dark:text-slate-300 font-bold tabular-nums">{-daysLeft}</span>
-                                                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">In {daysLeft}D</span>
-                                                            </div>
+                                                    ? <span className="text-slate-300">-</span>
+                                                    : <span className={daysLeft < 0 ? 'text-red-500' : 'text-slate-600 dark:text-slate-400'}>
+                                                        {daysLeft}
+                                                    </span>
                                                 }
                                             </div>
 
