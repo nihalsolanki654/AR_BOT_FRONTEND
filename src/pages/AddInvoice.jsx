@@ -48,7 +48,7 @@ const AddInvoice = () => {
         invoiceNumber: '',
         invoiceDate: new Date().toISOString().split('T')[0],
         dueDate: '',
-        Terms: 'Net 30',
+        Terms: '',
         companyName: '',
         State: '',
         total_price: 0,
@@ -87,20 +87,22 @@ const AddInvoice = () => {
 
     const handleDueDateChange = (e) => {
         const newDueDate = e.target.value;
+        if (!newDueDate) {
+            setFormData(prev => ({ ...prev, dueDate: '', Terms: '' }));
+            return;
+        }
+
         const invDate = new Date(formData.invoiceDate);
         const due = new Date(newDueDate);
 
+        // Ensure we calculate from midnight to avoid partial day issues
+        invDate.setHours(0, 0, 0, 0);
+        due.setHours(0, 0, 0, 0);
+
         const diffTime = due.getTime() - invDate.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
-        let terms = '';
-        if (diffDays <= 0) {
-            terms = 'Due on Receipt';
-        } else {
-            terms = `Net ${diffDays}`;
-        }
-
-        setFormData(prev => ({ ...prev, dueDate: newDueDate, Terms: terms }));
+        setFormData(prev => ({ ...prev, dueDate: newDueDate, Terms: diffDays.toString() }));
     };
 
     // Auto-calculate Financials and handle Status synchronization
