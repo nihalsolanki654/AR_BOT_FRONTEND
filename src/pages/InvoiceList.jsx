@@ -305,8 +305,8 @@ const InvoiceList = () => {
                                                         </div>
                                                         : daysLeft < 0
                                                             ? <div className="flex flex-col items-center">
-                                                                <span className="text-rose-600 text-[10px] font-black bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-500/20 shadow-sm">{Math.abs(daysLeft)}D OVERDUE</span>
-                                                                <span className="text-[9px] text-gray-400 mt-0.5 font-bold">{Math.abs(daysLeft)}</span>
+                                                                <span className="text-rose-600 text-[10px] font-black bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-500/20 shadow-sm">{Math.abs(daysLeft)}</span>
+                                                                {/* <span className="text-[9px] text-gray-400 mt-0.5 font-bold">{Math.abs(daysLeft)}</span> */}
                                                             </div>
                                                             : <div className="flex flex-col items-center gap-0.5">
                                                                 <span className="text-gray-700 dark:text-slate-300 font-bold">{-daysLeft}</span>
