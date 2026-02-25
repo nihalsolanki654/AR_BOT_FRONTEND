@@ -225,22 +225,22 @@ const InvoiceList = () => {
                     <div className="hidden lg:block bg-slate-50/80 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 sticky top-0 z-30 backdrop-blur-md">
                         <div ref={headerScrollRef} className="overflow-x-auto scrollbar-hide">
                             <div className="flex items-center min-w-max px-3">
-                                <div className="w-[120px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Invoice #</div>
-                                <div className="w-[220px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Customer</div>
-                                <div className="w-[110px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Date</div>
-                                <div className="w-[110px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Due</div>
-                                <div className="w-[110px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Today</div>
-                                <div className="w-[100px] px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Terms</div>
-                                <div className="w-[220px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Task Details</div>
-                                <div className="w-[120px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Unit Price</div>
-                                <div className="w-[70px] px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Qty</div>
-                                <div className="w-[120px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Subtotal</div>
-                                <div className="w-[70px] px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">GST %</div>
-                                <div className="w-[120px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">GST Amt</div>
-                                <div className="w-[130px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Total</div>
-                                <div className="w-[130px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Balance</div>
-                                <div className="w-[130px] px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Status</div>
-                                <div className="w-[120px] px-5 py-5 text-right text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] pr-8">Actions</div>
+                                <div className="w-[120px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Invoice No</div>
+                                <div className="w-[220px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Company Name</div>
+                                <div className="w-[110px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Invoice Date</div>
+                                <div className="w-[110px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Due Date</div>
+                                <div className="w-[110px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Today Date</div>
+                                <div className="w-[100px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Terms</div>
+                                <div className="w-[220px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Task Details</div>
+                                <div className="w-[120px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Unit Price</div>
+                                <div className="w-[70px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Qty</div>
+                                <div className="w-[120px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Subtotal</div>
+                                <div className="w-[70px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">GST</div>
+                                <div className="w-[120px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">GST Amt</div>
+                                <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Total</div>
+                                <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Balance</div>
+                                <div className="w-[130px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Status</div>
+                                <div className="w-[120px] shrink-0 px-5 py-5 text-right text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] pr-8">Actions</div>
                             </div>
                         </div>
                     </div>
@@ -271,33 +271,33 @@ const InvoiceList = () => {
                                         onScroll={handleRowScroll}>
                                         <div className="flex items-center min-w-max px-3 py-4">
                                             {/* Invoice # */}
-                                            <div className="w-[120px] px-5 font-bold text-slate-900 dark:text-slate-100 text-[13px] tracking-tight tabular-nums">
+                                            <div className="w-[120px] shrink-0 px-5 font-bold text-slate-900 dark:text-slate-100 text-[13px] tracking-tight tabular-nums">
                                                 {getInvoiceNumber(invoice)}
                                             </div>
 
                                             {/* Company */}
-                                            <div className="w-[220px] px-5">
+                                            <div className="w-[220px] shrink-0 px-5">
                                                 <div className="font-semibold text-slate-900 dark:text-slate-100 text-sm whitespace-normal leading-tight" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
                                                 <div className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-wider">{invoice.State || ''}</div>
                                             </div>
 
                                             {/* Invoice Date */}
-                                            <div className="w-[110px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                            <div className="w-[110px] shrink-0 px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
                                                 {invoice.invoiceDate || '-'}
                                             </div>
 
                                             {/* Due Date */}
-                                            <div className="w-[110px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                            <div className="w-[110px] shrink-0 px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
                                                 {invoice.dueDate || '-'}
                                             </div>
 
                                             {/* Today Date */}
-                                            <div className="w-[110px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                            <div className="w-[110px] shrink-0 px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
                                                 {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
                                             </div>
 
                                             {/* Terms (Simple calculation) */}
-                                            <div className="w-[100px] px-5 text-[13px] font-medium whitespace-nowrap text-center">
+                                            <div className="w-[100px] shrink-0 px-5 text-[13px] font-medium whitespace-nowrap text-center">
                                                 {status === 'Paid'
                                                     ? <span className="text-slate-300">-</span>
                                                     : <span className={daysLeft < 0 ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}>
@@ -307,49 +307,49 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Description */}
-                                            <div className="w-[220px] px-5">
+                                            <div className="w-[220px] shrink-0 px-5">
                                                 <div className="text-[13px] text-slate-600 dark:text-slate-300 line-clamp-1 font-medium leading-relaxed" title={invoice.description || ''}>
                                                     {invoice.description || 'N/A'}
                                                 </div>
                                             </div>
 
                                             {/* Unit Price */}
-                                            <div className="w-[120px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
+                                            <div className="w-[120px] shrink-0 px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* Qty */}
-                                            <div className="w-[70px] px-5 text-center text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                            <div className="w-[70px] shrink-0 px-5 text-center text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
                                                 {invoice.quantity ?? '-'}
                                             </div>
 
                                             {/* Subtotal (Unit * Qty) */}
-                                            <div className="w-[120px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
+                                            <div className="w-[120px] shrink-0 px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.subtotal || (invoice.total_price * (invoice.quantity || 1)) || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* GST % */}
-                                            <div className="w-[70px] px-5 text-center text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                            <div className="w-[70px] shrink-0 px-5 text-center text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
                                                 {invoice.GST ? `${invoice.GST}%` : '-'}
                                             </div>
 
                                             {/* GST Amt */}
-                                            <div className="w-[120px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
+                                            <div className="w-[120px] shrink-0 px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.GST_Amount || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* Total Amount */}
-                                            <div className="w-[130px] px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
+                                            <div className="w-[130px] shrink-0 px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.total_Amount || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* Balance Due */}
-                                            <div className="w-[130px] px-5 text-[13px] text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap tabular-nums">
+                                            <div className="w-[130px] shrink-0 px-5 text-[13px] text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* Status */}
-                                            <div className="w-[130px] px-5">
+                                            <div className="w-[130px] shrink-0 px-5 text-center flex items-center justify-center">
                                                 <span className={`px-4 py-1.5 rounded-full text-[10px] font-black border uppercase tracking-widest shadow-sm ${status === 'Paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' :
                                                     status === 'Due' ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' :
                                                         status === 'Overdue' ? 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20' :
@@ -361,7 +361,7 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Actions */}
-                                            <div className="w-[120px] px-5 pr-8">
+                                            <div className="w-[120px] shrink-0 px-5 pr-8">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button onClick={() => { setSelectedInvoice(invoice); setShowViewModal(true); }}
                                                         className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="View Details">
