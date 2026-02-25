@@ -37,7 +37,8 @@ const InvoiceList = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     senderName: user.name,
-                    fromEmail: user.email
+                    fromEmail: user.email,
+                    senderPhone: user.phone
                 })
             });
             const data = await res.json();
