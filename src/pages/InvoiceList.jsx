@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Trash2, Eye, X, MapPin, Receipt, Wallet, Check, Mail, FileText, Tag, Building2, Package, Percent } from 'lucide-react';
+import { Search, Filter, Trash2, Eye, X, MapPin, Receipt, Wallet, Check, Mail, FileText, Tag, Building2, Package, Percent, Calendar } from 'lucide-react';
 
 const InvoiceList = () => {
     const [invoices, setInvoices] = useState([]);
@@ -255,8 +255,11 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Terms */}
-                                            <div className="w-[100px] px-4 text-sm text-gray-700 dark:text-slate-300 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
-                                                {invoice.Terms || '-'}
+                                            <div className="w-[100px] px-4 text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+                                                {daysLeft === 0
+                                                    ? <span className="text-blue-600 font-bold">TODAY</span>
+                                                    : <span className="text-gray-700 dark:text-slate-300">{invoice.Terms || '-'}</span>
+                                                }
                                             </div>
 
                                             {/* Status */}
@@ -411,8 +414,8 @@ const InvoiceList = () => {
                                 {/* Overdue / Days remaining alert */}
                                 {status !== 'Paid' && daysLeft !== null && (
                                     <div className={`rounded-xl p-3 border-l-4 ${daysLeft < 0 ? 'bg-red-50 dark:bg-red-500/10 border-red-500' : 'bg-blue-50 dark:bg-blue-500/10 border-blue-500'}`}>
-                                        <p className={`text-base font-black ${daysLeft < 0 ? 'text-red-600' : 'text-blue-600'}`}>
-                                            {daysLeft < 0 ? `${Math.abs(daysLeft)} Days Overdue` : `${Math.abs(daysLeft)} Days Remaining`}
+                                        <p className={`text-base font-black ${daysLeft < 0 ? 'text-red-600' : (daysLeft === 0 ? 'text-blue-600' : 'text-emerald-600')}`}>
+                                            {daysLeft < 0 ? `${Math.abs(daysLeft)} Days Overdue` : (daysLeft === 0 ? 'Due TODAY' : `${Math.abs(daysLeft)} Days Remaining`)}
                                         </p>
                                     </div>
                                 )}
