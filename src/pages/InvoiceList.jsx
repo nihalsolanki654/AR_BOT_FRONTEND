@@ -230,8 +230,9 @@ const InvoiceList = () => {
                                 <div className="w-[110px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Invoice Date</div>
                                 <div className="w-[110px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Due Date</div>
                                 <div className="w-[110px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Today Date</div>
+                                <div className="w-[180px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Status</div>
                                 <div className="w-[100px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Terms</div>
-                                <div className="w-[220px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Task Details</div>
+                                <div className="w-[220px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Description</div>
                                 <div className="w-[120px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Unit Price</div>
                                 <div className="w-[70px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Qty</div>
                                 <div className="w-[120px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Subtotal</div>
@@ -239,7 +240,6 @@ const InvoiceList = () => {
                                 <div className="w-[120px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">GST Amt</div>
                                 <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Total</div>
                                 <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Balance</div>
-                                <div className="w-[180px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Status</div>
                                 <div className="w-[180px] shrink-0 px-5 py-5 text-right text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] pr-12">Actions</div>
                             </div>
                         </div>
@@ -296,6 +296,19 @@ const InvoiceList = () => {
                                                 {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
                                             </div>
 
+                                            {/* Status */}
+                                            <div className="w-[180px] shrink-0 px-5 text-center flex items-center justify-center">
+                                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black border uppercase tracking-widest shadow-sm ${status === 'Paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' :
+                                                    status === 'Due' ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' :
+                                                        status === 'Overdue' ? 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20' :
+                                                            status === 'Due Today' ? 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20' :
+                                                                'bg-slate-50 text-slate-600 border-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                                                    }`}>
+                                                    {status === 'PartiallyPaid' ? 'Partial' : status === 'Due Today' ? 'Today' : status}
+                                                </span>
+                                            </div>
+
+
                                             {/* Terms (Simple calculation) */}
                                             <div className="w-[100px] shrink-0 px-5 text-[13px] font-medium whitespace-nowrap text-center">
                                                 {status === 'Paid'
@@ -348,17 +361,6 @@ const InvoiceList = () => {
                                                 ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
                                             </div>
 
-                                            {/* Status */}
-                                            <div className="w-[180px] shrink-0 px-5 text-center flex items-center justify-center">
-                                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black border uppercase tracking-widest shadow-sm ${status === 'Paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' :
-                                                    status === 'Due' ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' :
-                                                        status === 'Overdue' ? 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20' :
-                                                            status === 'Due Today' ? 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20' :
-                                                                'bg-slate-50 text-slate-600 border-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
-                                                    }`}>
-                                                    {status === 'PartiallyPaid' ? 'Partial' : status === 'Due Today' ? 'Today' : status}
-                                                </span>
-                                            </div>
 
                                             {/* Actions */}
                                             <div className="w-[180px] shrink-0 px-5 pr-12 pl-10">
