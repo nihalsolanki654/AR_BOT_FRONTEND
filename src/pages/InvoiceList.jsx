@@ -31,9 +31,14 @@ const InvoiceList = () => {
     const sendMail = useCallback(async (invoice) => {
         setSendingMailId(invoice._id);
         try {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/send-invoice/${invoice._id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    senderName: user.name,
+                    fromEmail: user.email
+                })
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || 'Failed to send email.');
@@ -193,8 +198,8 @@ const InvoiceList = () => {
             {/* Toast Notification */}
             {toast && (
                 <div className={`fixed top-6 right-6 z-[100] flex items-start gap-3 px-5 py-4 rounded-2xl shadow-xl border text-sm font-semibold max-w-sm transition-all duration-300 ${toast.type === 'success'
-                        ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800'
-                        : 'bg-white dark:bg-slate-900 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-800'
+                    ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800'
+                    : 'bg-white dark:bg-slate-900 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-800'
                     }`}>
                     <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'success' ? 'bg-emerald-100 dark:bg-emerald-900' : 'bg-rose-100 dark:bg-rose-900'
                         }`}>
