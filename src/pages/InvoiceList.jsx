@@ -810,14 +810,14 @@ const InvoiceList = () => {
                                 <div className="flex gap-4 w-full sm:w-auto">
                                     <button
                                         onClick={() => setShowMailModal(false)}
-                                        className="flex-1 sm:px-8 py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-2xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-sm active:scale-95"
+                                        className="flex-1 sm:px-6 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-xs active:scale-95"
                                     >
                                         Close Preview
                                     </button>
                                     <button
                                         onClick={sendMail}
                                         disabled={sendingMailId === mailInvoice._id || mailRecipients.to.length === 0}
-                                        className="flex-[2] sm:px-12 py-4 bg-slate-900 dark:bg-blue-600 text-white rounded-2xl font-bold hover:bg-black dark:hover:bg-blue-700 transition-all flex items-center justify-center gap-3 text-sm shadow-2xl shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed group active:scale-95 overflow-hidden relative"
+                                        className="flex-[1.5] sm:px-10 py-2.5 bg-slate-900 dark:bg-blue-600 text-white rounded-xl font-bold hover:bg-black dark:hover:bg-blue-700 transition-all flex items-center justify-center gap-2 text-xs shadow-xl shadow-blue-500/10 disabled:opacity-50 disabled:cursor-not-allowed group active:scale-95 overflow-hidden relative"
                                     >
                                         {sendingMailId === mailInvoice._id ? (
                                             <>
