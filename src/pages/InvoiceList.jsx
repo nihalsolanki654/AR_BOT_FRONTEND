@@ -18,6 +18,7 @@ const InvoiceList = () => {
     };
 
     const [isLoading, setIsLoading] = useState(true);
+    const [pagination, setPagination] = useState({ total: 0, pages: 1, currentPage: 1 });
 
     const fetchInvoices = async (page = 1) => {
         setIsLoading(true);
