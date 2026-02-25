@@ -22,17 +22,42 @@ const InvoiceList = () => {
     const [pagination, setPagination] = useState({ total: 0, pages: 1, currentPage: 1 });
     const [toast, setToast] = useState(null);
     const [sendingMailId, setSendingMailId] = useState(null);
+    const [showMailModal, setShowMailModal] = useState(false);
+    const [mailRecipients, setMailRecipients] = useState({ to: [], cc: [] });
+    const [mailInvoice, setMailInvoice] = useState(null);
+    const [fetchingRecipientsId, setFetchingRecipientsId] = useState(null);
 
     const showToast = useCallback((message, type = 'success') => {
         setToast({ message, type });
         setTimeout(() => setToast(null), 4000);
     }, []);
 
-    const sendMail = useCallback(async (invoice) => {
-        setSendingMailId(invoice._id);
+    const prepareMail = useCallback(async (invoice) => {
+        setFetchingRecipientsId(invoice._id);
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/customer-emails/by-company/${encodeURIComponent(invoice.companyName)}`);
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Could not find recipients for this company.');
+
+            setMailRecipients({
+                to: data.toEmails?.filter(Boolean) || [],
+                cc: data.ccEmails?.filter(Boolean) || []
+            });
+            setMailInvoice(invoice);
+            setShowMailModal(true);
+        } catch (err) {
+            showToast(err.message, 'error');
+        } finally {
+            setFetchingRecipientsId(null);
+        }
+    }, [showToast]);
+
+    const sendMail = useCallback(async () => {
+        if (!mailInvoice) return;
+        setSendingMailId(mailInvoice._id);
         try {
             const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/send-invoice/${invoice._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/send-invoice/${mailInvoice._id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -44,12 +69,14 @@ const InvoiceList = () => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || 'Failed to send email.');
             showToast(`✓ ${data.message}`, 'success');
+            setShowMailModal(false);
+            setMailInvoice(null);
         } catch (err) {
             showToast(err.message, 'error');
         } finally {
             setSendingMailId(null);
         }
-    }, [showToast]);
+    }, [mailInvoice, showToast]);
 
     const fetchInvoices = async (page = 1, search = searchTerm, status = filterStatus) => {
         setIsLoading(true);
@@ -418,11 +445,11 @@ const InvoiceList = () => {
                                                         <Eye size={16} />
                                                     </button>
                                                     <button
-                                                        onClick={() => sendMail(invoice)}
-                                                        disabled={sendingMailId === invoice._id}
+                                                        onClick={() => prepareMail(invoice)}
+                                                        disabled={sendingMailId === invoice._id || fetchingRecipientsId === invoice._id}
                                                         className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                                         title="Send Email">
-                                                        {sendingMailId === invoice._id
+                                                        {fetchingRecipientsId === invoice._id
                                                             ? <div className="w-4 h-4 border-2 border-slate-300 border-t-emerald-500 rounded-full animate-spin" />
                                                             : <Mail size={16} />}
                                                     </button>
@@ -653,6 +680,112 @@ const InvoiceList = () => {
                         </div>
                     );
                 })()}
+
+                {/* ── Mail Confirmation Modal ── */}
+                {showMailModal && mailInvoice && (
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+                        <div className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onClick={() => setShowMailModal(false)} />
+                        <div className="relative bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                            {/* Header */}
+                            <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shadow-sm">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl flex items-center justify-center text-emerald-600">
+                                        <Mail size={20} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-lg font-bold text-slate-900 dark:text-white">Send Invoice</h2>
+                                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Review Recipients</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setShowMailModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors group">
+                                    <X size={20} className="text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
+                                </button>
+                            </div>
+
+                            {/* Modal Body */}
+                            <div className="p-6 space-y-6">
+                                {/* Context Card */}
+                                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                                    <div className="flex items-center gap-3 mb-1">
+                                        <Building2 size={14} className="text-slate-400" />
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Company</span>
+                                    </div>
+                                    <p className="text-[15px] font-bold text-slate-900 dark:text-white mb-2">{mailInvoice.companyName}</p>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-bold text-slate-500">
+                                            <Receipt size={12} />
+                                            {getInvoiceNumber(mailInvoice)}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Email Grid */}
+                                <div className="space-y-5">
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Recipients (TO)</p>
+                                            <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-500/10 rounded text-[9px] font-black text-emerald-600 uppercase">
+                                                {mailRecipients.to.length} Active
+                                            </span>
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {mailRecipients.to.length > 0 ? mailRecipients.to.map((email, i) => (
+                                                <div key={email + i} className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2 group cursor-default hover:border-emerald-200 dark:hover:border-emerald-800 transition-colors">
+                                                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
+                                                    {email}
+                                                </div>
+                                            )) : (
+                                                <div className="w-full p-4 bg-rose-50 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-900/20 rounded-xl text-center">
+                                                    <p className="text-xs text-rose-600 dark:text-rose-400 font-bold italic tracking-wide">No recipients found. Please edit company contacts in Sidebar.</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {mailRecipients.cc.length > 0 && (
+                                        <div>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Carbon Copy (CC)</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {mailRecipients.cc.map((email, i) => (
+                                                    <div key={email + i} className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-dashed border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                        {email}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="p-6 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-800 flex gap-3">
+                                <button
+                                    onClick={() => setShowMailModal(false)}
+                                    className="flex-1 py-3.5 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm active:scale-95"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={sendMail}
+                                    disabled={sendingMailId === mailInvoice._id || mailRecipients.to.length === 0}
+                                    className="flex-[2] py-3.5 bg-slate-900 dark:bg-slate-950 text-white rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2 text-sm shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group active:scale-95 overflow-hidden relative"
+                                >
+                                    {sendingMailId === mailInvoice._id ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                            <span>Sending...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Mail size={16} className="group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
+                                            <span>Send Now</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
