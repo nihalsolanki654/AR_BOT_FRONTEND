@@ -201,12 +201,11 @@ const InvoiceList = () => {
                                 <div className="w-[300px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Company</div>
                                 <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Inv. Date</div>
                                 <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Due Date</div>
-                                <div className="w-[100px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Terms</div>
+                                <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Terms</div>
                                 <div className="w-[140px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Status</div>
-                                <div className="w-[140px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Days Left</div>
                                 <div className="w-[250px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Description</div>
-                                <div className="w-[80px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Qty</div>
                                 <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Unit Price</div>
+                                <div className="w-[80px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Qty</div>
                                 <div className="w-[80px] px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">GST %</div>
                                 <div className="w-[130px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">GST Amt</div>
                                 <div className="w-[150px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Total</div>
@@ -254,11 +253,15 @@ const InvoiceList = () => {
                                                 {invoice.dueDate || '-'}
                                             </div>
 
-                                            {/* Terms */}
-                                            <div className="w-[100px] px-4 text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
-                                                {daysLeft === 0
-                                                    ? <span className="text-blue-600 font-bold">TODAY</span>
-                                                    : <span className="text-gray-700 dark:text-slate-300">{invoice.Terms || '-'}</span>
+                                            {/* Terms (with dynamic today/overdue status) */}
+                                            <div className="w-[120px] px-4 text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+                                                {status === 'Paid'
+                                                    ? <span className="text-gray-400">{invoice.Terms || '-'}</span>
+                                                    : daysLeft === 0
+                                                        ? <span className="text-blue-600 font-bold bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-500/20">TODAY</span>
+                                                        : daysLeft < 0
+                                                            ? <span className="text-red-500 font-bold bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded border border-red-200 dark:border-red-500/20">{daysLeft} days</span>
+                                                            : <span className="text-gray-700 dark:text-slate-300">{invoice.Terms || '-'}</span>
                                                 }
                                             </div>
 
@@ -269,20 +272,6 @@ const InvoiceList = () => {
                                                 </span>
                                             </div>
 
-                                            {/* Days Left */}
-                                            <div className="w-[140px] px-4 text-[13px] font-bold whitespace-nowrap">
-                                                {status === 'Paid'
-                                                    ? <span className="text-gray-400">Fixed</span>
-                                                    : daysLeft !== null
-                                                        ? <span className={daysLeft < 0
-                                                            ? 'text-red-500 bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded border border-red-200 dark:border-red-500/20'
-                                                            : daysLeft === 0
-                                                                ? 'text-blue-600 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-500/20'
-                                                                : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20'}>
-                                                            {daysLeft < 0 ? `${daysLeft} days` : daysLeft === 0 ? 'TODAY' : `${daysLeft} days left`}
-                                                        </span>
-                                                        : '-'}
-                                            </div>
 
                                             {/* Description */}
                                             <div className="w-[250px] px-4">
@@ -291,14 +280,14 @@ const InvoiceList = () => {
                                                 </div>
                                             </div>
 
-                                            {/* Qty */}
-                                            <div className="w-[80px] px-4 text-center text-sm text-gray-700 dark:text-slate-300 font-medium">
-                                                {invoice.quantity ?? '-'}
-                                            </div>
-
                                             {/* Unit Price */}
                                             <div className="w-[130px] px-4 text-sm text-gray-800 dark:text-slate-200 font-bold whitespace-nowrap">
                                                 ₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}
+                                            </div>
+
+                                            {/* Qty */}
+                                            <div className="w-[80px] px-4 text-center text-sm text-gray-700 dark:text-slate-300 font-medium">
+                                                {invoice.quantity ?? '-'}
                                             </div>
 
                                             {/* GST % */}
