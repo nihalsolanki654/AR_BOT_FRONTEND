@@ -17,18 +17,29 @@ const InvoiceList = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchInvoices = async () => {
-            try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setInvoices(data);
-                }
-            } catch (error) {
-                console.error('Error fetching invoices:', error);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const fetchInvoices = async (page = 1) => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices?page=${page}&limit=50`);
+            if (response.ok) {
+                const data = await response.json();
+                setInvoices(data.invoices);
+                setPagination({
+                    total: data.total,
+                    pages: data.pages,
+                    currentPage: data.currentPage
+                });
             }
-        };
+        } catch (error) {
+            console.error('Error fetching invoices:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchInvoices();
     }, []);
 
@@ -216,7 +227,15 @@ const InvoiceList = () => {
                     </div>
 
                     {/* Body */}
-                    <div className="divide-y divide-gray-100 dark:divide-slate-800">
+                    <div className="relative divide-y divide-gray-100 dark:divide-slate-800">
+                        {isLoading && (
+                            <div className="absolute inset-0 z-40 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] flex items-center justify-center min-h-[300px]">
+                                <div className="flex flex-col items-center gap-3">
+                                    <div className="w-10 h-10 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
+                                    <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest animate-pulse">Syncing Data...</p>
+                                </div>
+                            </div>
+                        )}
                         {filteredInvoices.length > 0 ? filteredInvoices.map((invoice) => {
                             const status = getPaymentStatus(invoice);
                             const daysLeft = calculateDaysLeft(invoice.dueDate);
@@ -342,212 +361,241 @@ const InvoiceList = () => {
                         )}
                     </div>
                 </div>
-            </div>
 
-            {/* ── View Modal ── */}
-            {showViewModal && selectedInvoice && (() => {
-                const inv = selectedInvoice;
-                const status = getPaymentStatus(inv);
-                const totalAmt = parseFloat(inv.total_Amount || 0);
-                const balanceDue = parseFloat(inv.balance_due || 0);
-                const paidAmt = totalAmt - balanceDue;
-                const unitPrice = parseFloat(inv.total_price || 0);
-                const quantity = inv.quantity || 1;
-                const subtotal = unitPrice * quantity;
-                const gstAmt = parseFloat(inv.GST_Amount || 0);
-                const gstRate = inv.GST ? `${inv.GST}%` : '18%';
-                const daysLeft = calculateDaysLeft(inv.dueDate);
-                return (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowViewModal(false)} />
-                        <div className="relative bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-
-                            {/* Header */}
-                            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-11 h-11 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                                        <Receipt size={22} className="text-blue-600 dark:text-blue-400" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-slate-900 dark:text-white">{getInvoiceNumber(inv)}</h2>
-                                        <p className="text-xs text-slate-500">Invoice Details</p>
-                                    </div>
-                                </div>
-                                <button onClick={() => setShowViewModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
-                                    <X size={20} className="text-slate-400" />
-                                </button>
-                            </div>
-
-                            {/* Body */}
-                            <div className="overflow-y-auto p-6 space-y-4 flex-1">
-
-                                {/* Status / Dates row */}
-                                <div className="grid grid-cols-3 gap-3">
-                                    <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-1.5">Status</p>
-                                        <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-bold border ${getStatusColor(status)}`}>
-                                            {status === 'PartiallyPaid' ? 'Partially Paid' : status}
-                                        </span>
-                                    </div>
-                                    <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-1.5">Invoice Date</p>
-                                        <p className="text-sm font-bold text-slate-800 dark:text-white">{inv.invoiceDate || '-'}</p>
-                                    </div>
-                                    <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-1.5">Due Date</p>
-                                        <p className="text-sm font-bold text-slate-800 dark:text-white">{inv.dueDate || '-'}</p>
-                                    </div>
-                                </div>
-
-                                {/* Overdue / Days remaining alert */}
-                                {status !== 'Paid' && daysLeft !== null && (
-                                    <div className={`rounded-xl p-3 border-l-4 ${daysLeft < 0 ? 'bg-red-50 dark:bg-red-500/10 border-red-500' : 'bg-blue-50 dark:bg-blue-500/10 border-blue-500'}`}>
-                                        <p className={`text-base font-black ${daysLeft < 0 ? 'text-red-600' : (daysLeft === 0 ? 'text-blue-600' : 'text-emerald-600')}`}>
-                                            {daysLeft < 0 ? `${Math.abs(daysLeft)} Days Overdue` : (daysLeft === 0 ? 'Due TODAY' : `${Math.abs(daysLeft)} Days Remaining`)}
-                                        </p>
-                                    </div>
-                                )}
-
-                                {/* Company & Terms */}
-                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-3">Company Information</p>
-                                    <div className="flex items-start gap-3 mb-3">
-                                        <Building2 size={16} className="text-slate-400 mt-0.5 shrink-0" />
-                                        <p className="text-base font-bold text-slate-900 dark:text-white">{inv.companyName || 'N/A'}</p>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-2 text-sm">
-                                        {inv.State && (
-                                            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                                                <MapPin size={13} className="shrink-0" />
-                                                <span>{inv.State}</span>
-                                            </div>
-                                        )}
-                                        {inv.Terms && (
-                                            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                                                <Tag size={13} className="shrink-0" />
-                                                <span>Terms: <span className="font-semibold text-slate-800 dark:text-slate-200">{inv.Terms}</span></span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Work Description Detailed View */}
-                                <div className="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-5 border border-slate-200/60 dark:border-slate-700/50 shadow-sm transition-all hover:bg-white dark:hover:bg-slate-800/60 hover:shadow-md">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="flex items-center gap-2">
-                                            <div className="p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                                                <FileText size={16} className="text-blue-600 dark:text-blue-400" />
-                                            </div>
-                                            <h3 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Work Description</h3>
-                                        </div>
-                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-[11px] font-bold text-slate-600 dark:text-slate-400">
-                                            <Package size={12} />
-                                            Qty: {inv.quantity ?? 1}
-                                        </div>
-                                    </div>
-                                    <div className="relative pl-2 border-l-2 border-blue-500/20 dark:border-blue-500/10">
-                                        <div className="max-h-48 overflow-y-auto text-sm text-slate-600 dark:text-slate-300 leading-7 font-medium scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700 pr-4 whitespace-pre-wrap">
-                                            {inv.description || "No description provided for this invoice."}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Financial Breakdown */}
-                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-3">Financial Breakdown</p>
-                                    <div className="space-y-2.5">
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-slate-600 dark:text-slate-400">Total Price (Before GST)</span>
-                                            <span className="font-bold text-slate-800 dark:text-white">₹{subtotal.toLocaleString('en-IN')}</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                            <span className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
-                                                <Percent size={12} /> GST ({gstRate})
-                                            </span>
-                                            <span className="font-semibold text-slate-700 dark:text-slate-300">₹{gstAmt.toLocaleString('en-IN')}</span>
-                                        </div>
-                                        <div className="border-t border-slate-200 dark:border-slate-700 pt-2.5 flex justify-between items-center">
-                                            <span className="font-bold text-slate-900 dark:text-white">Total Amount</span>
-                                            <span className="text-xl font-black text-blue-600 dark:text-blue-400">₹{totalAmt.toLocaleString('en-IN')}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Payment Breakdown (Partially Paid / Paid) */}
-                                {(status === 'PartiallyPaid' || status === 'Paid') && (
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-xl p-3 border-2 border-emerald-200 dark:border-emerald-500/30">
-                                            <p className="text-xs font-bold text-emerald-600 mb-1">Amount Paid</p>
-                                            <p className="text-xl font-black text-emerald-700 dark:text-emerald-300">₹{paidAmt.toLocaleString('en-IN')}</p>
-                                        </div>
-                                        <div className="bg-orange-50 dark:bg-orange-500/10 rounded-xl p-3 border-2 border-orange-200 dark:border-orange-500/30">
-                                            <p className="text-xs font-bold text-orange-600 mb-1">Balance Due</p>
-                                            <p className="text-xl font-black text-orange-700 dark:text-orange-300">₹{balanceDue.toLocaleString('en-IN')}</p>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Paid badge */}
-                                {status === 'Paid' && (
-                                    <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-xl p-4 flex items-center gap-3 border-2 border-emerald-200 dark:border-emerald-500/30">
-                                        <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shrink-0">
-                                            <Check size={20} className="text-white" />
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-emerald-900 dark:text-emerald-100">Payment Completed</p>
-                                            <p className="text-xs text-emerald-600">Full amount received</p>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Record Payment */}
-                                {status !== 'Paid' && (
-                                    <div className="bg-blue-50 dark:bg-blue-500/10 rounded-xl p-4 border-2 border-blue-200 dark:border-blue-500/30">
-                                        <h3 className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-3 flex items-center gap-2">
-                                            <Wallet size={15} /> Record Payment
-                                        </h3>
-                                        <div className="flex gap-2">
-                                            <div className="relative flex-1">
-                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
-                                                <input
-                                                    type="number"
-                                                    placeholder="Enter amount"
-                                                    value={paymentInput}
-                                                    onChange={(e) => setPaymentInput(e.target.value)}
-                                                    className="w-full pl-8 pr-3 py-2.5 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg focus:border-blue-500 outline-none font-bold text-slate-900 dark:text-white text-sm"
-                                                />
-                                            </div>
-                                            <button onClick={() => handlePartialPayment(inv)}
-                                                className="px-5 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-all shadow-md active:scale-95 text-sm">
-                                                Add
-                                            </button>
-                                        </div>
-                                        <p className="mt-2 text-xs text-slate-500">Balance Due: ₹{balanceDue.toLocaleString('en-IN')}</p>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Footer */}
-                            <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex gap-2 shrink-0">
-                                {status !== 'Paid' && (
-                                    <button onClick={() => handleMarkAsPaid(inv)}
-                                        className="flex-1 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 text-sm">
-                                        <Check size={16} /> Mark as Paid
-                                    </button>
-                                )}
-                                <button onClick={() => window.print()}
-                                    className="px-5 py-2.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center gap-2 text-sm">
-                                    <Receipt size={15} /> Print
-                                </button>
-                                <button onClick={() => setShowViewModal(false)}
-                                    className="px-5 py-2.5 bg-slate-800 dark:bg-slate-700 text-white rounded-xl font-bold hover:bg-slate-700 transition-all text-sm">
-                                    Close
-                                </button>
-                            </div>
+                {/* Pagination Controls */}
+                {pagination.pages > 1 && (
+                    <div className="p-4 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between bg-gray-50/50 dark:bg-slate-800/10">
+                        <div className="text-sm text-gray-500 dark:text-slate-400">
+                            Page <span className="font-bold text-gray-800 dark:text-white">{pagination.currentPage}</span> of <span className="font-bold text-gray-800 dark:text-white">{pagination.pages}</span> ({pagination.total} total)
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                disabled={pagination.currentPage === 1}
+                                onClick={() => fetchInvoices(pagination.currentPage - 1)}
+                                className={`px-4 py-1.5 text-xs font-bold border rounded-lg transition-all ${pagination.currentPage === 1
+                                    ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed'
+                                    : 'bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 shadow-sm'}`}
+                            >
+                                Previous
+                            </button>
+                            <button
+                                disabled={pagination.currentPage === pagination.pages}
+                                onClick={() => fetchInvoices(pagination.currentPage + 1)}
+                                className={`px-4 py-1.5 text-xs font-bold border rounded-lg transition-all ${pagination.currentPage === pagination.pages
+                                    ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed'
+                                    : 'bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 shadow-sm'}`}
+                            >
+                                Next
+                            </button>
                         </div>
                     </div>
-                );
-            })()}
+                )}
+
+                {/* ── View Modal ── */}
+                {showViewModal && selectedInvoice && (() => {
+                    const inv = selectedInvoice;
+                    const status = getPaymentStatus(inv);
+                    const totalAmt = parseFloat(inv.total_Amount || 0);
+                    const balanceDue = parseFloat(inv.balance_due || 0);
+                    const paidAmt = totalAmt - balanceDue;
+                    const unitPrice = parseFloat(inv.total_price || 0);
+                    const quantity = inv.quantity || 1;
+                    const subtotal = unitPrice * quantity;
+                    const gstAmt = parseFloat(inv.GST_Amount || 0);
+                    const gstRate = inv.GST ? `${inv.GST}%` : '18%';
+                    const daysLeft = calculateDaysLeft(inv.dueDate);
+                    return (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowViewModal(false)} />
+                            <div className="relative bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+
+                                {/* Header */}
+                                <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-11 h-11 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                                            <Receipt size={22} className="text-blue-600 dark:text-blue-400" />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">{getInvoiceNumber(inv)}</h2>
+                                            <p className="text-xs text-slate-500">Invoice Details</p>
+                                        </div>
+                                    </div>
+                                    <button onClick={() => setShowViewModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+                                        <X size={20} className="text-slate-400" />
+                                    </button>
+                                </div>
+
+                                {/* Body */}
+                                <div className="overflow-y-auto p-6 space-y-4 flex-1">
+
+                                    {/* Status / Dates row */}
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1.5">Status</p>
+                                            <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-bold border ${getStatusColor(status)}`}>
+                                                {status === 'PartiallyPaid' ? 'Partially Paid' : status}
+                                            </span>
+                                        </div>
+                                        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1.5">Invoice Date</p>
+                                            <p className="text-sm font-bold text-slate-800 dark:text-white">{inv.invoiceDate || '-'}</p>
+                                        </div>
+                                        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1.5">Due Date</p>
+                                            <p className="text-sm font-bold text-slate-800 dark:text-white">{inv.dueDate || '-'}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Overdue / Days remaining alert */}
+                                    {status !== 'Paid' && daysLeft !== null && (
+                                        <div className={`rounded-xl p-3 border-l-4 ${daysLeft < 0 ? 'bg-red-50 dark:bg-red-500/10 border-red-500' : 'bg-blue-50 dark:bg-blue-500/10 border-blue-500'}`}>
+                                            <p className={`text-base font-black ${daysLeft < 0 ? 'text-red-600' : (daysLeft === 0 ? 'text-blue-600' : 'text-emerald-600')}`}>
+                                                {daysLeft < 0 ? `${Math.abs(daysLeft)} Days Overdue` : (daysLeft === 0 ? 'Due TODAY' : `${Math.abs(daysLeft)} Days Remaining`)}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {/* Company & Terms */}
+                                    <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-3">Company Information</p>
+                                        <div className="flex items-start gap-3 mb-3">
+                                            <Building2 size={16} className="text-slate-400 mt-0.5 shrink-0" />
+                                            <p className="text-base font-bold text-slate-900 dark:text-white">{inv.companyName || 'N/A'}</p>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2 text-sm">
+                                            {inv.State && (
+                                                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                                                    <MapPin size={13} className="shrink-0" />
+                                                    <span>{inv.State}</span>
+                                                </div>
+                                            )}
+                                            {inv.Terms && (
+                                                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                                                    <Tag size={13} className="shrink-0" />
+                                                    <span>Terms: <span className="font-semibold text-slate-800 dark:text-slate-200">{inv.Terms}</span></span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Work Description Detailed View */}
+                                    <div className="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-5 border border-slate-200/60 dark:border-slate-700/50 shadow-sm transition-all hover:bg-white dark:hover:bg-slate-800/60 hover:shadow-md">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className="p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                                    <FileText size={16} className="text-blue-600 dark:text-blue-400" />
+                                                </div>
+                                                <h3 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Work Description</h3>
+                                            </div>
+                                            <div className="flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-[11px] font-bold text-slate-600 dark:text-slate-400">
+                                                <Package size={12} />
+                                                Qty: {inv.quantity ?? 1}
+                                            </div>
+                                        </div>
+                                        <div className="relative pl-2 border-l-2 border-blue-500/20 dark:border-blue-500/10">
+                                            <div className="max-h-48 overflow-y-auto text-sm text-slate-600 dark:text-slate-300 leading-7 font-medium scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700 pr-4 whitespace-pre-wrap">
+                                                {inv.description || "No description provided for this invoice."}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Financial Breakdown */}
+                                    <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-3">Financial Breakdown</p>
+                                        <div className="space-y-2.5">
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-slate-600 dark:text-slate-400">Total Price (Before GST)</span>
+                                                <span className="font-bold text-slate-800 dark:text-white">₹{subtotal.toLocaleString('en-IN')}</span>
+                                            </div>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
+                                                    <Percent size={12} /> GST ({gstRate})
+                                                </span>
+                                                <span className="font-semibold text-slate-700 dark:text-slate-300">₹{gstAmt.toLocaleString('en-IN')}</span>
+                                            </div>
+                                            <div className="border-t border-slate-200 dark:border-slate-700 pt-2.5 flex justify-between items-center">
+                                                <span className="font-bold text-slate-900 dark:text-white">Total Amount</span>
+                                                <span className="text-xl font-black text-blue-600 dark:text-blue-400">₹{totalAmt.toLocaleString('en-IN')}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Payment Breakdown (Partially Paid / Paid) */}
+                                    {(status === 'PartiallyPaid' || status === 'Paid') && (
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-xl p-3 border-2 border-emerald-200 dark:border-emerald-500/30">
+                                                <p className="text-xs font-bold text-emerald-600 mb-1">Amount Paid</p>
+                                                <p className="text-xl font-black text-emerald-700 dark:text-emerald-300">₹{paidAmt.toLocaleString('en-IN')}</p>
+                                            </div>
+                                            <div className="bg-orange-50 dark:bg-orange-500/10 rounded-xl p-3 border-2 border-orange-200 dark:border-orange-500/30">
+                                                <p className="text-xs font-bold text-orange-600 mb-1">Balance Due</p>
+                                                <p className="text-xl font-black text-orange-700 dark:text-orange-300">₹{balanceDue.toLocaleString('en-IN')}</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Paid badge */}
+                                    {status === 'Paid' && (
+                                        <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-xl p-4 flex items-center gap-3 border-2 border-emerald-200 dark:border-emerald-500/30">
+                                            <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shrink-0">
+                                                <Check size={20} className="text-white" />
+                                            </div>
+                                            <div>
+                                                <p className="font-bold text-emerald-900 dark:text-emerald-100">Payment Completed</p>
+                                                <p className="text-xs text-emerald-600">Full amount received</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Record Payment */}
+                                    {status !== 'Paid' && (
+                                        <div className="bg-blue-50 dark:bg-blue-500/10 rounded-xl p-4 border-2 border-blue-200 dark:border-blue-500/30">
+                                            <h3 className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-3 flex items-center gap-2">
+                                                <Wallet size={15} /> Record Payment
+                                            </h3>
+                                            <div className="flex gap-2">
+                                                <div className="relative flex-1">
+                                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Enter amount"
+                                                        value={paymentInput}
+                                                        onChange={(e) => setPaymentInput(e.target.value)}
+                                                        className="w-full pl-8 pr-3 py-2.5 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg focus:border-blue-500 outline-none font-bold text-slate-900 dark:text-white text-sm"
+                                                    />
+                                                </div>
+                                                <button onClick={() => handlePartialPayment(inv)}
+                                                    className="px-5 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-all shadow-md active:scale-95 text-sm">
+                                                    Add
+                                                </button>
+                                            </div>
+                                            <p className="mt-2 text-xs text-slate-500">Balance Due: ₹{balanceDue.toLocaleString('en-IN')}</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Footer */}
+                                <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex gap-2 shrink-0">
+                                    {status !== 'Paid' && (
+                                        <button onClick={() => handleMarkAsPaid(inv)}
+                                            className="flex-1 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 text-sm">
+                                            <Check size={16} /> Mark as Paid
+                                        </button>
+                                    )}
+                                    <button onClick={() => window.print()}
+                                        className="px-5 py-2.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center gap-2 text-sm">
+                                        <Receipt size={15} /> Print
+                                    </button>
+                                    <button onClick={() => setShowViewModal(false)}
+                                        className="px-5 py-2.5 bg-slate-800 dark:bg-slate-700 text-white rounded-xl font-bold hover:bg-slate-700 transition-all text-sm">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })()}
+            </div>
         </div>
     );
 };

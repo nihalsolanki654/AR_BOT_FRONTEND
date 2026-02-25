@@ -36,37 +36,52 @@ const Dashboard = () => {
 
     const [revenueData, setRevenueData] = useState([]);
     const [statusData, setStatusData] = useState([]);
-    const [trendData, setTrendData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-
-        const fetchData = async () => {
+        const fetchStats = async () => {
+            setIsLoading(true);
             try {
-                const [invRes, memRes] = await Promise.all([
-                    fetch(`${import.meta.env.VITE_API_URL}/api/invoices`, { cache: 'no-cache' }),
-                    fetch(`${import.meta.env.VITE_API_URL}/api/members`, { cache: 'no-cache' })
+                const [statsRes, trendRes, membersRes] = await Promise.all([
+                    fetch(`${import.meta.env.VITE_API_URL}/api/invoices/stats`),
+                    fetch(`${import.meta.env.VITE_API_URL}/api/invoices`), // We still need this for the trend chart specifically for now, or we could add a trend endpoint
+                    fetch(`${import.meta.env.VITE_API_URL}/api/members`)
                 ]);
 
-                if (invRes.ok && memRes.ok) {
+                if (statsRes.ok && trendRes.ok && membersRes.ok) {
+                    const statsData = await statsRes.json();
+                    const trendInvoices = await trendRes.json();
+                    const members = await membersRes.json();
 
-                    const invoices = await invRes.json();
-                    const members = await memRes.json();
+                    // Map backend stats to frontend state
+                    setStats({
+                        totalInvoices: statsData.totalInvoices,
+                        totalAmount: statsData.totalAmount,
+                        paidAmount: statsData.paidAmount,
+                        pendingAmount: statsData.balanceDue,
+                        overdueAmount: statsData.overdueAmount,
+                        paidCount: statsData.paidCount,
+                        pendingCount: statsData.pendingCount,
+                        overdueCount: statsData.overdueCount,
+                        totalMembers: members.length
+                    });
 
-                    const totalAmount = invoices.reduce(
-                        (sum, inv) => sum + (parseFloat(inv.total_Amount) || 0),
-                        0
-                    );
+                    // 📊 Revenue Bar Chart Data
+                    setRevenueData([
+                        { name: "Total", amount: statsData.totalAmount },
+                        { name: "Collected", amount: statsData.paidAmount },
+                        { name: "Pending", amount: statsData.balanceDue },
+                        { name: "Overdue", amount: statsData.overdueAmount }
+                    ]);
 
-                    const totalCollected = invoices.reduce(
-                        (sum, inv) => sum + ((parseFloat(inv.total_Amount) || 0) - (parseFloat(inv.balance_due) || 0)),
-                        0
-                    );
+                    // 🥧 Status Pie Chart Data
+                    setStatusData([
+                        { name: "Paid", value: statsData.paidCount },
+                        { name: "Pending", value: statsData.pendingCount },
+                        { name: "Overdue", value: statsData.overdueCount }
+                    ]);
 
-                    const totalPending = totalAmount - totalCollected;
-
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-
+                    // 📈 Monthly Trend Calculation (Keep as is for now until we have a trend endpoint)
                     const parseInvoiceDate = (dateText) => {
                         if (!dateText) return null;
                         if (typeof dateText === 'string' && dateText.includes('-') && dateText.split('-')[0].length === 2) {
@@ -76,99 +91,44 @@ const Dashboard = () => {
                         return new Date(dateText);
                     };
 
-                    const overdueInvoices = invoices.filter(inv => {
-                        const balance = parseFloat(inv.balance_due) || 0;
-                        if (balance <= 0) return false;
-                        const due = parseInvoiceDate(inv.dueDate);
-                        return due && due < today;
-                    });
-
-                    const overdueAmount = overdueInvoices.reduce(
-                        (sum, inv) => sum + (parseFloat(inv.balance_due) || 0),
-                        0
-                    );
-
-                    const paidInvoices = invoices.filter(
-                        inv => (parseFloat(inv.balance_due) || 0) <= 0
-                    );
-
-                    const pendingInvoices = invoices.filter(
-                        inv => (parseFloat(inv.balance_due) || 0) > 0 && !overdueInvoices.find(o => o._id === inv._id)
-                    );
-
-                    setStats({
-                        totalInvoices: invoices.length,
-                        totalAmount,
-                        paidAmount: totalCollected,
-                        pendingAmount: totalPending,
-                        overdueAmount,
-                        paidCount: paidInvoices.length,
-                        pendingCount: pendingInvoices.length,
-                        overdueCount: overdueInvoices.length,
-                        totalMembers: members.length
-                    });
-
-                    // 📊 Revenue Bar Chart Data
-                    setRevenueData([
-                        { name: "Total", amount: totalAmount },
-                        { name: "Collected", amount: totalCollected },
-                        { name: "Pending", amount: totalPending },
-                        { name: "Overdue", amount: overdueAmount }
-                    ]);
-
-                    // 🥧 Status Pie Chart Data
-                    setStatusData([
-                        { name: "Paid", value: paidInvoices.length },
-                        { name: "Pending", value: pendingInvoices.length },
-                        { name: "Overdue", value: overdueInvoices.length }
-                    ]);
-
-                    // 📈 Monthly Trend Calculation (Dynamic)
                     const monthlyMap = {};
+                    const invoicesArray = Array.isArray(trendInvoices) ? trendInvoices : (trendInvoices.invoices || []);
 
-                    invoices.forEach(inv => {
+                    invoicesArray.forEach(inv => {
                         const dateText = inv.invoiceDate || inv.createdAt;
                         const date = parseInvoiceDate(dateText);
                         if (!date || isNaN(date.getTime())) return;
                         const month = date.toLocaleString('default', { month: 'short' });
-
-                        if (!monthlyMap[month]) {
-                            monthlyMap[month] = 0;
-                        }
-
-                        monthlyMap[month] += parseFloat(inv.total_Amount) || 0;
+                        monthlyMap[month] = (monthlyMap[month] || 0) + (parseFloat(inv.total_Amount) || 0);
                     });
 
-                    const monthlyData = Object.keys(monthlyMap).map(month => ({
-                        month,
-                        value: monthlyMap[month]
-                    }));
-
-                    setTrendData(monthlyData);
+                    setTrendData(Object.keys(monthlyMap).map(month => ({ month, value: monthlyMap[month] })));
                 }
-
             } catch (error) {
-                console.error('Dashboard error:', error);
+                console.error('Dashboard optimization error:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
-        fetchData();
-        window.addEventListener('focus', fetchData);
-        return () => window.removeEventListener('focus', fetchData);
-
+        fetchStats();
     }, []);
 
     const COLORS = ["#10B981", "#F59E0B", "#EF4444"];
 
     const StatCard = ({ title, value, icon: Icon, colorClass, bgColorClass, subText }) => (
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-xl transition-all duration-300">
+        <div className={`bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-xl transition-all duration-300 ${isLoading ? 'animate-pulse' : ''}`}>
             <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-2xl ${bgColorClass} ${colorClass}`}>
-                    <Icon size={22} />
+                <div className={`p-3 rounded-2xl ${isLoading ? 'bg-gray-100 dark:bg-slate-800' : `${bgColorClass} ${colorClass}`}`}>
+                    <Icon size={22} className={isLoading ? 'text-gray-300 dark:text-slate-700' : ''} />
                 </div>
             </div>
             <p className="text-gray-500 dark:text-slate-400 text-sm mb-1">{title}</p>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{value}</h3>
+            {isLoading ? (
+                <div className="h-8 bg-gray-100 dark:bg-slate-800 rounded-lg w-2/3 mb-2" />
+            ) : (
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{value}</h3>
+            )}
             {subText && (
                 <p className="text-xs text-gray-400 dark:text-slate-500 mt-2">{subText}</p>
             )}
