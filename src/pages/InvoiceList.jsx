@@ -227,6 +227,7 @@ const InvoiceList = () => {
                                 <div className="w-[220px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Company</div>
                                 <div className="w-[110px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Invoice Date</div>
                                 <div className="w-[110px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Due Date</div>
+                                <div className="w-[110px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Today Date</div>
                                 <div className="w-[100px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Terms</div>
                                 <div className="w-[220px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Description</div>
                                 <div className="w-[120px] px-4 py-4 text-left text-sm font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">Unit Price</div>
@@ -288,20 +289,27 @@ const InvoiceList = () => {
                                                 {invoice.dueDate || '-'}
                                             </div>
 
-                                            {/* Terms (with dynamic today/overdue status) */}
+                                            {/* Today Date */}
+                                            <div className="w-[110px] px-4 text-sm text-gray-500 dark:text-slate-400 font-medium italic">
+                                                {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
+                                            </div>
+
+                                            {/* Terms (Dynamic calculation: Today - Due Date) */}
                                             <div className="w-[100px] px-4 text-sm font-medium whitespace-nowrap text-center">
                                                 {status === 'Paid'
-                                                    ? <span className="text-gray-400 text-[11px] font-bold uppercase tracking-tight">{invoice.Terms ? `${invoice.Terms} Days` : '-'}</span>
+                                                    ? <span className="text-gray-400 font-bold">-</span>
                                                     : daysLeft === 0
                                                         ? <div className="flex flex-col items-center">
                                                             <span className="text-blue-600 text-[10px] font-black bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-500/20 shadow-sm">DUE TODAY</span>
+                                                            <span className="text-[9px] text-gray-400 mt-0.5 font-bold">0</span>
                                                         </div>
                                                         : daysLeft < 0
                                                             ? <div className="flex flex-col items-center">
                                                                 <span className="text-rose-600 text-[10px] font-black bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-500/20 shadow-sm">{Math.abs(daysLeft)}D OVERDUE</span>
+                                                                <span className="text-[9px] text-gray-400 mt-0.5 font-bold">{Math.abs(daysLeft)}</span>
                                                             </div>
                                                             : <div className="flex flex-col items-center gap-0.5">
-                                                                <span className="text-gray-700 dark:text-slate-300 font-bold">{invoice.Terms || '-'}</span>
+                                                                <span className="text-gray-700 dark:text-slate-300 font-bold">{-daysLeft}</span>
                                                                 <span className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter">Due in {daysLeft}d</span>
                                                             </div>
                                                 }
