@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Search, Filter, Trash2, Eye, X, MapPin, Receipt, Wallet, Check, Mail, FileText, Tag, Building2, Package, Percent, Calendar } from 'lucide-react';
 
@@ -20,6 +20,30 @@ const InvoiceList = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [pagination, setPagination] = useState({ total: 0, pages: 1, currentPage: 1 });
+    const [toast, setToast] = useState(null);
+    const [sendingMailId, setSendingMailId] = useState(null);
+
+    const showToast = useCallback((message, type = 'success') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 4000);
+    }, []);
+
+    const sendMail = useCallback(async (invoice) => {
+        setSendingMailId(invoice._id);
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/send-invoice/${invoice._id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Failed to send email.');
+            showToast(`✓ ${data.message}`, 'success');
+        } catch (err) {
+            showToast(err.message, 'error');
+        } finally {
+            setSendingMailId(null);
+        }
+    }, [showToast]);
 
     const fetchInvoices = async (page = 1, search = searchTerm, status = filterStatus) => {
         setIsLoading(true);
@@ -166,6 +190,24 @@ const InvoiceList = () => {
 
     return (
         <div className="p-6 md:p-10 max-w-7xl mx-auto dark:bg-slate-950 min-h-screen transition-colors duration-500 font-sans selection:bg-slate-200 selection:text-slate-900">
+            {/* Toast Notification */}
+            {toast && (
+                <div className={`fixed top-6 right-6 z-[100] flex items-start gap-3 px-5 py-4 rounded-2xl shadow-xl border text-sm font-semibold max-w-sm transition-all duration-300 ${toast.type === 'success'
+                        ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800'
+                        : 'bg-white dark:bg-slate-900 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-800'
+                    }`}>
+                    <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'success' ? 'bg-emerald-100 dark:bg-emerald-900' : 'bg-rose-100 dark:bg-rose-900'
+                        }`}>
+                        {toast.type === 'success'
+                            ? <Check size={11} className="text-emerald-600 dark:text-emerald-400" />
+                            : <X size={11} className="text-rose-600 dark:text-rose-400" />}
+                    </div>
+                    <span className="leading-snug">{toast.message}</span>
+                    <button onClick={() => setToast(null)} className="ml-2 text-slate-300 hover:text-slate-500 dark:hover:text-slate-300 mt-0.5 shrink-0">
+                        <X size={13} />
+                    </button>
+                </div>
+            )}
             <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-1">
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Invoices</h1>
@@ -369,9 +411,14 @@ const InvoiceList = () => {
                                                         className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="View Details">
                                                         <Eye size={16} />
                                                     </button>
-                                                    <button onClick={() => alert('Send Mail coming soon!')}
-                                                        className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="Send Email">
-                                                        <Mail size={16} />
+                                                    <button
+                                                        onClick={() => sendMail(invoice)}
+                                                        disabled={sendingMailId === invoice._id}
+                                                        className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        title="Send Email">
+                                                        {sendingMailId === invoice._id
+                                                            ? <div className="w-4 h-4 border-2 border-slate-300 border-t-emerald-500 rounded-full animate-spin" />
+                                                            : <Mail size={16} />}
                                                     </button>
                                                     <button onClick={() => handleDelete(invoice._id)}
                                                         className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="Delete">

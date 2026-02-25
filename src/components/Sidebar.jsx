@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FilePlus, FileText, UserPlus, LogOut, Briefcase, X } from 'lucide-react';
+import { LayoutDashboard, FilePlus, FileText, UserPlus, LogOut, Briefcase, X, Building2 } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
     const handleLogout = () => {
@@ -13,6 +13,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
         { path: '/add-invoice', icon: FilePlus, label: 'Add Invoice' },
         { path: '/invoices', icon: FileText, label: 'Invoices' },
+        { path: '/company-emails', icon: Building2, label: 'Company Emails' },
         { path: '/add-member', icon: UserPlus, label: 'Members' },
     ];
 
