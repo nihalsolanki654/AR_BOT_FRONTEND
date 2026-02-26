@@ -7,7 +7,6 @@ import Dashboard from './pages/Dashboard';
 import AddInvoice from './pages/AddInvoice';
 import InvoiceList from './pages/InvoiceList';
 import AddMember from './pages/AddMember';
-import CompanyEmails from './pages/CompanyEmails';
 
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
@@ -47,7 +46,6 @@ function App() {
           <Route path="/add-invoice" element={<ProtectedRoute><AddInvoice /></ProtectedRoute>} />
           <Route path="/invoices" element={<ProtectedRoute><InvoiceList /></ProtectedRoute>} />
           <Route path="/add-member" element={<ProtectedRoute><AddMember /></ProtectedRoute>} />
-          <Route path="/company-emails" element={<ProtectedRoute><CompanyEmails /></ProtectedRoute>} />
         </Routes>
       </Router>
     </ThemeProvider>

@@ -13,7 +13,6 @@ const Sidebar = ({ isOpen, onClose }) => {
         { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
         { path: '/add-invoice', icon: FilePlus, label: 'Add Invoice' },
         { path: '/invoices', icon: FileText, label: 'Invoices' },
-        { path: '/company-emails', icon: Building2, label: 'Company Emails' },
         { path: '/add-member', icon: UserPlus, label: 'Members' },
     ];
 

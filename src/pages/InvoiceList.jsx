@@ -21,103 +21,15 @@ const InvoiceList = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [pagination, setPagination] = useState({ total: 0, pages: 1, currentPage: 1 });
     const [toast, setToast] = useState(null);
-    const [sendingMailId, setSendingMailId] = useState(null);
-    const [showMailModal, setShowMailModal] = useState(false);
-    const [mailRecipients, setMailRecipients] = useState({ to: [], cc: [] });
-    const [mailInvoice, setMailInvoice] = useState(null);
-    const [fetchingRecipientsId, setFetchingRecipientsId] = useState(null);
-    const [previewHtml, setPreviewHtml] = useState('');
 
     const showToast = useCallback((message, type = 'success') => {
         setToast({ message, type });
         setTimeout(() => setToast(null), 4000);
     }, []);
 
-    const prepareMail = useCallback(async (invoice) => {
-        setFetchingRecipientsId(invoice._id);
-        try {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-            // 1. Fetch Recipients
-            const recRes = await fetch(`${import.meta.env.VITE_API_URL}/api/customer-emails/by-company/${encodeURIComponent(invoice.companyName)}`);
-            const recData = await recRes.json();
-            if (!recRes.ok) throw new Error(recData.message || 'Could not find recipients for this company.');
-
-            // 2. Fetch HTML Preview
-            const uName = user.name || '';
-            const uEmail = user.email || '';
-            const uPhone = user.phone || '';
-
-            const prevRes = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/preview/${invoice._id}?senderName=${encodeURIComponent(uName)}&fromEmail=${encodeURIComponent(uEmail)}&senderPhone=${encodeURIComponent(uPhone)}`);
-            const prevData = await prevRes.json();
-            if (!prevRes.ok) throw new Error(prevData.message || 'Failed to generate email preview.');
-
-            setMailRecipients({
-                to: recData.toEmails?.filter(Boolean) || [],
-                cc: recData.ccEmails?.filter(Boolean) || []
-            });
-
-            // Inject public image paths for front-end preview since CID won't work in browser directly
-            let browserHtml = prevData.html;
-            browserHtml = browserHtml.replace('cid:logo1', '/image/Picture1.png');
-            browserHtml = browserHtml.replace('cid:logo2', '/image/Picture2.png');
-
-            setPreviewHtml(browserHtml);
-            setMailInvoice(invoice);
-            setShowMailModal(true);
-        } catch (err) {
-            showToast(err.message, 'error');
-        } finally {
-            setFetchingRecipientsId(null);
-        }
+    const prepareMail = useCallback(() => {
+        showToast("Email sending coming soon!", "info");
     }, [showToast]);
-
-    const sendMail = useCallback(async () => {
-        if (!mailInvoice) return;
-        setSendingMailId(mailInvoice._id);
-        const apiUrl = `${import.meta.env.VITE_API_URL}/api/mail/send-invoice/${mailInvoice._id}`;
-        console.log(`[MAIL] Attempting to send mail via: ${apiUrl}`);
-
-        try {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const uName = user.name || '';
-            const uEmail = user.email || '';
-            const uPhone = user.phone || '';
-
-            // Add AbortController for timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
-
-            const res = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    senderName: uName,
-                    fromEmail: uEmail,
-                    senderPhone: uPhone
-                }),
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || 'Failed to send email.');
-            showToast(`✓ ${data.message}`, 'success');
-            setShowMailModal(false);
-            setMailInvoice(null);
-        } catch (err) {
-            console.error('[MAIL] Send mail error:', err);
-            const errorMessage = err.name === 'AbortError'
-                ? 'Request timed out. The server is taking too long to respond (Check backend console).'
-                : (err.message || 'An unexpected error occurred during delivery.');
-            showToast(errorMessage, 'error');
-            alert(`Mail Error: ${errorMessage}`); // Using alert as a fallback for high visibility
-        } finally {
-            console.log('[MAIL] Request finished, resetting state.');
-            setSendingMailId(null);
-        }
-    }, [mailInvoice, showToast]);
 
     const fetchInvoices = async (page = 1, search = searchTerm, status = filterStatus) => {
         setIsLoading(true);
@@ -486,13 +398,10 @@ const InvoiceList = () => {
                                                         <Eye size={16} />
                                                     </button>
                                                     <button
-                                                        onClick={() => prepareMail(invoice)}
-                                                        disabled={sendingMailId === invoice._id || fetchingRecipientsId === invoice._id}
-                                                        className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        onClick={() => prepareMail()}
+                                                        className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700"
                                                         title="Send Email">
-                                                        {fetchingRecipientsId === invoice._id
-                                                            ? <div className="w-4 h-4 border-2 border-slate-300 border-t-emerald-500 rounded-full animate-spin" />
-                                                            : <Mail size={16} />}
+                                                        <Mail size={16} />
                                                     </button>
                                                     <button onClick={() => handleDelete(invoice._id)}
                                                         className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="Delete">
@@ -722,136 +631,6 @@ const InvoiceList = () => {
                     );
                 })()}
 
-                {/* ── Mail Confirmation Modal (Live Preview) ── */}
-                {showMailModal && mailInvoice && (
-                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-                        <div className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onClick={() => setShowMailModal(false)} />
-                        <div className="relative bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[28px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col max-h-[90vh]">
-                            {/* Header */}
-                            <div className="px-8 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white">
-                                        <Mail size={20} />
-                                    </div>
-                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white font-outfit">Email Dispatch</h2>
-                                </div>
-                                <button onClick={() => setShowMailModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all">
-                                    <X size={20} className="text-slate-400 hover:text-slate-600" />
-                                </button>
-                            </div>
-
-                            {/* Modal Body - Consolidated Single Panel */}
-                            <div className="flex-1 overflow-y-auto p-8 xl:p-12 bg-white dark:bg-slate-950 flex flex-col gap-8 custom-scrollbar">
-                                {/* Destination & Recipients Header */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-8 border-b border-slate-100 dark:border-slate-800">
-                                    <div className="space-y-6">
-                                        <div>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Recipients (To)</p>
-                                            <div className="flex flex-wrap gap-2">
-                                                {mailRecipients.to.length > 0 ? mailRecipients.to.map((email, i) => (
-                                                    <span key={i} className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-xl text-xs font-bold border border-blue-100 dark:border-blue-800/50 flex items-center gap-1.5 shadow-sm">
-                                                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-                                                        {email}
-                                                    </span>
-                                                )) : <span className="text-rose-500 font-bold text-xs italic">Missing recipients</span>}
-                                            </div>
-                                        </div>
-                                        {mailRecipients.cc.length > 0 && (
-                                            <div>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">CC Group</p>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {mailRecipients.cc.map((email, i) => (
-                                                        <span key={i} className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-xl text-xs font-bold border border-slate-100 dark:border-slate-700">
-                                                            {email}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="space-y-6 border-l dark:border-slate-800 pl-8">
-                                        <div>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Sender (From)</p>
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 bg-slate-900 dark:bg-slate-800 rounded-full flex items-center justify-center text-[11px] font-black text-white uppercase">
-                                                    {(JSON.parse(localStorage.getItem('user') || '{}').name || 'F')[0]}
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                                                        {JSON.parse(localStorage.getItem('user') || '{}').email || 'finance@tecnoprism.com'}
-                                                    </p>
-                                                    <p className="text-[10px] text-slate-500 mt-0.5 uppercase tracking-wider font-bold">Authenticated Dispatch</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Subject</p>
-                                            <p className="text-xs font-bold text-slate-700 dark:text-slate-300 leading-relaxed">
-                                                Invoice Overdue/Due Notice — {mailInvoice.companyName}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Main Preview Section */}
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-2 px-2">
-                                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                                        <span className="text-[10px] text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] font-black">Live Production Preview</span>
-                                    </div>
-                                    <div className="bg-slate-100/50 dark:bg-slate-900/60 rounded-[32px] p-6 xl:p-12 border border-slate-200/50 dark:border-slate-800/50">
-                                        <div
-                                            className="email-preview-container bg-white shadow-2xl shadow-slate-200/50 dark:shadow-none rounded-xl overflow-hidden mx-auto max-w-[800px] border border-slate-100 dark:border-transparent"
-                                            dangerouslySetInnerHTML={{ __html: previewHtml }}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Action Bar - Bottom Stick */}
-                                <div className="mt-4 pt-10 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-8 shrink-0">
-                                    <div className="flex-1">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Delivery Status</p>
-                                        <div className="flex items-center gap-2 font-bold text-xs">
-                                            {sendingMailId === mailInvoice._id ? (
-                                                <span className="text-blue-500 animate-pulse flex items-center gap-2">
-                                                    <div className="w-3 h-3 border-2 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
-                                                    Connecting to SMTP relays...
-                                                </span>
-                                            ) : (
-                                                <span className="text-slate-400 italic">Ready for encrypted transmission</span>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <button
-                                            onClick={() => setShowMailModal(false)}
-                                            className="px-8 py-4 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-bold text-sm transition-colors"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            onClick={sendMail}
-                                            disabled={sendingMailId === mailInvoice._id || mailRecipients.to.length === 0}
-                                            className="px-12 py-4.5 bg-blue-600 text-white rounded-2xl font-black hover:bg-blue-700 transition-all text-sm shadow-xl shadow-blue-600/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
-                                        >
-                                            {sendingMailId === mailInvoice._id ? (
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                    <span>Sending...</span>
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center gap-3">
-                                                    <span>Deliver Now</span>
-                                                    <ArrowRight size={20} className="group-hover:translate-x-1.5 transition-transform" />
-                                                </div>
-                                            )}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );
