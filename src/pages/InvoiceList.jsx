@@ -107,13 +107,14 @@ const InvoiceList = () => {
             setShowMailModal(false);
             setMailInvoice(null);
         } catch (err) {
-            console.error('Send mail error:', err);
-            if (err.name === 'AbortError') {
-                showToast('Request timed out. The server is taking too long to respond.', 'error');
-            } else {
-                showToast(err.message || 'An unexpected error occurred.', 'error');
-            }
+            console.error('[MAIL] Send mail error:', err);
+            const errorMessage = err.name === 'AbortError'
+                ? 'Request timed out. The server is taking too long to respond (Check backend console).'
+                : (err.message || 'An unexpected error occurred during delivery.');
+            showToast(errorMessage, 'error');
+            alert(`Mail Error: ${errorMessage}`); // Using alert as a fallback for high visibility
         } finally {
+            console.log('[MAIL] Request finished, resetting state.');
             setSendingMailId(null);
         }
     }, [mailInvoice, showToast]);
