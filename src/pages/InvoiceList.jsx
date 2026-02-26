@@ -75,6 +75,9 @@ const InvoiceList = () => {
     const sendMail = useCallback(async () => {
         if (!mailInvoice) return;
         setSendingMailId(mailInvoice._id);
+        const apiUrl = `${import.meta.env.VITE_API_URL}/api/mail/send-invoice/${mailInvoice._id}`;
+        console.log(`[MAIL] Attempting to send mail via: ${apiUrl}`);
+
         try {
             const user = JSON.parse(localStorage.getItem('user') || '{}');
             const uName = user.name || '';
@@ -85,7 +88,7 @@ const InvoiceList = () => {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/send-invoice/${mailInvoice._id}`, {
+            const res = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
