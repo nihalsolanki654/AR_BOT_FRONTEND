@@ -728,20 +728,20 @@ const InvoiceList = () => {
                         <div className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onClick={() => setShowMailModal(false)} />
                         <div className="relative bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[28px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col max-h-[90vh]">
                             {/* Header */}
-                            <div className="px-8 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
+                            <div className="px-8 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-sm border border-emerald-100 dark:border-emerald-500/20">
-                                        <Mail size={20} />
+                                    <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-500/20">
+                                        <Mail size={24} />
                                     </div>
                                     <div>
-                                        <h2 className="text-xl font-bold text-slate-900 dark:text-white font-outfit">Email Preview</h2>
+                                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white font-outfit">Email Dispatch</h2>
                                         <div className="flex items-center gap-2 mt-0.5">
-                                            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Ready for delivery</span>
-                                            <div className="w-1 h-1 bg-emerald-400 rounded-full animate-pulse" />
+                                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 uppercase tracking-widest font-black">Secure Preview Mode</span>
                                         </div>
                                     </div>
                                 </div>
-                                <button onClick={() => setShowMailModal(false)} className="p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all group border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+                                <button onClick={() => setShowMailModal(false)} className="p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl transition-all group border border-slate-100 dark:border-slate-800">
                                     <X size={20} className="text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
                                 </button>
                             </div>
@@ -805,23 +805,36 @@ const InvoiceList = () => {
                                 </div>
 
                                 {/* Main Content: Live Preview */}
-                                <div className="flex-1 bg-white dark:bg-white/5 p-4 flex flex-col min-h-0">
-                                    <div className="flex items-center justify-between mb-4 shrink-0">
-                                        <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Live Content Preview</p>
-                                        <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400">
-                                            <div className="flex items-center gap-1.5 uppercase tracking-wider">
-                                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-                                                HTML Output
-                                            </div>
+                                <div className="flex-1 bg-slate-50 dark:bg-slate-950 p-6 flex flex-col min-h-0">
+                                    {/* Email Info Bar */}
+                                    <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-100 dark:border-slate-800 p-6 mb-6 shadow-sm">
+                                        <div className="grid grid-cols-[80px_1fr] gap-y-4 items-center text-[13px]">
+                                            <span className="font-bold text-slate-400 uppercase text-[10px] tracking-widest">Subject</span>
+                                            <span className="font-bold text-slate-900 dark:text-white line-clamp-1">Invoice Overdue/Due Notice — {mailInvoice.companyName}</span>
+
+                                            <span className="font-bold text-slate-400 uppercase text-[10px] tracking-widest">From</span>
+                                            <span className="text-slate-600 dark:text-slate-300 font-medium">{JSON.parse(localStorage.getItem('user') || '{}').email || 'finance@tecnoprism.com'}</span>
+
+                                            <span className="font-bold text-slate-400 uppercase text-[10px] tracking-widest">To</span>
+                                            <span className="text-slate-600 dark:text-slate-300 font-medium truncate">{mailRecipients.to.join(', ')}</span>
                                         </div>
                                     </div>
 
-                                    <div className="flex-1 bg-gray-50/50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[24px] p-6 overflow-y-auto custom-scrollbar shadow-inner min-h-[400px]">
-                                        {/* Injecting HTML Preview */}
-                                        <div
-                                            className="email-preview-container bg-white p-6 rounded-xl shadow-sm border border-slate-100/50"
-                                            dangerouslySetInnerHTML={{ __html: previewHtml }}
-                                        />
+                                    <div className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden shadow-2xl shadow-slate-200/50 dark:shadow-none flex flex-col">
+                                        <div className="h-10 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex items-center px-6 gap-2 shrink-0">
+                                            <div className="flex gap-1.5">
+                                                <div className="w-2.5 h-2.5 rounded-full bg-rose-400/30" />
+                                                <div className="w-2.5 h-2.5 rounded-full bg-amber-400/30" />
+                                                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/30" />
+                                            </div>
+                                            <div className="mx-auto text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] translate-x-[-12px]">System Generated Output</div>
+                                        </div>
+                                        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-[repeating-linear-gradient(45deg,#fafafa,#fafafa_10px,#ffffff_10px,#ffffff_20px)] dark:bg-slate-900">
+                                            <div
+                                                className="email-preview-container bg-white dark:bg-white rounded-xl shadow-2xl shadow-slate-200/50 p-0 overflow-hidden mx-auto max-w-[700px] border border-slate-100"
+                                                dangerouslySetInnerHTML={{ __html: previewHtml }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
