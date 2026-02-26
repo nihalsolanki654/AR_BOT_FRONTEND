@@ -805,33 +805,42 @@ const InvoiceList = () => {
                                 </div>
 
                                 {/* Main Content: Live Preview */}
-                                <div className="flex-1 bg-slate-50 dark:bg-slate-950 p-6 flex flex-col min-h-0">
+                                <div className="flex-1 bg-slate-50 dark:bg-slate-950 p-4 xl:p-8 flex flex-col min-h-0">
                                     {/* Email Info Bar */}
-                                    <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-100 dark:border-slate-800 p-6 mb-6 shadow-sm">
-                                        <div className="grid grid-cols-[80px_1fr] gap-y-4 items-center text-[13px]">
-                                            <span className="font-bold text-slate-400 uppercase text-[10px] tracking-widest">Subject</span>
-                                            <span className="font-bold text-slate-900 dark:text-white line-clamp-1">Invoice Overdue/Due Notice — {mailInvoice.companyName}</span>
-
-                                            <span className="font-bold text-slate-400 uppercase text-[10px] tracking-widest">From</span>
-                                            <span className="text-slate-600 dark:text-slate-300 font-medium">{JSON.parse(localStorage.getItem('user') || '{}').email || 'finance@tecnoprism.com'}</span>
-
-                                            <span className="font-bold text-slate-400 uppercase text-[10px] tracking-widest">To</span>
-                                            <span className="text-slate-600 dark:text-slate-300 font-medium truncate">{mailRecipients.to.join(', ')}</span>
+                                    <div className="bg-white dark:bg-slate-900 rounded-[24px] border border-slate-200/60 dark:border-slate-800/60 p-5 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none">
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex items-center gap-4">
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-16">Subject</span>
+                                                <span className="font-bold text-slate-900 dark:text-white text-sm">Invoice Overdue/Due Notice — {mailInvoice.companyName}</span>
+                                            </div>
+                                            <div className="h-px bg-slate-100 dark:bg-slate-800" />
+                                            <div className="flex items-center gap-4">
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-16">From</span>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-6 h-6 bg-blue-100 dark:bg-blue-500/20 rounded-full flex items-center justify-center text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase">
+                                                        {(JSON.parse(localStorage.getItem('user') || '{}').name || 'F')[0]}
+                                                    </div>
+                                                    <span className="text-slate-600 dark:text-slate-300 font-semibold text-xs">{JSON.parse(localStorage.getItem('user') || '{}').email || 'finance@tecnoprism.com'}</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden shadow-2xl shadow-slate-200/50 dark:shadow-none flex flex-col">
-                                        <div className="h-10 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex items-center px-6 gap-2 shrink-0">
-                                            <div className="flex gap-1.5">
-                                                <div className="w-2.5 h-2.5 rounded-full bg-rose-400/30" />
-                                                <div className="w-2.5 h-2.5 rounded-full bg-amber-400/30" />
-                                                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/30" />
+                                    {/* The "Staging" Area for the Card */}
+                                    <div className="flex-1 bg-slate-900 dark:bg-black rounded-[32px] overflow-hidden shadow-2xl flex flex-col border border-slate-800/10 relative">
+                                        {/* Mock Browser Header */}
+                                        <div className="h-12 bg-slate-800/50 backdrop-blur-md border-b border-white/5 flex items-center px-6 gap-3 shrink-0">
+                                            <div className="flex gap-2">
+                                                <div className="w-3 h-3 rounded-full bg-rose-500/20 border border-rose-500/30" />
+                                                <div className="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/30" />
+                                                <div className="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/30" />
                                             </div>
-                                            <div className="mx-auto text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] translate-x-[-12px]">System Generated Output</div>
+                                            <div className="px-4 py-1 bg-white/5 rounded-lg text-[9px] font-bold text-white/20 uppercase tracking-[0.3em] mx-auto">Dispatch Preview Staging</div>
                                         </div>
-                                        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-[repeating-linear-gradient(45deg,#fafafa,#fafafa_10px,#ffffff_10px,#ffffff_20px)] dark:bg-slate-900">
+
+                                        <div className="flex-1 overflow-y-auto p-4 xl:p-12 custom-scrollbar bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-800 to-slate-950">
                                             <div
-                                                className="email-preview-container bg-white dark:bg-white rounded-xl shadow-2xl shadow-slate-200/50 p-0 overflow-hidden mx-auto max-w-[700px] border border-slate-100"
+                                                className="email-preview-container rounded-[24px] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden mx-auto max-w-[650px]"
                                                 dangerouslySetInnerHTML={{ __html: previewHtml }}
                                             />
                                         </div>
