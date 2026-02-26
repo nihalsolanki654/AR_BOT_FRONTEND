@@ -81,6 +81,10 @@ const InvoiceList = () => {
             const uEmail = user.email || '';
             const uPhone = user.phone || '';
 
+            // Add AbortController for timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/mail/send-invoice/${mailInvoice._id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -88,15 +92,24 @@ const InvoiceList = () => {
                     senderName: uName,
                     fromEmail: uEmail,
                     senderPhone: uPhone
-                })
+                }),
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
+
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || 'Failed to send email.');
             showToast(`✓ ${data.message}`, 'success');
             setShowMailModal(false);
             setMailInvoice(null);
         } catch (err) {
-            showToast(err.message, 'error');
+            console.error('Send mail error:', err);
+            if (err.name === 'AbortError') {
+                showToast('Request timed out. The server is taking too long to respond.', 'error');
+            } else {
+                showToast(err.message || 'An unexpected error occurred.', 'error');
+            }
         } finally {
             setSendingMailId(null);
         }
