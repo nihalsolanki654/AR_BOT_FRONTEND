@@ -22,10 +22,12 @@ const InvoiceList = () => {
     const [sendingEmailId, setSendingEmailId] = useState(null);
     const [pagination, setPagination] = useState({ total: 0, pages: 1, currentPage: 1 });
     const [toast, setToast] = useState(null);
+    const toastTimeoutRef = useRef(null);
 
     const showToast = useCallback((message, type = 'success') => {
+        if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
         setToast({ message, type });
-        setTimeout(() => setToast(null), 4000);
+        toastTimeoutRef.current = setTimeout(() => setToast(null), 5000);
     }, []);
 
     const prepareMail = useCallback(async (invoice) => {
