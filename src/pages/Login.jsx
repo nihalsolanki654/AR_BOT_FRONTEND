@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     IndianRupee,
@@ -8,10 +8,8 @@ import {
     ShieldCheck,
     Sparkles,
     Globe,
-    ChevronRight,
-    LayoutDashboard,
-    PieChart as PieChartIcon,
-    Wallet
+    Zap,
+    Fingerprint
 } from 'lucide-react';
 
 const Login = () => {
@@ -19,7 +17,12 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setIsLoaded(true);
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -52,164 +55,119 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen w-full flex bg-white dark:bg-slate-950 transition-colors duration-500 font-sans selection:bg-blue-100 dark:selection:bg-blue-900/40">
+        <div className="min-h-screen w-full relative flex items-center justify-center p-6 overflow-hidden bg-slate-950 font-sans transition-colors duration-500 selection:bg-blue-500/30 selection:text-white">
 
-            {/* Visual Side - Visible only on LG+ */}
-            <div className="hidden lg:flex lg:w-1/2 relative bg-slate-50 dark:bg-slate-900/40 overflow-hidden items-center justify-center p-12 border-r border-slate-100 dark:border-slate-800/50">
-                {/* Dynamic Background Elements */}
-                <div className="absolute top-0 left-0 w-full h-full">
-                    <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-blue-400/10 dark:bg-blue-600/5 rounded-full blur-[100px] animate-pulse"></div>
-                    <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-400/5 dark:bg-indigo-600/5 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+            {/* Immersive Animated Mesh Background */}
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] rounded-full bg-blue-600/10 blur-[120px] animate-pulse"></div>
+                <div className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] rounded-full bg-indigo-600/10 blur-[120px] animate-pulse" style={{ animationDelay: '3s' }}></div>
+                <div className="absolute top-[40%] left-[30%] w-[40%] h-[40%] rounded-full bg-purple-600/5 blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+
+                {/* Minimal Grid Overlay */}
+                <div className="absolute inset-0 opacity-[0.05]"
+                    style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '80px 80px' }}>
                 </div>
-
-                {/* Content Overlay */}
-                <div className="relative z-10 max-w-lg">
-                    <div className="mb-12 inline-flex items-center gap-3 px-4 py-2 bg-white/80 dark:bg-slate-800/60 backdrop-blur-md border border-white dark:border-slate-700/50 rounded-2xl shadow-xl shadow-blue-500/5 animate-in slide-in-from-bottom duration-700">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/20">
-                            <IndianRupee size={16} />
-                        </div>
-                        <span className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">Financial Ledger Portal v2.0</span>
-                    </div>
-
-                    <h2 className="text-5xl font-black text-slate-900 dark:text-white leading-[1.1] mb-8 animate-in slide-in-from-bottom duration-700 delay-100">
-                        Manage your <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">financial destiny</span> with precision.
-                    </h2>
-
-                    <p className="text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-12 animate-in slide-in-from-bottom duration-700 delay-200">
-                        A seamless gateway for organization-wide invoice tracking, team management, and real-time revenue analytics.
-                    </p>
-
-                    {/* Feature Cards */}
-                    <div className="grid grid-cols-2 gap-4 animate-in slide-in-from-bottom duration-700 delay-300">
-                        <div className="p-6 bg-white dark:bg-slate-800/40 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm transition-all hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1">
-                            <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-4">
-                                <LayoutDashboard size={20} />
-                            </div>
-                            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">Unified Dashboard</h4>
-                            <p className="text-[11px] text-slate-400 font-medium">All stats in one place.</p>
-                        </div>
-                        <div className="p-6 bg-white dark:bg-slate-800/40 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm transition-all hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1">
-                            <div className="w-10 h-10 bg-blue-50 dark:bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
-                                <Wallet size={20} />
-                            </div>
-                            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">Secure Billing</h4>
-                            <p className="text-[11px] text-slate-400 font-medium">Enterprise-grade security.</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Grid Pattern */}
-                <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.1]" style={{ backgroundImage: 'radial-gradient(circle, #4f46e5 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
             </div>
 
-            {/* Form Side */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative overflow-hidden">
-                {/* Background Blobs for Mobile */}
-                <div className="lg:hidden absolute inset-0 z-0">
-                    <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-100/50 dark:bg-blue-600/10 blur-[100px]"></div>
-                    <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-indigo-100/50 dark:bg-indigo-600/10 blur-[100px]"></div>
+            {/* Main Auth Container */}
+            <div className={`relative z-10 w-full max-w-[460px] transition-all duration-1000 transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+
+                {/* Branding Section */}
+                <div className="text-center mb-12 space-y-4">
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-white text-slate-950 shadow-2xl shadow-white/10 mb-4 transition-transform hover:scale-105 duration-500 group">
+                        <IndianRupee size={32} className="group-hover:rotate-12 transition-transform duration-500" />
+                    </div>
+                    <div className="space-y-1">
+                        <h1 className="text-4xl font-extrabold text-white tracking-tight">FinancePortal</h1>
+                        <p className="text-slate-400 font-medium text-sm tracking-wide uppercase opacity-70">Unified Account Access</p>
+                    </div>
                 </div>
 
-                <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in-95 duration-500">
-                    <div className="mb-12 text-center lg:text-left">
-                        <div className="lg:hidden inline-flex items-center justify-center w-14 h-14 bg-blue-600 rounded-2xl shadow-xl shadow-blue-500/20 mb-6">
-                            <IndianRupee className="text-white" size={28} />
-                        </div>
-                        <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-3">Portal Access</h1>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium">Enter your credentials to manage records.</p>
-                    </div>
+                {/* Login Card */}
+                <div className="backdrop-blur-3xl bg-white/[0.03] border border-white/10 rounded-[3rem] shadow-2xl overflow-hidden p-8 md:p-12 transition-all hover:bg-white/[0.05] hover:border-white/20">
 
                     {error && (
-                        <div className="mb-8 p-4 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 rounded-2xl animate-in shake duration-500">
-                            <p className="text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center justify-center gap-2">
+                        <div className="mb-8 p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl animate-in shake duration-500">
+                            <p className="text-rose-400 text-xs font-bold text-center flex items-center justify-center gap-2">
                                 <ShieldCheck size={14} /> {error}
                             </p>
                         </div>
                     )}
 
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Username</label>
-                            </div>
-                            <div className="relative group">
-                                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors pointer-events-none">
+                    <form onSubmit={handleLogin} className="space-y-8">
+                        {/* Username Field */}
+                        <div className="space-y-3 group">
+                            <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-widest transition-colors group-focus-within:text-white">Admin Identity</label>
+                            <div className="relative">
+                                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-white transition-colors">
                                     <User size={18} />
                                 </div>
                                 <input
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 focus:border-blue-600 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-600/5 rounded-2xl text-slate-900 dark:text-white font-semibold outline-none transition-all placeholder:text-slate-400/60"
-                                    placeholder="your_username"
+                                    className="w-full pl-16 pr-8 py-5 bg-white/[0.03] border border-white/10 focus:border-white/30 focus:bg-white/[0.07] rounded-2xl text-white font-medium outline-none transition-all placeholder:text-slate-600 shadow-inner"
+                                    placeholder="Username"
                                     required
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Password</label>
-                            </div>
-                            <div className="relative group">
-                                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors pointer-events-none">
+                        {/* Password Field */}
+                        <div className="space-y-3 group">
+                            <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-widest transition-colors group-focus-within:text-white">Access Key</label>
+                            <div className="relative">
+                                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-white transition-colors">
                                     <Lock size={18} />
                                 </div>
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 focus:border-blue-600 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-600/5 rounded-2xl text-slate-900 dark:text-white font-semibold outline-none transition-all placeholder:text-slate-400/60"
+                                    className="w-full pl-16 pr-8 py-5 bg-white/[0.03] border border-white/10 focus:border-white/30 focus:bg-white/[0.07] rounded-2xl text-white font-medium outline-none transition-all placeholder:text-slate-600 shadow-inner"
                                     placeholder="••••••••"
                                     required
                                 />
                             </div>
                         </div>
 
+                        {/* Action Button */}
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full relative group overflow-hidden bg-slate-900 dark:bg-blue-600 text-white py-4.5 rounded-2xl font-bold text-sm tracking-wide transition-all active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 shadow-xl shadow-blue-500/10 hover:shadow-blue-500/25"
+                            className="w-full group relative overflow-hidden bg-white text-slate-950 py-5 rounded-2xl font-black text-sm uppercase tracking-[0.15em] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:grayscale disabled:scale-100 shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-white/20"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <span className="relative z-10 flex items-center justify-center gap-2">
+                            <span className="relative z-10 flex items-center justify-center gap-3">
                                 {loading ? (
-                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin"></div>
                                 ) : (
                                     <>
-                                        Enter Account Portal
-                                        <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                        Authorize & Enter
+                                        <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-300" />
                                     </>
                                 )}
                             </span>
                         </button>
                     </form>
 
-                    {/* Trust Indicators */}
-                    <div className="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800/50">
-                        <div className="flex flex-wrap justify-center lg:justify-start items-center gap-8 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
-                            <div className="flex items-center gap-2">
-                                <ShieldCheck size={16} />
-                                <span className="text-[10px] font-black uppercase tracking-widest">TLS 1.3 Secure</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Sparkles size={16} />
-                                <span className="text-[10px] font-black uppercase tracking-widest">Enterprise UI</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Globe size={16} />
-                                <span className="text-[10px] font-black uppercase tracking-widest">Global Sync</span>
-                            </div>
+                    {/* Meta Info */}
+                    <div className="mt-12 pt-8 border-t border-white/5 flex flex-wrap justify-between items-center gap-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                        <div className="flex items-center gap-2">
+                            <Zap size={14} className="text-blue-500" /> Fast Execution
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Fingerprint size={14} className="text-emerald-500" /> Biometric Ready
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Globe size={14} className="text-indigo-400" /> SSL Encrypted
                         </div>
                     </div>
                 </div>
 
-                {/* Footer Copy */}
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 lg:left-12 lg:translate-x-0">
-                    <p className="text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em]">
-                        &copy; 2026 Ar-System Infrastructure
-                    </p>
-                </div>
+                {/* System Copyright */}
+                <p className="mt-12 text-center text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">
+                    &copy; MMXXVI Ar-System Infrastructure. V4.0.2
+                </p>
             </div>
         </div>
     );
