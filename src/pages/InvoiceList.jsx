@@ -19,32 +19,39 @@ const InvoiceList = () => {
     };
 
     const [isLoading, setIsLoading] = useState(true);
+    const [sendingEmailId, setSendingEmailId] = useState(null);
     const [pagination, setPagination] = useState({ total: 0, pages: 1, currentPage: 1 });
     const [toast, setToast] = useState(null);
 
     const showToast = useCallback((message, type = 'success') => {
         setToast({ message, type });
-        setTimeout(() => setToast(null), 4000);
+        if (type !== 'info') {
+            setTimeout(() => setToast(null), 4000);
+        }
     }, []);
 
     const prepareMail = useCallback(async (invoice) => {
+        if (sendingEmailId) return;
+        setSendingEmailId(invoice._id);
+        showToast(`Sending email to ${invoice.companyName}...`, "info");
         try {
-            showToast(`Sending email to ${invoice.companyName}...`, "info");
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices/${invoice._id}/send-email`, {
                 method: 'POST'
             });
             const data = await response.json();
 
             if (response.ok) {
-                showToast("Email sent successfully!");
+                showToast("Email sent successfully!", "success");
             } else {
                 showToast(data.message || "Failed to send email", "error");
             }
         } catch (error) {
             console.error('Error sending email:', error);
             showToast("Error connecting to email service", "error");
+        } finally {
+            setSendingEmailId(null);
         }
-    }, [showToast]);
+    }, [showToast, sendingEmailId]);
 
     const fetchInvoices = async (page = 1, search = searchTerm, status = filterStatus) => {
         setIsLoading(true);
@@ -193,15 +200,17 @@ const InvoiceList = () => {
         <div className="p-6 md:p-10 max-w-7xl mx-auto dark:bg-slate-950 min-h-screen transition-colors duration-500 font-sans selection:bg-slate-200 selection:text-slate-900">
             {/* Toast Notification */}
             {toast && (
-                <div className={`fixed top-6 right-6 z-[100] flex items-start gap-3 px-5 py-4 rounded-2xl shadow-xl border text-sm font-semibold max-w-sm transition-all duration-300 ${toast.type === 'success'
-                    ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800'
-                    : 'bg-white dark:bg-slate-900 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-800'
+                <div className={`fixed top-6 right-6 z-[100] flex items-start gap-3 px-5 py-4 rounded-2xl shadow-xl border text-sm font-semibold max-w-sm transition-all duration-300 ${toast.type === 'success' ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800' :
+                    toast.type === 'info' ? 'bg-white dark:bg-slate-900 text-blue-700 dark:text-blue-400 border-blue-100 dark:border-blue-800' :
+                        'bg-white dark:bg-slate-900 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-800'
                     }`}>
-                    <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'success' ? 'bg-emerald-100 dark:bg-emerald-900' : 'bg-rose-100 dark:bg-rose-900'
+                    <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'success' ? 'bg-emerald-100 dark:bg-emerald-900' :
+                        toast.type === 'info' ? 'bg-blue-100 dark:bg-blue-900' :
+                            'bg-rose-100 dark:bg-rose-900'
                         }`}>
-                        {toast.type === 'success'
-                            ? <Check size={11} className="text-emerald-600 dark:text-emerald-400" />
-                            : <X size={11} className="text-rose-600 dark:text-rose-400" />}
+                        {toast.type === 'success' ? <Check size={11} className="text-emerald-600 dark:text-emerald-400" /> :
+                            toast.type === 'info' ? <div className="w-2.5 h-2.5 border-2 border-blue-600 dark:border-blue-400 border-t-transparent rounded-full animate-spin" /> :
+                                <X size={11} className="text-rose-600 dark:text-rose-400" />}
                     </div>
                     <span className="leading-snug">{toast.message}</span>
                     <button onClick={() => setToast(null)} className="ml-2 text-slate-300 hover:text-slate-500 dark:hover:text-slate-300 mt-0.5 shrink-0">
@@ -413,9 +422,13 @@ const InvoiceList = () => {
                                                     </button>
                                                     <button
                                                         onClick={() => prepareMail(invoice)}
-                                                        className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700"
-                                                        title="Send Email">
-                                                        <Mail size={16} />
+                                                        disabled={sendingEmailId === invoice._id}
+                                                        className={`p-2 rounded-xl transition-all shadow-sm border ${sendingEmailId === invoice._id
+                                                                ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 border-blue-100 cursor-wait'
+                                                                : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'
+                                                            }`}
+                                                        title={sendingEmailId === invoice._id ? "Sending..." : "Send Email"}>
+                                                        {sendingEmailId === invoice._id ? <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> : <Mail size={16} />}
                                                     </button>
                                                     <button onClick={() => handleDelete(invoice._id)}
                                                         className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="Delete">
