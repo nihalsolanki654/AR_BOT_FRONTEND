@@ -33,12 +33,6 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
-  React.useEffect(() => {
-    // Force fresh login whenever the App is initialized/reloaded
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('user');
-  }, []);
-
   return (
     <ThemeProvider>
       <Router>
