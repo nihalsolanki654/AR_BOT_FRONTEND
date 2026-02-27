@@ -192,47 +192,71 @@ const CompanyEmails = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                                {configurations.map((config) => (
-                                    <tr key={config._id} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <div className="font-bold text-gray-900 dark:text-white">{config.companyName}</div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-wrap gap-1.5">
-                                                {config.toEmails.map((email, i) => (
-                                                    <span key={i} className="px-2 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold rounded-md border border-blue-100 dark:border-blue-900/30 flex items-center gap-1">
-                                                        <Mail size={10} /> {email}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-wrap gap-1.5">
-                                                {config.ccEmails.length > 0 ? config.ccEmails.map((email, i) => (
-                                                    <span key={i} className="px-2 py-1 bg-slate-50 dark:bg-slate-800 text-gray-600 dark:text-slate-400 text-xs font-semibold rounded-md border border-gray-200 dark:border-slate-700 flex items-center gap-1">
-                                                        <Mail size={10} /> {email}
-                                                    </span>
-                                                )) : <span className="text-gray-400 dark:text-slate-600 text-xs italic">No CC</span>}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button
-                                                    onClick={() => handleOpenEditModal(config)}
-                                                    className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
-                                                >
-                                                    <Pencil size={18} />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(config._id)}
-                                                    className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {configurations.map((item, index) => {
+                                    const config = item.config;
+                                    return (
+                                        <tr key={index} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <div className="font-bold text-gray-900 dark:text-white">{item.companyName}</div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {config && config.toEmails.length > 0 ? config.toEmails.map((email, i) => (
+                                                        <span key={i} className="px-2 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold rounded-md border border-blue-100 dark:border-blue-900/30 flex items-center gap-1">
+                                                            <Mail size={10} /> {email}
+                                                        </span>
+                                                    )) : <span className="text-amber-500 dark:text-amber-400 text-xs font-semibold italic flex items-center gap-1"><AlertCircle size={12} /> Email Required</span>}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {config && config.ccEmails.length > 0 ? config.ccEmails.map((email, i) => (
+                                                        <span key={i} className="px-2 py-1 bg-slate-50 dark:bg-slate-800 text-gray-600 dark:text-slate-400 text-xs font-semibold rounded-md border border-gray-200 dark:border-slate-700 flex items-center gap-1">
+                                                            <Mail size={10} /> {email}
+                                                        </span>
+                                                    )) : <span className="text-gray-400 dark:text-slate-600 text-xs italic">No CC</span>}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    {config ? (
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleOpenEditModal(config)}
+                                                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
+                                                                title="Edit Emails"
+                                                            >
+                                                                <Pencil size={18} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDelete(config._id)}
+                                                                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                                                title="Remove Emails"
+                                                            >
+                                                                <Trash2 size={18} />
+                                                            </button>
+                                                        </>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() => {
+                                                                setEditingConfig(null);
+                                                                setFormData({
+                                                                    companyName: item.companyName,
+                                                                    toEmails: [''],
+                                                                    ccEmails: ['']
+                                                                });
+                                                                setIsModalOpen(true);
+                                                            }}
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold rounded-lg border border-emerald-100 dark:border-emerald-500/20 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all"
+                                                        >
+                                                            <Plus size={14} /> Configure
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
