@@ -327,12 +327,11 @@ const InvoiceList = () => {
                                             {/* Status */}
                                             <div className="w-[180px] shrink-0 px-5 text-center flex items-center justify-center">
                                                 <span className={`px-4 py-1.5 rounded-full text-[10px] font-black border uppercase tracking-widest shadow-sm ${status === 'Paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' :
-                                                    status === 'Due' ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' :
+                                                    (status === 'Due' || status === 'Due Today') ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' :
                                                         status === 'Overdue' ? 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20' :
-                                                            status === 'Due Today' ? 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20' :
-                                                                'bg-slate-50 text-slate-600 border-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                                                            'bg-slate-50 text-slate-600 border-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
                                                     }`}>
-                                                    {status === 'PartiallyPaid' ? 'Partial' : status === 'Due Today' ? 'Today' : status}
+                                                    {status === 'PartiallyPaid' ? 'Partial' : (status === 'Due Today' ? 'Due' : status)}
                                                 </span>
                                             </div>
 
@@ -342,7 +341,7 @@ const InvoiceList = () => {
                                                 {status === 'Paid'
                                                     ? <span className="text-slate-300">-</span>
                                                     : <span className={daysLeft < 0 ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}>
-                                                        {daysLeft}
+                                                        {daysLeft === 0 ? 'Today' : daysLeft}
                                                     </span>
                                                 }
                                             </div>
@@ -498,7 +497,7 @@ const InvoiceList = () => {
                                     <div className="grid grid-cols-3 gap-3">
                                         <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
                                             <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Status</p>
-                                            <p className="text-[13px] font-medium text-slate-600 dark:text-slate-300 uppercase">{status === 'PartiallyPaid' ? 'Partial' : status}</p>
+                                            <p className="text-[13px] font-medium text-slate-600 dark:text-slate-300 uppercase">{status === 'PartiallyPaid' ? 'Partial' : (status === 'Due Today' ? 'Due' : status)}</p>
                                         </div>
                                         <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
                                             <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Date</p>
