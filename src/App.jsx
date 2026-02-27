@@ -31,18 +31,19 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? <Layout>{children}</Layout> : <Navigate to="/login" />;
 };
 
-const LoginRoute = () => {
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-  return isAuthenticated ? <Navigate to="/dashboard" /> : <Login />;
-};
-
 function App() {
+  React.useEffect(() => {
+    // Force fresh login whenever the App is initialized/reloaded
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('user');
+  }, []);
+
   return (
     <ThemeProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/login" element={<LoginRoute />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/add-invoice" element={<ProtectedRoute><AddInvoice /></ProtectedRoute>} />
           <Route path="/invoices" element={<ProtectedRoute><InvoiceList /></ProtectedRoute>} />
