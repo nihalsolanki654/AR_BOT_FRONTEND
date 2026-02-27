@@ -25,9 +25,7 @@ const InvoiceList = () => {
 
     const showToast = useCallback((message, type = 'success') => {
         setToast({ message, type });
-        if (type !== 'info') {
-            setTimeout(() => setToast(null), 4000);
-        }
+        setTimeout(() => setToast(null), 4000);
     }, []);
 
     const prepareMail = useCallback(async (invoice) => {
@@ -424,8 +422,8 @@ const InvoiceList = () => {
                                                         onClick={() => prepareMail(invoice)}
                                                         disabled={sendingEmailId === invoice._id}
                                                         className={`p-2 rounded-xl transition-all shadow-sm border ${sendingEmailId === invoice._id
-                                                                ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 border-blue-100 cursor-wait'
-                                                                : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'
+                                                            ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 border-blue-100 cursor-wait'
+                                                            : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'
                                                             }`}
                                                         title={sendingEmailId === invoice._id ? "Sending..." : "Send Email"}>
                                                         {sendingEmailId === invoice._id ? <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> : <Mail size={16} />}
