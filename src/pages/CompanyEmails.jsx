@@ -249,7 +249,7 @@ const CompanyEmails = () => {
                                                             }}
                                                             className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold rounded-lg border border-emerald-100 dark:border-emerald-500/20 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all"
                                                         >
-                                                            <Plus size={14} /> Configure
+                                                            <Plus size={14} /> Add Emails
                                                         </button>
                                                     )}
                                                 </div>
