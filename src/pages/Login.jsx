@@ -21,6 +21,17 @@ const Login = () => {
 
     useEffect(() => {
         setIsLoaded(true);
+
+        // Pre-emptive wake-up pinger for Render backend
+        const wakeup = async () => {
+            try {
+                await fetch(`${import.meta.env.VITE_API_URL}/`);
+                console.log('[SYSTEM] Secure node wake-up signal sent.');
+            } catch (err) {
+                console.warn('[SYSTEM] Initial wake-up signal failed. Node might be initializing.');
+            }
+        };
+        wakeup();
     }, []);
 
     const handleLogin = async (e) => {
@@ -29,6 +40,7 @@ const Login = () => {
         setLoading(true);
 
         try {
+            console.log('[AUTH] Initiating verification sequence...');
             // Mapping 'email' state to 'username' property for backend compatibility
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/members/login`, {
                 method: 'POST',
@@ -39,6 +51,7 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
+                console.log('[AUTH] Verification successful.');
                 localStorage.setItem('isAuthenticated', 'true');
                 localStorage.setItem('user', JSON.stringify(data.user));
                 navigate('/dashboard');
@@ -46,7 +59,7 @@ const Login = () => {
                 setError(data.message || 'Authentication failed. Please check your credentials.');
             }
         } catch (err) {
-            setError('Connection error. Security infrastructure unreachable.');
+            setError('Connection error. Security infrastructure unreachable or initializing.');
         } finally {
             setLoading(false);
         }
@@ -144,7 +157,10 @@ const Login = () => {
                             <div className="absolute inset-0 bg-white/20 transform translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-1000"></div>
                             <span className="relative z-10 flex items-center justify-center gap-3">
                                 {loading ? (
-                                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                                        <span>Initializing Node...</span>
+                                    </div>
                                 ) : (
                                     <>
                                         Authorize Session
