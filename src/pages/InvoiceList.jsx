@@ -27,8 +27,23 @@ const InvoiceList = () => {
         setTimeout(() => setToast(null), 4000);
     }, []);
 
-    const prepareMail = useCallback(() => {
-        showToast("Email sending coming soon!", "info");
+    const prepareMail = useCallback(async (invoice) => {
+        try {
+            showToast(`Sending email to ${invoice.companyName}...`, "info");
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices/${invoice._id}/send-email`, {
+                method: 'POST'
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                showToast("Email sent successfully!");
+            } else {
+                showToast(data.message || "Failed to send email", "error");
+            }
+        } catch (error) {
+            console.error('Error sending email:', error);
+            showToast("Error connecting to email service", "error");
+        }
     }, [showToast]);
 
     const fetchInvoices = async (page = 1, search = searchTerm, status = filterStatus) => {
@@ -397,7 +412,7 @@ const InvoiceList = () => {
                                                         <Eye size={16} />
                                                     </button>
                                                     <button
-                                                        onClick={() => prepareMail()}
+                                                        onClick={() => prepareMail(invoice)}
                                                         className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700"
                                                         title="Send Email">
                                                         <Mail size={16} />
