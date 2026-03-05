@@ -3,7 +3,19 @@ import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, FilePlus, FileText, UserPlus, LogOut, Briefcase, X, Building2 } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        try {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.id) {
+                await fetch(`${import.meta.env.VITE_API_URL}/api/members/logout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.id }),
+                });
+            }
+        } catch (err) {
+            console.error('Logout error:', err);
+        }
         localStorage.removeItem('isAuthenticated');
         localStorage.removeItem('user');
         window.location.href = '/login';

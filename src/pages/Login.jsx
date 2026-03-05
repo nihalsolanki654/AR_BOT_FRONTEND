@@ -54,6 +54,11 @@ const Login = () => {
                 console.log('[AUTH] Verification successful.');
                 localStorage.setItem('isAuthenticated', 'true');
                 localStorage.setItem('user', JSON.stringify(data.user));
+
+                // Show online count alert as requested
+                const count = data.onlineCount || 0;
+                window.alert(`Login Successful! Current users logged in: ${count}`);
+
                 navigate('/dashboard');
             } else {
                 setError(data.message || 'Authentication failed. Please check your credentials.');
