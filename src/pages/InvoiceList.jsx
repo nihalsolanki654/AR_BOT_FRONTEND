@@ -313,7 +313,7 @@ const InvoiceList = () => {
                                 <div className="w-[70px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">GST</div>
                                 <div className="w-[120px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">GST Amt</div>
                                 <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Total</div>
-                                <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Balance</div>
+                                <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Pending</div>
                                 <div className="w-[150px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Email Sent Date</div>
                                 <div className="w-[100px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Sent Days</div>
                                 <div className="w-[180px] shrink-0 px-5 py-5 text-right text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] pr-12">Actions</div>
@@ -427,12 +427,12 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Total Amount */}
-                                            <div className="w-[130px] shrink-0 px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
+                                            <div className="w-[130px] shrink-0 px-5 text-[13px] text-blue-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.total_Amount || 0).toLocaleString('en-IN')}
                                             </div>
 
                                             {/* Balance Due */}
-                                            <div className="w-[130px] shrink-0 px-5 text-[13px] text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap tabular-nums">
+                                            <div className="w-[130px] shrink-0 px-5 text-[13px] text-600 dark:text-blue-400 font-bold whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
                                             </div>
 
