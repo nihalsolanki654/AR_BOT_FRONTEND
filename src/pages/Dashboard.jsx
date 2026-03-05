@@ -155,13 +155,13 @@ const Dashboard = () => {
                 />
 
                 <StatCard
-                    title="Overdue"
-                    value={`₹${Math.round(stats.overdueAmount).toLocaleString('en-IN')}`}
-                    icon={Clock}
-                    colorClass="text-rose-600"
-                    bgColorClass="bg-rose-50"
-                    subText={`${stats.overdueCount} Invoices`}
+                    title="Collected"
+                    value={`₹${Math.round(stats.paidAmount).toLocaleString('en-IN')}`}
+                    icon={CheckCircle2}
+                    colorClass="text-emerald-600"
+                    bgColorClass="bg-emerald-50"
                 />
+
                 <StatCard
                     title="Pending Dues"
                     value={`₹${Math.round(stats.pendingAmount - stats.overdueAmount).toLocaleString('en-IN')}`}
@@ -169,13 +169,17 @@ const Dashboard = () => {
                     colorClass="text-amber-600"
                     bgColorClass="bg-amber-50"
                 />
+
                 <StatCard
-                    title="Collected"
-                    value={`₹${Math.round(stats.paidAmount).toLocaleString('en-IN')}`}
-                    icon={CheckCircle2}
-                    colorClass="text-emerald-600"
-                    bgColorClass="bg-emerald-50"
+                    title="Overdue"
+                    value={`₹${Math.round(stats.overdueAmount).toLocaleString('en-IN')}`}
+                    icon={Clock}
+                    colorClass="text-rose-600"
+                    bgColorClass="bg-rose-50"
+                    subText={`${stats.overdueCount} Invoices`}
                 />
+
+
             </div>
 
             {/* Invoice Status */}
