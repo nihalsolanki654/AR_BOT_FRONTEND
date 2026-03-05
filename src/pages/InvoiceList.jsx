@@ -332,14 +332,14 @@ const InvoiceList = () => {
                                         onScroll={handleRowScroll}>
                                         <div className="flex items-center min-w-max px-3 py-4">
                                             {/* Invoice # */}
-                                            <div className="w-[120px] shrink-0 px-5 font-bold text-slate-900 dark:text-slate-100 text-[13px] tracking-tight tabular-nums">
+                                            <div className="w-[120px] shrink-0 px-5 font-medium text-slate-1200 dark:text-slate-100 text-[13px] tracking-tight tabular-nums">
                                                 {getInvoiceNumber(invoice)}
                                             </div>
 
                                             {/* Company */}
                                             <div className="w-[220px] shrink-0 px-5">
-                                                <div className="font-semibold text-slate-900 dark:text-slate-100 text-sm whitespace-normal leading-tight" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
-                                                <div className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-wider">{invoice.State || ''}</div>
+                                                <div className="font-medium text-slate-1200 dark:text-slate-100 text-sm whitespace-normal leading-tight" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
+                                                <div className="text-[10px] text-slate-900 mt-1 uppercase font-bold tracking-wider">{invoice.State || ''}</div>
                                             </div>
 
                                             {/* Invoice Date */}
