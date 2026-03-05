@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Mail,
-    Lock,
     Eye,
     EyeOff,
     Check,
-    ArrowRight
+    ArrowRight,
+    User
 } from 'lucide-react';
 
 const Login = () => {
@@ -54,11 +53,6 @@ const Login = () => {
                 console.log('[AUTH] Verification successful.');
                 localStorage.setItem('isAuthenticated', 'true');
                 localStorage.setItem('user', JSON.stringify(data.user));
-
-                // Show online count alert as requested
-                const count = data.onlineCount || 0;
-                window.alert(`Login Successful! Current users logged in: ${count}`);
-
                 navigate('/dashboard');
             } else {
                 setError(data.message || 'Authentication failed. Please check your credentials.');
@@ -106,7 +100,7 @@ const Login = () => {
                                     required
                                 />
                                 <div className="absolute right-6 top-1/2 -translate-y-1/2">
-                                    <Mail className="w-4 h-4 text-[#d1cdc2] group-focus-within:text-[#b08d57] transition-colors" />
+                                    <User className="w-4 h-4 text-[#d1cdc2] group-focus-within:text-[#b08d57]" />
                                 </div>
                             </div>
                         </div>

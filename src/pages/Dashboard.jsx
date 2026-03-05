@@ -30,29 +30,25 @@ const Dashboard = () => {
         paidAmount: 0,
         pendingAmount: 0,
         paidCount: 0,
-        pendingCount: 0,
-        onlineCount: 0
+        pendingCount: 0
     });
 
     const [revenueData, setRevenueData] = useState([]);
     const [statusData, setStatusData] = useState([]);
-    const [trendData, setTrendData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchStats = async () => {
             setIsLoading(true);
             try {
-                const [statsRes, trendRes, membersRes] = await Promise.all([
+                const [statsRes, trendRes] = await Promise.all([
                     fetch(`${import.meta.env.VITE_API_URL}/api/invoices/stats`),
-                    fetch(`${import.meta.env.VITE_API_URL}/api/invoices`),
-                    fetch(`${import.meta.env.VITE_API_URL}/api/members/online-count`)
+                    fetch(`${import.meta.env.VITE_API_URL}/api/invoices`)
                 ]);
 
-                if (statsRes.ok && trendRes.ok && membersRes.ok) {
+                if (statsRes.ok && trendRes.ok) {
                     const statsData = await statsRes.json();
                     const trendInvoices = await trendRes.json();
-                    const membersData = await membersRes.json();
 
                     // Map backend stats to frontend state
                     setStats({
@@ -63,8 +59,7 @@ const Dashboard = () => {
                         overdueAmount: statsData.overdueAmount,
                         paidCount: statsData.paidCount,
                         pendingCount: statsData.pendingCount,
-                        overdueCount: statsData.overdueCount,
-                        onlineCount: membersData.count
+                        overdueCount: statsData.overdueCount
                     });
 
                     // 📊 Revenue Bar Chart Data
@@ -158,14 +153,7 @@ const Dashboard = () => {
                     colorClass="text-blue-600"
                     bgColorClass="bg-blue-50"
                 />
-                <StatCard
-                    title="Logged In"
-                    value={stats.onlineCount}
-                    icon={Users}
-                    colorClass="text-purple-600"
-                    bgColorClass="bg-purple-50"
-                    subText="Current users/devices"
-                />
+
                 <StatCard
                     title="Overdue"
                     value={`₹${Math.round(stats.overdueAmount).toLocaleString('en-IN')}`}
