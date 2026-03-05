@@ -33,15 +33,24 @@ const InvoiceList = () => {
     const prepareMail = useCallback(async (invoice) => {
         if (sendingEmailId) return;
         setSendingEmailId(invoice._id);
-        showToast(`Sending email to ${invoice.companyName}...`, "info");
+
+        // Determine email type based on status
+        const status = getPaymentStatus(invoice);
+        let type = 'due';
+        if (status === 'Overdue') type = 'overdue';
+        if (status === 'Paid') type = 'paid';
+
+        showToast(`Sending ${type} email to ${invoice.companyName}...`, "info");
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices/${invoice._id}/send-email`, {
-                method: 'POST'
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type })
             });
             const data = await response.json();
 
             if (response.ok) {
-                showToast("Email sent successfully!", "success");
+                showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} email sent successfully!`, "success");
             } else {
                 showToast(data.message || "Failed to send email", "error");
             }
