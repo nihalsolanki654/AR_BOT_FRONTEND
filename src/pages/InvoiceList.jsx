@@ -427,12 +427,12 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Total Amount */}
-                                            <div className="w-[130px] shrink-0 px-5 text-[13px] text-blue-600 dark:text-slate-300 font-medium whitespace-nowrap tabular-nums">
+                                            <div className="w-[130px] shrink-0 px-5 text-[13px] text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.total_Amount || 0).toLocaleString('en-IN')}
                                             </div>
 
-                                            {/* Balance Due */}
-                                            <div className="w-[130px] shrink-0 px-5 text-[13px] text-600 dark:text-blue-400 font-bold whitespace-nowrap tabular-nums">
+                                            {/* Balance Due (Pending) */}
+                                            <div className="w-[130px] shrink-0 px-5 text-[13px] text-red-600 dark:text-red-400 font-bold whitespace-nowrap tabular-nums">
                                                 ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
                                             </div>
 
@@ -655,7 +655,7 @@ const InvoiceList = () => {
                                             </div>
                                             <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center text-slate-900 dark:text-white">
                                                 <span className="text-xs font-bold uppercase tracking-widest">Grand Total</span>
-                                                <span className="text-2xl font-bold tabular-nums">₹{totalAmt.toLocaleString('en-IN')}</span>
+                                                <span className="text-2xl font-bold tabular-nums text-blue-600 dark:text-blue-400">₹{totalAmt.toLocaleString('en-IN')}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -669,7 +669,7 @@ const InvoiceList = () => {
                                             </div>
                                             <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
                                                 <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Balance</p>
-                                                <p className="text-lg font-bold text-blue-600 dark:text-blue-400 tabular-nums">₹{balanceDue.toLocaleString('en-IN')}</p>
+                                                <p className="text-lg font-bold text-red-600 dark:text-red-400 tabular-nums">₹{balanceDue.toLocaleString('en-IN')}</p>
                                             </div>
                                         </div>
                                     )}
