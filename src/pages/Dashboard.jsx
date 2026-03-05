@@ -31,11 +31,12 @@ const Dashboard = () => {
         pendingAmount: 0,
         paidCount: 0,
         pendingCount: 0,
-        totalMembers: 0
+        onlineCount: 0
     });
 
     const [revenueData, setRevenueData] = useState([]);
     const [statusData, setStatusData] = useState([]);
+    const [trendData, setTrendData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -44,14 +45,14 @@ const Dashboard = () => {
             try {
                 const [statsRes, trendRes, membersRes] = await Promise.all([
                     fetch(`${import.meta.env.VITE_API_URL}/api/invoices/stats`),
-                    fetch(`${import.meta.env.VITE_API_URL}/api/invoices`), // We still need this for the trend chart specifically for now, or we could add a trend endpoint
-                    fetch(`${import.meta.env.VITE_API_URL}/api/members`)
+                    fetch(`${import.meta.env.VITE_API_URL}/api/invoices`),
+                    fetch(`${import.meta.env.VITE_API_URL}/api/members/online-count`)
                 ]);
 
                 if (statsRes.ok && trendRes.ok && membersRes.ok) {
                     const statsData = await statsRes.json();
                     const trendInvoices = await trendRes.json();
-                    const members = await membersRes.json();
+                    const membersData = await membersRes.json();
 
                     // Map backend stats to frontend state
                     setStats({
@@ -63,7 +64,7 @@ const Dashboard = () => {
                         paidCount: statsData.paidCount,
                         pendingCount: statsData.pendingCount,
                         overdueCount: statsData.overdueCount,
-                        totalMembers: members.length
+                        onlineCount: membersData.count
                     });
 
                     // 📊 Revenue Bar Chart Data
@@ -158,12 +159,12 @@ const Dashboard = () => {
                     bgColorClass="bg-blue-50"
                 />
                 <StatCard
-                    title="Active Team"
-                    value={stats.totalMembers}
+                    title="Logged In"
+                    value={stats.onlineCount}
                     icon={Users}
                     colorClass="text-purple-600"
                     bgColorClass="bg-purple-50"
-                    subText="Team members"
+                    subText="Current users/devices"
                 />
                 <StatCard
                     title="Overdue"
