@@ -95,14 +95,14 @@ const Login = () => {
                     <form onSubmit={handleLogin} className="space-y-8">
                         {/* Minimal Input */}
                         <div className="space-y-2 group">
-                            <label className="text-[10px] font-black text-[#a69d91] ml-1 uppercase tracking-widest">Email Address</label>
+                            <label className="text-[10px] font-black text-[#a69d91] ml-1 uppercase tracking-widest">Username</label>
                             <div className="relative">
                                 <input
                                     type="text"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full bg-[#fdfcf0]/30 border border-[#e8e4d9] focus:border-[#b08d57]/50 focus:bg-white focus:ring-4 focus:ring-[#b08d57]/5 rounded-2xl px-6 py-4 text-[#4a3f35] outline-none transition-all duration-300 placeholder:text-[#d1cdc2] text-[15px]"
-                                    placeholder="yourname@finance.co"
+                                    placeholder="kindly enter your username"
                                     required
                                 />
                                 <div className="absolute right-6 top-1/2 -translate-y-1/2">
@@ -114,7 +114,7 @@ const Login = () => {
                         {/* Password Input */}
                         <div className="space-y-2 group">
                             <div className="flex justify-between items-center px-1">
-                                <label className="text-[10px] font-black text-[#a69d91] uppercase tracking-widest">Credential Key</label>
+                                <label className="text-[10px] font-black text-[#a69d91] uppercase tracking-widest">Password </label>
                             </div>
                             <div className="relative">
                                 <input
@@ -168,7 +168,7 @@ const Login = () => {
                                     </div>
                                 ) : (
                                     <>
-                                        Authorize Session
+                                        Login
                                         <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
                                     </>
                                 )}
@@ -177,10 +177,7 @@ const Login = () => {
                     </form>
 
                     {/* Footer Info */}
-                    <div className="mt-12 text-center">
-                        <p className="text-[#d1cdc2] text-[10px] font-bold uppercase tracking-[0.4em] mb-4">Secure Terminal Node</p>
-                        <div className="h-px w-8 bg-[#b08d57]/20 mx-auto"></div>
-                    </div>
+
                 </div>
 
                 {/* Secure Disclaimer */}
