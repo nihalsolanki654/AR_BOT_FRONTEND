@@ -453,7 +453,7 @@ const InvoiceList = () => {
                                             </div>
 
                                             {/* Actions */}
-                                            <div className="w-[180px] shrink-0 px-5 pr-12 pl-10">
+                                            <div className="w-[180px] shrink-0 px-5 pr-5 pl-10">
                                                 <div className="flex items-center justify-end gap-2.5">
                                                     {(() => {
                                                         const lastSent = invoice.lastEmailSentAt ? new Date(invoice.lastEmailSentAt) : null;
