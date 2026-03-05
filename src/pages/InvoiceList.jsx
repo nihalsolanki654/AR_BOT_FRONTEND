@@ -50,6 +50,19 @@ const InvoiceList = () => {
             const data = await response.json();
 
             if (response.ok) {
+                // Use the invoice object returned from backend to ensure data consistency
+                const updatedInvoice = data.invoice;
+                if (updatedInvoice) {
+                    setInvoices(prev => prev.map(inv => inv._id === invoice._id ? {
+                        ...inv,
+                        lastEmailSentAt: updatedInvoice.lastEmailSentAt,
+                        emailSentDate: updatedInvoice.emailSentDate
+                    } : inv));
+                } else {
+                    // Fallback
+                    const now = new Date().toISOString();
+                    setInvoices(prev => prev.map(inv => inv._id === invoice._id ? { ...inv, lastEmailSentAt: now } : inv));
+                }
                 showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} email sent successfully!`, "success");
             } else {
                 showToast(data.message || "Failed to send email", "error");
@@ -301,6 +314,8 @@ const InvoiceList = () => {
                                 <div className="w-[120px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">GST Amt</div>
                                 <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Total</div>
                                 <div className="w-[130px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Balance</div>
+                                <div className="w-[150px] shrink-0 px-5 py-5 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Email Sent Date</div>
+                                <div className="w-[100px] shrink-0 px-5 py-5 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Sent Days</div>
                                 <div className="w-[180px] shrink-0 px-5 py-5 text-right text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] pr-12">Actions</div>
                             </div>
                         </div>
@@ -421,24 +436,65 @@ const InvoiceList = () => {
                                                 ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
                                             </div>
 
+                                            {/* Email Sent Date */}
+                                            <div className="w-[150px] shrink-0 px-5 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                                {invoice.emailSentDate || (invoice.lastEmailSentAt ? new Date(invoice.lastEmailSentAt).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-') : '-')}
+                                            </div>
+
+                                            {/* Sent Days Count */}
+                                            <div className="w-[100px] shrink-0 px-5 text-center text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                                {(() => {
+                                                    if (!invoice.lastEmailSentAt) return '-';
+                                                    const sentDate = new Date(invoice.lastEmailSentAt); sentDate.setHours(0, 0, 0, 0);
+                                                    const today = new Date(); today.setHours(0, 0, 0, 0);
+                                                    const diffDays = Math.round((today.getTime() - sentDate.getTime()) / (1000 * 3600 * 24));
+                                                    return diffDays === 0 ? 'Today' : diffDays;
+                                                })()}
+                                            </div>
 
                                             {/* Actions */}
                                             <div className="w-[180px] shrink-0 px-5 pr-12 pl-10">
                                                 <div className="flex items-center justify-end gap-2.5">
-                                                    <button onClick={() => { setSelectedInvoice(invoice); setShowViewModal(true); }}
-                                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="View Details">
-                                                        <Eye size={16} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => prepareMail(invoice)}
-                                                        disabled={sendingEmailId === invoice._id}
-                                                        className={`p-2 rounded-xl transition-all shadow-sm border ${sendingEmailId === invoice._id
-                                                            ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 border-blue-100 cursor-wait'
-                                                            : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'
-                                                            }`}
-                                                        title={sendingEmailId === invoice._id ? "Sending..." : "Send Email"}>
-                                                        {sendingEmailId === invoice._id ? <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> : <Mail size={16} />}
-                                                    </button>
+                                                    {(() => {
+                                                        const lastSent = invoice.lastEmailSentAt ? new Date(invoice.lastEmailSentAt) : null;
+                                                        const today = new Date(); today.setHours(0, 0, 0, 0);
+                                                        const diffDays = lastSent ? Math.round((today.getTime() - lastSent.setHours(0, 0, 0, 0)) / (1000 * 3600 * 24)) : null;
+
+                                                        const isPaid = status === 'Paid';
+                                                        const isDueOrOverdue = status === 'Due' || status === 'Overdue' || status === 'Due Today' || status === 'PartiallyPaid';
+
+                                                        let isDisabled = false;
+                                                        let tooltip = "Send Email";
+
+                                                        if (isPaid && lastSent) {
+                                                            isDisabled = true;
+                                                            tooltip = "Email already sent for Paid invoice";
+                                                        } else if (isDueOrOverdue && lastSent && diffDays < 1) {
+                                                            isDisabled = true;
+                                                            tooltip = `Wait ${1 - diffDays} more days to resend`;
+                                                        }
+
+                                                        return (
+                                                            <>
+                                                                <button onClick={() => { setSelectedInvoice(invoice); setShowViewModal(true); }}
+                                                                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="View Details">
+                                                                    <Eye size={16} />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => prepareMail(invoice)}
+                                                                    disabled={sendingEmailId === invoice._id || isDisabled}
+                                                                    className={`p-2 rounded-xl transition-all shadow-sm border ${sendingEmailId === invoice._id
+                                                                        ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 border-blue-100 cursor-wait'
+                                                                        : isDisabled
+                                                                            ? 'text-slate-300 bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800 cursor-not-allowed'
+                                                                            : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'
+                                                                        }`}
+                                                                    title={sendingEmailId === invoice._id ? "Sending..." : tooltip}>
+                                                                    {sendingEmailId === invoice._id ? <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> : <Mail size={16} />}
+                                                                </button>
+                                                            </>
+                                                        );
+                                                    })()}
                                                     <button onClick={() => handleDelete(invoice._id)}
                                                         className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="Delete">
                                                         <Trash2 size={16} />
