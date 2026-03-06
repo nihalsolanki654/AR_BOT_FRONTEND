@@ -10,13 +10,7 @@ const InvoiceList = () => {
     const [selectedInvoice, setSelectedInvoice] = useState(null);
     const [showViewModal, setShowViewModal] = useState(false);
     const [paymentInput, setPaymentInput] = useState('');
-    const headerScrollRef = useRef(null);
 
-    const handleRowScroll = (e) => {
-        if (headerScrollRef.current) {
-            headerScrollRef.current.scrollLeft = e.target.scrollLeft;
-        }
-    };
 
     const [isLoading, setIsLoading] = useState(true);
     const [sendingEmailId, setSendingEmailId] = useState(null);
@@ -294,227 +288,231 @@ const InvoiceList = () => {
 
                 {/* Table */}
                 {/* Scrollable Records List */}
-                <div className="flex flex-col">
-                    {/* Header - Fixed structure to match records */}
-                    <div className="hidden lg:block bg-slate-50/80 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 sticky top-0 z-30 backdrop-blur-md">
-                        <div ref={headerScrollRef} className="overflow-x-auto scrollbar-hide">
-                            <div className="flex items-center min-w-max px-4">
-                                <div className="w-[120px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Invoice No</div>
-                                <div className="w-[220px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Company Name</div>
-                                <div className="w-[110px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Invoice Date</div>
-                                <div className="w-[110px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Due Date</div>
-                                <div className="w-[110px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Today Date</div>
-                                <div className="w-[140px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Status</div>
-                                <div className="w-[90px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Terms</div>
-                                <div className="w-[240px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Description</div>
-                                <div className="w-[120px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Unit Price</div>
-                                <div className="w-[70px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Qty</div>
-                                <div className="w-[120px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Subtotal</div>
-                                <div className="w-[70px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">GST</div>
-                                <div className="w-[120px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">GST Amt</div>
-                                <div className="w-[130px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Total</div>
-                                <div className="w-[130px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Pending</div>
-                                <div className="w-[140px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Email Sent</div>
-                                <div className="w-[100px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Sent Days</div>
-                                <div className="w-[160px] shrink-0 px-4 py-4 text-right text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em] pr-8">Actions</div>
-                            </div>
+                <div className="w-full overflow-x-auto custom-scrollbar bg-white dark:bg-slate-900 overflow-y-hidden">
+                    <div className="min-w-max flex flex-col">
+                        {/* Header */}
+                        <div className="hidden lg:flex items-center px-4 bg-slate-50/80 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 sticky top-0 z-30 backdrop-blur-md">
+                            <div className="w-[120px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em] sticky left-0 z-40 bg-slate-50 dark:bg-slate-800/90 shadow-[1px_0_0_0_rgba(0,0,0,0.05)] dark:shadow-[1px_0_0_0_rgba(255,255,255,0.05)]">Invoice No</div>
+                            <div className="w-[220px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em] sticky left-[120px] z-40 bg-slate-50 dark:bg-slate-800/90 shadow-[1px_0_0_0_rgba(0,0,0,0.05)] dark:shadow-[1px_0_0_0_rgba(255,255,255,0.05)]">Company Name</div>
+                            <div className="w-[110px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Invoice Date</div>
+                            <div className="w-[110px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Due Date</div>
+                            <div className="w-[110px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Today Date</div>
+                            <div className="w-[140px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Status</div>
+                            <div className="w-[90px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Terms</div>
+                            <div className="w-[240px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Description</div>
+                            <div className="w-[120px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Unit Price</div>
+                            <div className="w-[70px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Qty</div>
+                            <div className="w-[120px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Subtotal</div>
+                            <div className="w-[70px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">GST</div>
+                            <div className="w-[120px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">GST Amt</div>
+                            <div className="w-[130px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Total</div>
+                            <div className="w-[130px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Pending</div>
+                            <div className="w-[140px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Email Sent</div>
+                            <div className="w-[100px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Sent Days</div>
+                            <div className="w-[160px] shrink-0 px-4 py-4 text-right text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em] pr-8">Actions</div>
                         </div>
-                    </div>
 
-                    {/* Body */}
-                    <div className="relative divide-y divide-gray-100 dark:divide-slate-800">
-                        {isLoading && (
-                            <div className="absolute inset-0 z-40 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] flex items-center justify-center min-h-[300px]">
-                                <div className="flex flex-col items-center gap-3">
-                                    <div className="w-10 h-10 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
-                                    <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest animate-pulse">Syncing Data...</p>
-                                </div>
-                            </div>
-                        )}
-                        {filteredInvoices.length > 0 ? filteredInvoices.map((invoice) => {
-                            const status = getPaymentStatus(invoice);
-                            const daysLeft = calculateDaysLeft(invoice.dueDate);
-                            return (
-                                <div key={invoice._id}
-                                    onMouseEnter={(e) => {
-                                        const scrollContainer = e.currentTarget.querySelector('.overflow-x-auto');
-                                        if (scrollContainer && headerScrollRef.current) {
-                                            headerScrollRef.current.scrollLeft = scrollContainer.scrollLeft;
-                                        }
-                                    }}
-                                    className="group hover:bg-gray-50/30 dark:hover:bg-slate-800/20 transition-all duration-200">
-                                    <div className="overflow-x-auto scrollbar-hide group-hover:scrollbar-default scroll-smooth"
-                                        onScroll={handleRowScroll}>
-                                        <div className="flex items-center min-w-max px-4 py-3 border-b border-white/5 dark:border-slate-800/10">
-                                            {/* Invoice # */}
-                                            <div className="w-[120px] shrink-0 px-4 font-medium text-slate-1200 dark:text-slate-100 text-[12px] tracking-tight tabular-nums">
-                                                {getInvoiceNumber(invoice)}
+                        {/* Body */}
+                        <div className="relative flex flex-col divide-y divide-gray-100 dark:divide-slate-800">
+                            {isLoading && (
+                                <div className="absolute inset-0 z-40 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm flex flex-col min-h-[300px]">
+                                    {[...Array(5)].map((_, i) => (
+                                        <div key={i} className="flex items-center px-4 py-3 border-b border-white/5 dark:border-slate-800/10 opacity-70">
+                                            <div className="w-[120px] shrink-0 px-4 sticky left-0 z-20 bg-white dark:bg-slate-900 h-full flex items-center py-3 -my-3">
+                                                <div className="h-4 w-16 bg-slate-200 dark:bg-slate-700/50 rounded animate-pulse"></div>
                                             </div>
-
-                                            {/* Company */}
-                                            <div className="w-[220px] shrink-0 px-4">
-                                                <div className="font-semibold text-slate-900 dark:text-slate-100 text-[13px] whitespace-normal leading-tight" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
-                                                <div className="text-[10px] text-blue-500 dark:text-slate-400 mt-1 uppercase font-semibold tracking-wider">{invoice.State || ''}</div>
+                                            <div className="w-[220px] shrink-0 px-4 sticky left-[120px] z-20 bg-white dark:bg-slate-900 h-full py-3 -my-3 flex flex-col justify-center gap-1.5">
+                                                <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700/50 rounded animate-pulse"></div>
+                                                <div className="h-2.5 w-16 bg-slate-200 dark:bg-slate-700/50 rounded animate-pulse"></div>
                                             </div>
-
-                                            {/* Invoice Date */}
-                                            <div className="w-[110px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
-                                                {invoice.invoiceDate || '-'}
-                                            </div>
-
-                                            {/* Due Date */}
-                                            <div className="w-[110px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
-                                                {invoice.dueDate || '-'}
-                                            </div>
-
-                                            {/* Today Date */}
-                                            <div className="w-[110px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
-                                                {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
-                                            </div>
-
-                                            {/* Status */}
-                                            <div className="w-[140px] shrink-0 px-4 text-center flex items-center justify-center">
-                                                <span className={`px-3 py-1.5 rounded-full text-[10px] font-bold border uppercase tracking-widest shadow-none ${status === 'Paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' :
-                                                    (status === 'Due' || status === 'Due Today') ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' :
-                                                        status === 'Overdue' ? 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20' :
-                                                            'bg-slate-50 text-slate-600 border-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
-                                                    }`}>
-                                                    {status === 'PartiallyPaid' ? 'Partial' : (status === 'Due Today' ? 'Due' : status)}
-                                                </span>
-                                            </div>
-
-
-                                            {/* Terms (Simple calculation) */}
-                                            <div className="w-[90px] shrink-0 px-4 text-[13px] font-semibold whitespace-nowrap text-center">
-                                                {status === 'Paid'
-                                                    ? <span className="text-slate-300">-</span>
-                                                    : <span className={daysLeft < 0 ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}>
-                                                        {daysLeft === 0 ? 'Today' : daysLeft}
-                                                    </span>
-                                                }
-                                            </div>
-
-                                            {/* Description */}
-                                            <div className="w-[240px] shrink-0 px-4">
-                                                <div className="text-[12px] text-slate-600 dark:text-slate-300 line-clamp-2 font-medium leading-relaxed" title={invoice.description || ''}>
-                                                    {invoice.description || 'N/A'}
-                                                </div>
-                                            </div>
-
-                                            {/* Unit Price */}
-                                            <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-semibold whitespace-nowrap tabular-nums">
-                                                ₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}
-                                            </div>
-
-                                            {/* Qty */}
-                                            <div className="w-[70px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
-                                                {invoice.quantity ?? '-'}
-                                            </div>
-
-                                            {/* Subtotal (Unit * Qty) */}
-                                            <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-semibold whitespace-nowrap tabular-nums">
-                                                ₹{parseFloat(invoice.subtotal || (invoice.total_price * (invoice.quantity || 1)) || 0).toLocaleString('en-IN')}
-                                            </div>
-
-                                            {/* GST % */}
-                                            <div className="w-[70px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
-                                                {invoice.GST ? `${invoice.GST}%` : '-'}
-                                            </div>
-
-                                            {/* GST Amt */}
-                                            <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-semibold whitespace-nowrap tabular-nums">
-                                                ₹{parseFloat(invoice.GST_Amount || 0).toLocaleString('en-IN')}
-                                            </div>
-
-                                            {/* Total Amount */}
-                                            <div className="w-[130px] shrink-0 px-4 text-[13px] text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap tabular-nums">
-                                                ₹{parseFloat(invoice.total_Amount || 0).toLocaleString('en-IN')}
-                                            </div>
-
-                                            {/* Balance Due (Pending) */}
-                                            <div className="w-[130px] shrink-0 px-4 text-[13px] text-red-600 dark:text-red-400 font-bold whitespace-nowrap tabular-nums">
-                                                ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
-                                            </div>
-
-                                            {/* Email Sent Date */}
-                                            <div className="w-[140px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
-                                                {invoice.emailSentDate || (invoice.lastEmailSentAt ? new Date(invoice.lastEmailSentAt).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-') : '-')}
-                                            </div>
-
-                                            {/* Sent Days Count */}
-                                            <div className="w-[100px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
-                                                {(() => {
-                                                    if (!invoice.lastEmailSentAt) return '-';
-                                                    const sentDate = new Date(invoice.lastEmailSentAt); sentDate.setHours(0, 0, 0, 0);
-                                                    const today = new Date(); today.setHours(0, 0, 0, 0);
-                                                    const diffDays = Math.round((today.getTime() - sentDate.getTime()) / (1000 * 3600 * 24));
-                                                    return diffDays === 0 ? 'Today' : diffDays;
-                                                })()}
-                                            </div>
-
-                                            {/* Actions */}
-                                            <div className="w-[160px] shrink-0 px-4 pr-6 pl-6">
-                                                <div className="flex items-center justify-end gap-2.5">
-                                                    {(() => {
-                                                        const lastSent = invoice.lastEmailSentAt ? new Date(invoice.lastEmailSentAt) : null;
-                                                        const today = new Date(); today.setHours(0, 0, 0, 0);
-                                                        const diffDays = lastSent ? Math.round((today.getTime() - lastSent.setHours(0, 0, 0, 0)) / (1000 * 3600 * 24)) : null;
-
-                                                        const isPaid = status === 'Paid';
-                                                        const isDueOrOverdue = status === 'Due' || status === 'Overdue' || status === 'Due Today' || status === 'PartiallyPaid';
-
-                                                        let isDisabled = false;
-                                                        let tooltip = "Send Email";
-
-                                                        if (isPaid && lastSent) {
-                                                            isDisabled = true;
-                                                            tooltip = "Email already sent for Paid invoice";
-                                                        } else if (isDueOrOverdue && lastSent && diffDays < 1) {
-                                                            isDisabled = true;
-                                                            tooltip = `Wait ${1 - diffDays} more days to resend`;
-                                                        }
-
-                                                        return (
-                                                            <>
-                                                                <button onClick={() => { setSelectedInvoice(invoice); setShowViewModal(true); }}
-                                                                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="View Details">
-                                                                    <Eye size={16} />
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => prepareMail(invoice)}
-                                                                    disabled={sendingEmailId === invoice._id || isDisabled}
-                                                                    className={`p-2 rounded-xl transition-all shadow-sm border ${sendingEmailId === invoice._id
-                                                                        ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 border-blue-100 cursor-wait'
-                                                                        : isDisabled
-                                                                            ? 'text-slate-300 bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800 cursor-not-allowed'
-                                                                            : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'
-                                                                        }`}
-                                                                    title={sendingEmailId === invoice._id ? "Sending..." : tooltip}>
-                                                                    {sendingEmailId === invoice._id ? <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> : <Mail size={16} />}
-                                                                </button>
-                                                            </>
-                                                        );
-                                                    })()}
-                                                    <button onClick={() => handleDelete(invoice._id)}
-                                                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="Delete">
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </div>
-                                            </div>
+                                            <div className="w-[110px] shrink-0 px-4"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700/50 rounded animate-pulse"></div></div>
+                                            <div className="w-[110px] shrink-0 px-4"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700/50 rounded animate-pulse"></div></div>
+                                            <div className="w-[110px] shrink-0 px-4"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700/50 rounded animate-pulse"></div></div>
+                                            <div className="w-[140px] shrink-0 px-4 flex justify-center"><div className="h-6 w-16 bg-slate-200 dark:bg-slate-700/50 rounded-full animate-pulse"></div></div>
+                                            <div className="w-[90px] shrink-0 px-4 flex justify-center"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700/50 rounded animate-pulse"></div></div>
+                                            <div className="w-[240px] flex-1 px-4"><div className="h-4 w-full bg-slate-200 dark:bg-slate-700/50 rounded animate-pulse"></div></div>
+                                        </div>
+                                    ))}
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <div className="flex flex-col items-center gap-3 bg-white/80 dark:bg-slate-800/80 p-5 rounded-2xl shadow-xl backdrop-blur-md border border-slate-100 dark:border-slate-700/50">
+                                            <div className="w-8 h-8 border-3 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
+                                            <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest animate-pulse">Syncing Data...</p>
                                         </div>
                                     </div>
                                 </div>
-                            );
-                        }) : (
-                            <div className="py-20 text-center text-gray-400 bg-white dark:bg-slate-900">
-                                <div className="flex flex-col items-center gap-4">
-                                    <div className="w-16 h-16 bg-gray-50 dark:bg-slate-800 rounded-full flex items-center justify-center">
-                                        <Search size={32} className="opacity-20" />
+                            )}
+                            {filteredInvoices.length > 0 ? filteredInvoices.map((invoice) => {
+                                const status = getPaymentStatus(invoice);
+                                const daysLeft = calculateDaysLeft(invoice.dueDate);
+                                return (
+                                    <div key={invoice._id} className="group hover:bg-gray-50/30 dark:hover:bg-slate-800/20 transition-all duration-200 flex items-center px-4 py-3 border-b border-white/5 dark:border-slate-800/10">
+                                        {/* Invoice # */}
+                                        <div className="w-[120px] shrink-0 px-4 font-medium text-slate-1200 dark:text-slate-100 text-[12px] tracking-tight tabular-nums sticky left-0 z-20 bg-white dark:bg-slate-900 group-hover:bg-[#f8fafc] dark:group-hover:bg-[#152033] shadow-[1px_0_0_0_rgba(0,0,0,0.05)] dark:shadow-[1px_0_0_0_rgba(255,255,255,0.05)] h-full flex items-center py-3 -my-3">
+                                            {getInvoiceNumber(invoice)}
+                                        </div>
+
+                                        {/* Company */}
+                                        <div className="w-[220px] shrink-0 px-4 sticky left-[120px] z-20 bg-white dark:bg-slate-900 group-hover:bg-[#f8fafc] dark:group-hover:bg-[#152033] shadow-[1px_0_0_0_rgba(0,0,0,0.05)] dark:shadow-[1px_0_0_0_rgba(255,255,255,0.05)] h-full py-3 -my-3 flex flex-col justify-center">
+                                            <div className="font-semibold text-slate-900 dark:text-slate-100 text-[13px] whitespace-normal leading-tight line-clamp-2" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
+                                            {invoice.State && <div className="text-[10px] text-blue-500 dark:text-slate-400 mt-1 uppercase font-semibold tracking-wider">{invoice.State}</div>}
+                                        </div>
+
+                                        {/* Invoice Date */}
+                                        <div className="w-[110px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                            {invoice.invoiceDate || '-'}
+                                        </div>
+
+                                        {/* Due Date */}
+                                        <div className="w-[110px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                            {invoice.dueDate || '-'}
+                                        </div>
+
+                                        {/* Today Date */}
+                                        <div className="w-[110px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                            {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
+                                        </div>
+
+                                        {/* Status */}
+                                        <div className="w-[140px] shrink-0 px-4 text-center flex items-center justify-center">
+                                            <span className={`px-3 py-1.5 rounded-full text-[10px] font-bold border uppercase tracking-widest shadow-none ${status === 'Paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' :
+                                                (status === 'Due' || status === 'Due Today') ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' :
+                                                    status === 'Overdue' ? 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20' :
+                                                        'bg-slate-50 text-slate-600 border-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                                                }`}>
+                                                {status === 'PartiallyPaid' ? 'Partial' : (status === 'Due Today' ? 'Due' : status)}
+                                            </span>
+                                        </div>
+
+                                        {/* Terms (Simple calculation) */}
+                                        <div className="w-[90px] shrink-0 px-4 text-[13px] font-semibold whitespace-nowrap text-center">
+                                            {status === 'Paid'
+                                                ? <span className="text-slate-300">-</span>
+                                                : <span className={daysLeft < 0 ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}>
+                                                    {daysLeft === 0 ? 'Today' : daysLeft}
+                                                </span>
+                                            }
+                                        </div>
+
+                                        {/* Description */}
+                                        <div className="w-[240px] shrink-0 px-4">
+                                            <div className="text-[12px] text-slate-600 dark:text-slate-300 line-clamp-2 font-medium leading-relaxed" title={invoice.description || ''}>
+                                                {invoice.description || 'N/A'}
+                                            </div>
+                                        </div>
+
+                                        {/* Unit Price */}
+                                        <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-semibold whitespace-nowrap tabular-nums">
+                                            ₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}
+                                        </div>
+
+                                        {/* Qty */}
+                                        <div className="w-[70px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
+                                            {invoice.quantity ?? '-'}
+                                        </div>
+
+                                        {/* Subtotal (Unit * Qty) */}
+                                        <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-semibold whitespace-nowrap tabular-nums">
+                                            ₹{parseFloat(invoice.subtotal || (invoice.total_price * (invoice.quantity || 1)) || 0).toLocaleString('en-IN')}
+                                        </div>
+
+                                        {/* GST % */}
+                                        <div className="w-[70px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
+                                            {invoice.GST ? `${invoice.GST}%` : '-'}
+                                        </div>
+
+                                        {/* GST Amt */}
+                                        <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-semibold whitespace-nowrap tabular-nums">
+                                            ₹{parseFloat(invoice.GST_Amount || 0).toLocaleString('en-IN')}
+                                        </div>
+
+                                        {/* Total Amount */}
+                                        <div className="w-[130px] shrink-0 px-4 text-[13px] text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap tabular-nums">
+                                            ₹{parseFloat(invoice.total_Amount || 0).toLocaleString('en-IN')}
+                                        </div>
+
+                                        {/* Balance Due (Pending) */}
+                                        <div className="w-[130px] shrink-0 px-4 text-[13px] text-red-600 dark:text-red-400 font-bold whitespace-nowrap tabular-nums">
+                                            ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
+                                        </div>
+
+                                        {/* Email Sent Date */}
+                                        <div className="w-[140px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                            {invoice.emailSentDate || (invoice.lastEmailSentAt ? new Date(invoice.lastEmailSentAt).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-') : '-')}
+                                        </div>
+
+                                        {/* Sent Days Count */}
+                                        <div className="w-[100px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
+                                            {(() => {
+                                                if (!invoice.lastEmailSentAt) return '-';
+                                                const sentDate = new Date(invoice.lastEmailSentAt); sentDate.setHours(0, 0, 0, 0);
+                                                const today = new Date(); today.setHours(0, 0, 0, 0);
+                                                const diffDays = Math.round((today.getTime() - sentDate.getTime()) / (1000 * 3600 * 24));
+                                                return diffDays === 0 ? 'Today' : diffDays;
+                                            })()}
+                                        </div>
+
+                                        {/* Actions */}
+                                        <div className="w-[160px] shrink-0 px-4 pr-6 pl-6">
+                                            <div className="flex items-center justify-end gap-2.5">
+                                                {(() => {
+                                                    const lastSent = invoice.lastEmailSentAt ? new Date(invoice.lastEmailSentAt) : null;
+                                                    const today = new Date(); today.setHours(0, 0, 0, 0);
+                                                    const diffDays = lastSent ? Math.round((today.getTime() - lastSent.setHours(0, 0, 0, 0)) / (1000 * 3600 * 24)) : null;
+
+                                                    const isPaid = status === 'Paid';
+                                                    const isDueOrOverdue = status === 'Due' || status === 'Overdue' || status === 'Due Today' || status === 'PartiallyPaid';
+
+                                                    let isDisabled = false;
+                                                    let tooltip = "Send Email";
+
+                                                    if (isPaid && lastSent) {
+                                                        isDisabled = true;
+                                                        tooltip = "Email already sent for Paid invoice";
+                                                    } else if (isDueOrOverdue && lastSent && diffDays < 1) {
+                                                        isDisabled = true;
+                                                        tooltip = `Wait ${1 - diffDays} more days to resend`;
+                                                    }
+
+                                                    return (
+                                                        <>
+                                                            <button onClick={() => { setSelectedInvoice(invoice); setShowViewModal(true); }}
+                                                                className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="View Details">
+                                                                <Eye size={16} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => prepareMail(invoice)}
+                                                                disabled={sendingEmailId === invoice._id || isDisabled}
+                                                                className={`p-2 rounded-xl transition-all shadow-sm border ${sendingEmailId === invoice._id
+                                                                    ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 border-blue-100 cursor-wait'
+                                                                    : isDisabled
+                                                                        ? 'text-slate-300 bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800 cursor-not-allowed'
+                                                                        : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'
+                                                                    }`}
+                                                                title={sendingEmailId === invoice._id ? "Sending..." : tooltip}>
+                                                                {sendingEmailId === invoice._id ? <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> : <Mail size={16} />}
+                                                            </button>
+                                                        </>
+                                                    );
+                                                })()}
+                                                <button onClick={() => handleDelete(invoice._id)}
+                                                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/40 rounded-xl transition-all shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700" title="Delete">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <p className="text-sm font-medium">No invoices found matching your criteria</p>
+                                );
+                            }) : (
+                                <div className="py-20 text-center text-gray-400 bg-white dark:bg-slate-900">
+                                    <div className="flex flex-col items-center gap-4">
+                                        <div className="w-16 h-16 bg-gray-50 dark:bg-slate-800 rounded-full flex items-center justify-center">
+                                            <Search size={32} className="opacity-20" />
+                                        </div>
+                                        <p className="text-sm font-medium">No invoices found matching your criteria</p>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </div>
 
