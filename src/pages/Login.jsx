@@ -51,8 +51,19 @@ const Login = () => {
 
             if (response.ok) {
                 console.log('[AUTH] Verification successful.');
-                localStorage.setItem('isAuthenticated', 'true');
-                localStorage.setItem('user', JSON.stringify(data.user));
+                const storage = rememberMe ? localStorage : sessionStorage;
+                storage.setItem('isAuthenticated', 'true');
+                storage.setItem('user', JSON.stringify(data.user));
+
+                // Clear the other storage just in case
+                if (rememberMe) {
+                    sessionStorage.removeItem('isAuthenticated');
+                    sessionStorage.removeItem('user');
+                } else {
+                    localStorage.removeItem('isAuthenticated');
+                    localStorage.removeItem('user');
+                }
+
                 navigate('/dashboard');
             } else {
                 setError(data.message || 'Authentication failed. Please check your credentials.');

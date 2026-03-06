@@ -6,6 +6,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     const handleLogout = () => {
         localStorage.removeItem('isAuthenticated');
         localStorage.removeItem('user');
+        sessionStorage.removeItem('isAuthenticated');
+        sessionStorage.removeItem('user');
         window.location.href = '/login';
     };
 
