@@ -18,7 +18,7 @@ const Navbar = ({ onMenuClick }) => {
     }, []);
 
     return (
-        <div className="bg-white dark:bg-slate-900 h-16 px-4 md:px-8 flex items-center justify-between shadow-sm border-b border-gray-100 dark:border-slate-800 transition-colors duration-300">
+        <div className="bg-white dark:bg-slate-900 h-20 md:h-24 px-6 md:px-10 flex items-center justify-between shadow-sm border-b border-gray-100 dark:border-slate-800 transition-colors duration-300">
             <div className="flex items-center gap-4 flex-1">
                 {/* Mobile Menu Button */}
                 <button

@@ -137,7 +137,7 @@ const AddMember = () => {
     );
 
     return (
-        <div className="p-6 md:p-10 max-w-[1600px] mx-auto min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-500">
+        <div className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto min-h-screen bg-transparent dark:bg-slate-950 transition-colors duration-500">
             {/* Toast Container */}
             <div className="fixed top-6 right-6 z-[1000] flex flex-col gap-3">
                 {toasts.map(toast => (
@@ -166,127 +166,127 @@ const AddMember = () => {
             </div>
 
             {/* Header section */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-12 md:mb-16">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 md:mb-10">
                 <div className="text-center lg:text-left space-y-1">
-                    <div className="flex items-center justify-center lg:justify-start gap-3 mb-1">
+                    <div className="flex items-center justify-center lg:justify-start gap-2.5 mb-1">
                         <div className="p-2 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-500/20">
-                            <Users size={22} />
+                            <Users size={20} />
                         </div>
-                        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">Team Members</h1>
+                        <h1 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Team Members</h1>
                     </div>
                     <p className="text-sm font-medium text-slate-500 dark:text-slate-400 max-w-md mx-auto lg:mx-0 leading-relaxed">
                         Manage team access, roles, and profile security details.
                     </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-center gap-3">
                     {/* Simplified search */}
-                    <div className="relative group w-full sm:w-72">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-all" size={17} />
+                    <div className="relative group w-full sm:w-64">
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-all" size={16} />
                         <input
                             type="text"
                             placeholder="Search by name or email..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-11 pr-5 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 font-medium text-sm w-full shadow-sm transition-all outline-none dark:text-slate-200"
+                            className="pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 font-medium text-sm w-full shadow-sm transition-all outline-none dark:text-slate-200"
                         />
                     </div>
                     <button
                         onClick={() => { resetForm(); setShowModal(true); }}
-                        className="group relative flex items-center justify-center gap-2.5 px-8 py-3.5 bg-blue-600 text-white rounded-2xl font-semibold hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 text-sm w-full sm:w-auto overflow-hidden"
+                        className="group relative flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 text-sm w-full sm:w-auto overflow-hidden"
                     >
                         {/* Light sweep effect */}
                         <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
 
-                        <UserPlus size={18} className="group-hover:rotate-12 transition-transform duration-300" />
+                        <UserPlus size={16} className="group-hover:rotate-12 transition-transform duration-300" />
                         Add Member
                     </button>
                 </div>
             </div>
 
             {/* Simplified Table Layout */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/40 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-[900px]">
                         <thead>
                             <tr className="bg-slate-50/50 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 text-[11px] font-bold border-b border-slate-100 dark:border-slate-800 uppercase tracking-wider">
-                                <th className="px-8 py-5 text-left">Member Profile</th>
-                                <th className="px-8 py-5 text-left">Security & Access</th>
-                                <th className="px-8 py-5 text-left">Status</th>
-                                <th className="px-8 py-5 text-right pr-12">Actions</th>
+                                <th className="px-6 py-4 text-left">Member Profile</th>
+                                <th className="px-6 py-4 text-left">Security & Access</th>
+                                <th className="px-6 py-4 text-left">Status</th>
+                                <th className="px-6 py-4 text-right pr-8">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50 dark:divide-slate-800/50">
                             {filteredMembers.length > 0 ? filteredMembers.map((member) => (
                                 <tr key={member._id} className="hover:bg-slate-50/30 dark:hover:bg-slate-800/30 transition-all duration-200">
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center gap-5">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-4">
                                             <div className="relative">
-                                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 font-bold text-xl shadow-inner">
+                                                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 font-bold text-base shadow-inner">
                                                     {member.name.charAt(0)}
                                                 </div>
-                                                <div className={`absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full border-4 border-white dark:border-slate-900 ${member.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'}`} />
+                                                <div className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-[3px] border-white dark:border-slate-900 ${member.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'}`} />
                                             </div>
                                             <div>
-                                                <p className="font-semibold text-slate-900 dark:text-white text-base leading-none mb-1.5 transition-colors">{member.name}</p>
-                                                <div className="flex items-center gap-2.5">
-                                                    <span className="text-xs font-medium text-blue-600 dark:text-blue-400">@{member.username}</span>
-                                                    <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                                                        <Mail size={11} />
+                                                <p className="font-semibold text-slate-900 dark:text-white text-[14px] leading-none mb-1 transition-colors">{member.name}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[11px] font-medium text-blue-600 dark:text-blue-400">@{member.username}</span>
+                                                    <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                                                        <Mail size={10} />
                                                         {member.email}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <div className="space-y-2.5">
-                                            <div className={`flex items-center gap-2 px-2.5 py-1 rounded-lg w-fit border ${member.role === 'Admin' ? 'bg-purple-50 border-purple-100 text-purple-700 dark:bg-purple-900/20 dark:border-purple-500/30 dark:text-purple-300' :
+                                    <td className="px-6 py-4">
+                                        <div className="space-y-2">
+                                            <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md w-fit border ${member.role === 'Admin' ? 'bg-purple-50 border-purple-100 text-purple-700 dark:bg-purple-900/20 dark:border-purple-500/30 dark:text-purple-300' :
                                                 member.role === 'Manager' ? 'bg-blue-50 border-blue-100 text-blue-700 dark:bg-blue-900/20 dark:border-blue-500/30 dark:text-blue-300' :
                                                     'bg-slate-50 border-slate-100 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400'
                                                 }`}>
-                                                <Shield size={12} />
-                                                <span className="text-[11px] font-bold uppercase tracking-wide">{member.role}</span>
+                                                <Shield size={10} />
+                                                <span className="text-[10px] font-bold uppercase tracking-wide">{member.role}</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-xs font-medium text-slate-400 ml-0.5">
-                                                <Phone size={11} />
+                                            <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 ml-0.5">
+                                                <Phone size={10} />
                                                 {member.phone}
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${member.status === 'Active'
+                                    <td className="px-6 py-4">
+                                        <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider ${member.status === 'Active'
                                             ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
                                             : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
                                             }`}>
                                             {member.status}
                                         </span>
                                     </td>
-                                    <td className="px-8 py-6 text-right pr-12">
-                                        <div className="flex items-center justify-end gap-2">
+                                    <td className="px-6 py-4 text-right pr-6">
+                                        <div className="flex items-center justify-end gap-1.5">
                                             <button
                                                 onClick={() => handleEdit(member)}
-                                                className="p-2.5 text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 rounded-xl transition-all"
+                                                className="p-2 text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 rounded-lg transition-all"
                                                 title="Edit Member"
                                             >
-                                                <Edit2 size={16} />
+                                                <Edit2 size={14} />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(member._id)}
-                                                className="p-2.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all"
+                                                className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-all"
                                                 title="Delete Member"
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={14} />
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
                             )) : (
                                 <tr>
-                                    <td colSpan="4" className="px-8 py-20 text-center">
-                                        <div className="flex flex-col items-center gap-3 opacity-30">
-                                            <Users size={54} />
-                                            <p className="font-bold text-lg">No team members found</p>
+                                    <td colSpan="4" className="px-6 py-16 text-center">
+                                        <div className="flex flex-col items-center gap-2 opacity-30">
+                                            <Users size={40} />
+                                            <p className="font-bold text-base">No team members found</p>
                                         </div>
                                     </td>
                                 </tr>

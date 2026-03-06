@@ -113,39 +113,39 @@ const Dashboard = () => {
     const COLORS = ["#10B981", "#F59E0B", "#EF4444"];
 
     const StatCard = ({ title, value, icon: Icon, colorClass, bgColorClass, subText }) => (
-        <div className={`bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-xl transition-all duration-300 ${isLoading ? 'animate-pulse' : ''}`}>
-            <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-2xl ${isLoading ? 'bg-gray-100 dark:bg-slate-800' : `${bgColorClass} ${colorClass}`}`}>
-                    <Icon size={22} className={isLoading ? 'text-gray-300 dark:text-slate-700' : ''} />
+        <div className={`bg-white dark:bg-slate-900 p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-xl transition-all duration-300 ${isLoading ? 'animate-pulse' : ''}`}>
+            <div className="flex items-center justify-between mb-3">
+                <div className={`p-2.5 rounded-xl ${isLoading ? 'bg-gray-100 dark:bg-slate-800' : `${bgColorClass} ${colorClass}`}`}>
+                    <Icon size={18} className={isLoading ? 'text-gray-300 dark:text-slate-700' : ''} />
                 </div>
             </div>
-            <p className="text-gray-500 dark:text-slate-400 text-sm mb-1">{title}</p>
+            <p className="text-gray-500 dark:text-slate-400 text-[13px] mb-1 font-medium">{title}</p>
             {isLoading ? (
-                <div className="h-8 bg-gray-100 dark:bg-slate-800 rounded-lg w-2/3 mb-2" />
+                <div className="h-6 bg-gray-100 dark:bg-slate-800 rounded-md w-2/3 mb-1" />
             ) : (
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{value}</h3>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{value}</h3>
             )}
             {subText && (
-                <p className="text-xs text-gray-400 dark:text-slate-500 mt-2">{subText}</p>
+                <p className="text-[11px] text-gray-400 dark:text-slate-500 mt-1.5 font-medium">{subText}</p>
             )}
         </div>
     );
 
     return (
-        <div className="p-6 md:p-10 max-w-[1600px] mx-auto bg-transparent dark:bg-slate-950 min-h-screen">
+        <div className="p-4 md:p-6 max-w-[1600px] mx-auto bg-transparent dark:bg-slate-950 min-h-screen">
 
             {/* Header */}
-            <div className="mb-8 md:mb-10 text-center md:text-left">
-                <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="mb-6 md:mb-8 text-center md:text-left">
+                <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
                     Financial Analytics Dashboard
                 </h1>
-                <p className="text-sm text-gray-500 dark:text-slate-400 mt-2">
+                <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400 mt-1 font-medium">
                     Real-time financial performance overview
                 </p>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6 mb-8 md:mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
                 <StatCard
                     title="Total Revenue"
                     value={`₹${Math.round(stats.totalAmount).toLocaleString('en-IN')}`}
@@ -183,8 +183,8 @@ const Dashboard = () => {
             </div>
 
             {/* Invoice Status */}
-            <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800">
-                <h2 className="text-base md:text-lg font-bold mb-6 text-gray-900 dark:text-white">
+            <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 mb-6 md:mb-8">
+                <h2 className="text-sm md:text-base font-bold mb-4 text-gray-900 dark:text-white">
                     Invoice Status Distribution
                 </h2>
                 <div className="w-full h-[300px]">

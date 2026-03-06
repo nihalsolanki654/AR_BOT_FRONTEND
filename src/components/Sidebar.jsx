@@ -28,31 +28,31 @@ const Sidebar = ({ isOpen, onClose }) => {
             )}
 
             <div className={`
-                fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-900 h-screen p-6 transition-transform duration-300 border-r border-slate-200 dark:border-slate-800 shadow-xl md:shadow-sm md:sticky md:top-0 md:translate-x-0 md:flex md:flex-col
+                fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 h-screen p-5 transition-transform duration-300 border-r border-slate-100 dark:border-slate-800 shadow-xl md:shadow-none md:sticky md:top-0 md:translate-x-0 md:flex md:flex-col
                 ${isOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 {/* Logo Section */}
-                <div className="mb-10 flex items-center justify-between">
+                <div className="mb-8 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg shadow-blue-500/30">
-                            <Briefcase size={20} />
+                            <Briefcase size={18} />
                         </div>
                         <div>
-                            <h1 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">FinancePortal</h1>
+                            <h1 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">FinancePortal</h1>
                         </div>
                     </div>
                     {/* Close button for mobile */}
                     <button
                         onClick={onClose}
-                        className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-gray-400"
+                        className="md:hidden p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-400"
                     >
-                        <X size={20} />
+                        <X size={18} />
                     </button>
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 space-y-1.5 overflow-y-auto">
-                    <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider px-3 mb-3">Menu</p>
+                <nav className="flex-1 space-y-1.5 overflow-y-auto pr-1">
+                    <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-2 mb-3">Menu</p>
                     {menuItems.map((item) => (
                         <NavLink
                             key={item.path}
@@ -61,7 +61,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                                 if (window.innerWidth < 768) onClose();
                             }}
                             className={({ isActive }) =>
-                                `flex items-center gap-3 px-4 py-3 rounded-xl transition-all group ${isActive
+                                `flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all group ${isActive
                                     ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30'
                                     : 'text-gray-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white'
                                 }`
@@ -70,7 +70,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                             {({ isActive }) => (
                                 <>
                                     <div className={`p-1.5 rounded-lg ${isActive ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700'}`}>
-                                        <item.icon size={18} />
+                                        <item.icon size={16} />
                                     </div>
                                     <span className="font-semibold text-sm">{item.label}</span>
                                 </>

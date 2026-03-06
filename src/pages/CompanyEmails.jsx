@@ -7,6 +7,7 @@ const CompanyEmails = () => {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingConfig, setEditingConfig] = useState(null);
+    const [isManualEntry, setIsManualEntry] = useState(false);
     const [formData, setFormData] = useState({
         companyName: '',
         toEmails: [''],
@@ -46,6 +47,7 @@ const CompanyEmails = () => {
 
     const handleOpenAddModal = () => {
         setEditingConfig(null);
+        setIsManualEntry(false);
         setFormData({
             companyName: '',
             toEmails: [''],
@@ -149,20 +151,20 @@ const CompanyEmails = () => {
     };
 
     return (
-        <div className="p-6 md:p-10 max-w-6xl mx-auto min-h-screen">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div className="p-4 md:p-6 lg:p-8 max-w-6xl mx-auto mt-0 min-h-screen">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
                 <div>
-                    <h1 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3">
-                        <Building2 className="text-blue-600" />
+                    <h1 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                        <Building2 className="text-blue-600" size={20} />
                         Company Email Settings
                     </h1>
-                    <p className="text-gray-500 dark:text-slate-400 mt-1 font-medium">Manage email recipients for automated invoice sending</p>
+                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-1 font-medium">Manage email recipients for automated invoice sending</p>
                 </div>
                 <button
                     onClick={handleOpenAddModal}
-                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-all"
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-all text-sm transition-all"
                 >
-                    <Plus size={20} />
+                    <Plus size={18} />
                     Configure New Company
                 </button>
             </div>
@@ -240,6 +242,7 @@ const CompanyEmails = () => {
                                                         <button
                                                             onClick={() => {
                                                                 setEditingConfig(null);
+                                                                setIsManualEntry(false);
                                                                 setFormData({
                                                                     companyName: item.companyName,
                                                                     toEmails: [''],
@@ -267,20 +270,20 @@ const CompanyEmails = () => {
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
-                    <div className="relative bg-white dark:bg-slate-900 w-full max-w-2xl rounded-3xl shadow-2xl border border-gray-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in duration-300">
-                        <div className="px-8 py-6 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between bg-gray-50/50 dark:bg-slate-800/50">
+                    <div className="relative bg-white dark:bg-slate-900 w-full max-w-xl rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in duration-300">
+                        <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between bg-gray-50/50 dark:bg-slate-800/50">
                             <div>
-                                <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
+                                <h2 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">
                                     {editingConfig ? 'Update Configuration' : 'Add Configuration'}
                                 </h2>
-                                <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mt-0.5">COMPANY EMAIL PROFILE</p>
+                                <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 mt-0.5">COMPANY EMAIL PROFILE</p>
                             </div>
-                            <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-full transition-colors text-gray-400">
-                                <X size={20} />
+                            <button onClick={() => setIsModalOpen(false)} className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-full transition-colors text-gray-400">
+                                <X size={18} />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-8 space-y-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                        <form onSubmit={handleSubmit} className="p-6 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
                             {/* Company Selection */}
                             <div className="space-y-2">
                                 <label className="text-xs font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
@@ -288,23 +291,53 @@ const CompanyEmails = () => {
                                     Select Company
                                 </label>
                                 {editingConfig ? (
-                                    <div className="w-full px-5 py-3.5 bg-gray-100 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-2xl text-gray-600 dark:text-slate-300 font-bold">
+                                    <div className="w-full px-4 py-2.5 bg-gray-100 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-600 dark:text-slate-300 font-bold text-sm">
                                         {formData.companyName}
+                                    </div>
+                                ) : isManualEntry ? (
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.companyName}
+                                            onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                                            placeholder="Enter company name..."
+                                            className="flex-1 px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white font-bold focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/20 focus:border-blue-500 outline-none transition-all text-sm"
+                                            autoFocus
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIsManualEntry(false);
+                                                setFormData({ ...formData, companyName: '' });
+                                            }}
+                                            className="px-3 py-2.5 bg-gray-100 dark:bg-slate-800 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-xl transition-colors font-medium border border-gray-200 dark:border-slate-700 text-sm"
+                                        >
+                                            Cancel
+                                        </button>
                                     </div>
                                 ) : (
                                     <select
                                         required
                                         value={formData.companyName}
-                                        onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                                        className="w-full px-5 py-3.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl text-gray-900 dark:text-white font-bold focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/20 focus:border-blue-500 outline-none transition-all appearance-none"
+                                        onChange={(e) => {
+                                            if (e.target.value === 'manual_entry') {
+                                                setIsManualEntry(true);
+                                                setFormData({ ...formData, companyName: '' });
+                                            } else {
+                                                setFormData({ ...formData, companyName: e.target.value });
+                                            }
+                                        }}
+                                        className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white font-bold focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/20 focus:border-blue-500 outline-none transition-all appearance-none text-sm"
                                     >
                                         <option value="">Select a company from invoices</option>
                                         {unconfigured.map((name) => (
                                             <option key={name} value={name}>{name}</option>
                                         ))}
+                                        <option value="manual_entry" className="font-bold text-blue-600">+ Add Manual Company</option>
                                     </select>
                                 )}
-                                {!editingConfig && unconfigured.length === 0 && (
+                                {!editingConfig && !isManualEntry && unconfigured.length === 0 && (
                                     <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1.5 mt-2">
                                         <AlertCircle size={14} /> No new companies found in invoices
                                     </p>
@@ -320,7 +353,7 @@ const CompanyEmails = () => {
                                     </label>
                                     <span className="text-[10px] font-bold text-blue-500 px-2 py-0.5 bg-blue-50 dark:bg-blue-500/10 rounded-full">MAX 4</span>
                                 </div>
-                                <div className="space-y-3">
+                                <div className="space-y-2">
                                     {formData.toEmails.map((email, index) => (
                                         <div key={index} className="flex gap-2">
                                             <input
@@ -328,14 +361,14 @@ const CompanyEmails = () => {
                                                 value={email}
                                                 onChange={(e) => handleEmailChange(index, e.target.value, 'to')}
                                                 placeholder="recipient@example.com"
-                                                className="flex-1 px-5 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl text-gray-900 dark:text-white font-medium focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/20 focus:border-blue-500 outline-none transition-all"
+                                                className="flex-1 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white font-medium text-sm focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/20 focus:border-blue-500 outline-none transition-all"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => removeEmailField(index, 'to')}
-                                                className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-colors"
+                                                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors shrink-0 flex items-center justify-center"
                                             >
-                                                <MinusCircle size={24} />
+                                                <MinusCircle size={20} />
                                             </button>
                                         </div>
                                     ))}
@@ -343,9 +376,9 @@ const CompanyEmails = () => {
                                         <button
                                             type="button"
                                             onClick={() => addEmailField('to')}
-                                            className="w-full py-3 flex items-center justify-center gap-2 text-sm font-bold text-blue-600 dark:text-blue-400 border-2 border-dashed border-blue-200 dark:border-blue-900/40 rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-500/5 transition-all"
+                                            className="w-full py-2 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 border-2 border-dashed border-blue-200 dark:border-blue-900/40 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-500/5 transition-all"
                                         >
-                                            <PlusCircle size={18} />
+                                            <PlusCircle size={16} />
                                             Add Another Email
                                         </button>
                                     )}
@@ -361,7 +394,7 @@ const CompanyEmails = () => {
                                     </label>
                                     <span className="text-[10px] font-bold text-slate-500 px-2 py-0.5 bg-slate-50 dark:bg-slate-500/10 rounded-full">MAX 8</span>
                                 </div>
-                                <div className="space-y-3">
+                                <div className="space-y-2">
                                     {formData.ccEmails.map((email, index) => (
                                         <div key={index} className="flex gap-2">
                                             <input
@@ -369,14 +402,14 @@ const CompanyEmails = () => {
                                                 value={email}
                                                 onChange={(e) => handleEmailChange(index, e.target.value, 'cc')}
                                                 placeholder="cc@example.com"
-                                                className="flex-1 px-5 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl text-gray-900 dark:text-white font-medium focus:ring-4 focus:ring-slate-100 dark:focus:ring-slate-900/20 focus:border-slate-400 outline-none transition-all"
+                                                className="flex-1 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white font-medium text-sm focus:ring-4 focus:ring-slate-100 dark:focus:ring-slate-900/20 focus:border-slate-400 outline-none transition-all"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => removeEmailField(index, 'cc')}
-                                                className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-colors"
+                                                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors shrink-0 flex items-center justify-center"
                                             >
-                                                <MinusCircle size={24} />
+                                                <MinusCircle size={20} />
                                             </button>
                                         </div>
                                     ))}
@@ -384,28 +417,28 @@ const CompanyEmails = () => {
                                         <button
                                             type="button"
                                             onClick={() => addEmailField('cc')}
-                                            className="w-full py-3 flex items-center justify-center gap-2 text-sm font-bold text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/5 transition-all"
+                                            className="w-full py-2 flex items-center justify-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/5 transition-all"
                                         >
-                                            <PlusCircle size={18} />
+                                            <PlusCircle size={16} />
                                             Add CC Recipient
                                         </button>
                                     )}
                                 </div>
                             </div>
 
-                            <div className="pt-4 flex gap-4">
+                            <div className="pt-2 flex gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="flex-1 py-4 text-sm font-bold text-gray-500 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-2xl transition-all"
+                                    className="flex-1 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-xl transition-all"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-2 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-10 py-4 rounded-2xl font-black text-sm shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all"
+                                    className="flex-2 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-all"
                                 >
-                                    <Save size={18} />
+                                    <Save size={16} />
                                     {editingConfig ? 'UPDATE PROFILE' : 'SAVE CONFIGURATION'}
                                 </button>
                             </div>
