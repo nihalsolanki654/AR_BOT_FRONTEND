@@ -52,7 +52,7 @@ const AddInvoice = () => {
         Terms: '',
         companyName: '',
         State: '',
-        total_price: 0,
+        Rate: '',
         quantity: 1,
         subtotal: 0,
         GST: 18,
@@ -232,7 +232,7 @@ const AddInvoice = () => {
                             <input
                                 type="text" name="Terms" value={formData.Terms} readOnly
                                 className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-500 dark:text-slate-500 font-medium cursor-not-allowed outline-none"
-                                placeholder="Auto-calculated"
+                                placeholder=""
                             />
                         </div>
                     </div>
@@ -314,14 +314,10 @@ const AddInvoice = () => {
                         <div>
                             <label className="block text-xs font-semibold text-gray-500 dark:text-slate-500 ml-1 mb-2">GST Rate (%)</label>
                             <select
-                                name="GST" value={formData.GST} onChange={handleChange}
-                                className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-800 dark:text-white font-bold outline-none focus:ring-2 focus:ring-blue-100"
+                                name="GST" value={formData.GST} onChange={handleChange} disabled
+                                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-500 dark:text-slate-500 font-bold outline-none cursor-not-allowed"
                             >
-                                <option value="0">0%</option>
-                                <option value="5">5%</option>
-                                <option value="12">12%</option>
                                 <option value="18">18%</option>
-                                <option value="28">28%</option>
                             </select>
                         </div>
                     </div>
@@ -332,10 +328,23 @@ const AddInvoice = () => {
                                 <span>Subtotal</span>
                                 <span>₹{(parseFloat(formData.total_price || 0) * parseFloat(formData.quantity || 0)).toLocaleString('en-IN')}</span>
                             </div>
-                            <div className="flex justify-between items-center text-sm font-medium text-gray-500 dark:text-slate-400">
-                                <span>GST Amount ({formData.GST}%)</span>
-                                <span>₹{(formData.GST_Amount || 0).toLocaleString('en-IN')}</span>
-                            </div>
+                            {formData.State === 'Gujarat' ? (
+                                <>
+                                    <div className="flex justify-between items-center text-sm font-medium text-gray-500 dark:text-slate-400">
+                                        <span>CGST (9%)</span>
+                                        <span>₹{((formData.GST_Amount || 0) / 2).toLocaleString('en-IN')}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm font-medium text-gray-500 dark:text-slate-400">
+                                        <span>SGST (9%)</span>
+                                        <span>₹{((formData.GST_Amount || 0) / 2).toLocaleString('en-IN')}</span>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="flex justify-between items-center text-sm font-medium text-gray-500 dark:text-slate-400">
+                                    <span>IGST (18%)</span>
+                                    <span>₹{(formData.GST_Amount || 0).toLocaleString('en-IN')}</span>
+                                </div>
+                            )}
                             <div className="flex justify-between items-center pt-3 border-t border-gray-200 dark:border-slate-700">
                                 <span className="text-sm font-bold text-gray-800 dark:text-white">Grand Total</span>
                                 <span className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">₹{(formData.total_Amount || 0).toLocaleString('en-IN')}</span>
