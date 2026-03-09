@@ -431,8 +431,12 @@ const InvoiceList = () => {
                                         </div>
 
                                         {/* Balance Due (Pending) */}
-                                        <div className="w-[130px] shrink-0 px-4 text-[13px] text-red-600 dark:text-red-400 font-bold whitespace-nowrap tabular-nums">
-                                            ₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}
+                                        <div className="w-[130px] shrink-0 px-4 text-[13px] font-bold whitespace-nowrap tabular-nums">
+                                            {parseFloat(invoice.balance_due || 0) === 0 ? (
+                                                <span className="text-emerald-600 dark:text-emerald-400 uppercase text-[11px] tracking-wider">Paid</span>
+                                            ) : (
+                                                <span className="text-red-600 dark:text-red-400">₹{parseFloat(invoice.balance_due || 0).toLocaleString('en-IN')}</span>
+                                            )}
                                         </div>
 
                                         {/* Email Sent Date */}
