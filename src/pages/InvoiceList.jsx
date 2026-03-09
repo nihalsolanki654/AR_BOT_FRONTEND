@@ -443,7 +443,7 @@ const InvoiceList = () => {
                                         {/* Sent Days Count */}
                                         <div className="w-[100px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
                                             {(() => {
-                                                if (!invoice.lastEmailSentAt) return '-';
+                                                if (!invoice.lastEmailSentAt || status === 'Paid') return '-';
                                                 const sentDate = new Date(invoice.lastEmailSentAt); sentDate.setHours(0, 0, 0, 0);
                                                 const today = new Date(); today.setHours(0, 0, 0, 0);
                                                 const diffDays = Math.round((today.getTime() - sentDate.getTime()) / (1000 * 3600 * 24));
