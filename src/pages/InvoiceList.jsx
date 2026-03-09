@@ -401,37 +401,37 @@ const InvoiceList = () => {
                                         </div>
 
                                         {/* Unit Price */}
-                                        <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-semibold whitespace-nowrap tabular-nums">
+                                        <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-normal whitespace-nowrap tabular-nums">
                                             ₹{parseFloat(invoice.total_price || 0).toLocaleString('en-IN')}
                                         </div>
 
                                         {/* Qty */}
-                                        <div className="w-[70px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
+                                        <div className="w-[70px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-normal tabular-nums">
                                             {invoice.quantity ?? '-'}
                                         </div>
 
                                         {/* Subtotal (Unit * Qty) */}
-                                        <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-semibold whitespace-nowrap tabular-nums">
+                                        <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-normal whitespace-nowrap tabular-nums">
                                             ₹{parseFloat(invoice.subtotal || (invoice.total_price * (invoice.quantity || 1)) || 0).toLocaleString('en-IN')}
                                         </div>
 
                                         {/* GST % */}
-                                        <div className="w-[70px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
+                                        <div className="w-[70px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-normal tabular-nums">
                                             {invoice.GST ? `${invoice.GST}%` : '-'}
                                         </div>
 
                                         {/* GST Amt */}
-                                        <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-semibold whitespace-nowrap tabular-nums">
+                                        <div className="w-[120px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-normal whitespace-nowrap tabular-nums">
                                             ₹{parseFloat(invoice.GST_Amount || 0).toLocaleString('en-IN')}
                                         </div>
 
                                         {/* Total Amount */}
-                                        <div className="w-[130px] shrink-0 px-4 text-[13px] text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap tabular-nums">
+                                        <div className="w-[130px] shrink-0 px-4 text-[13px] text-blue-600 dark:text-blue-400 font-semibold whitespace-nowrap tabular-nums">
                                             ₹{parseFloat(invoice.total_Amount || 0).toLocaleString('en-IN')}
                                         </div>
 
                                         {/* Balance Due (Pending) */}
-                                        <div className="w-[130px] shrink-0 px-4 text-[13px] font-bold whitespace-nowrap tabular-nums">
+                                        <div className="w-[130px] shrink-0 px-4 text-[13px] font-semibold whitespace-nowrap tabular-nums">
                                             {parseFloat(invoice.balance_due || 0) === 0 ? (
                                                 <span className="text-emerald-600 dark:text-emerald-400 uppercase text-[11px] tracking-wider">Paid</span>
                                             ) : (
