@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, Filter, Trash2, Eye, X, MapPin, Receipt, Wallet, Check, Mail, FileText, Tag, Building2, Package, Percent, Calendar, ArrowRight, Clock, AlertCircle } from 'lucide-react';
+import { Plus, Search, Filter, Trash2, Eye, X, MapPin, Receipt, Wallet, Check, Mail, FileText, Tag, Building2, Package, Percent, Calendar, ArrowRight, Clock, AlertCircle, Download } from 'lucide-react';
 
 const InvoiceList = () => {
     const navigate = useNavigate();
@@ -211,6 +211,84 @@ const InvoiceList = () => {
         return Math.round((due.getTime() - today.getTime()) / (1000 * 3600 * 24));
     };
 
+    const handleExportCSV = async () => {
+        try {
+            showToast("Preparing CSV export...", "info");
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invoices?page=1&limit=100000&search=${encodeURIComponent(searchTerm)}&status=${filterStatus}`);
+            if (response.ok) {
+                const data = await response.json();
+                const exportData = data.invoices;
+
+                if (exportData.length === 0) {
+                    showToast("No data to export", "error");
+                    return;
+                }
+
+                // CSV headers
+                const headers = [
+                    "Invoice No",
+                    "Company Name",
+                    "State",
+                    "Invoice Date",
+                    "Due Date",
+                    "Status",
+                    "Description",
+                    "Unit Price",
+                    "Quantity",
+                    "Subtotal",
+                    "GST %",
+                    "GST Amount",
+                    "Total Amount",
+                    "Balance Due",
+                    "Email Sent Date"
+                ];
+
+                const csvRows = [];
+                csvRows.push(headers.join(','));
+
+                exportData.forEach(inv => {
+                    const status = getPaymentStatus(inv);
+                    const subtotal = parseFloat(inv.subtotal || (inv.total_price * (inv.quantity || 1)) || 0).toFixed(2);
+                    const row = [
+                        `"${getInvoiceNumber(inv)}"`,
+                        `"${inv.companyName || ''}"`,
+                        `"${inv.State || ''}"`,
+                        `"${inv.invoiceDate || ''}"`,
+                        `"${inv.dueDate || ''}"`,
+                        `"${status}"`,
+                        `"${(inv.description || '').replace(/"/g, '""')}"`,
+                        inv.total_price || 0,
+                        inv.quantity || 1,
+                        subtotal,
+                        inv.GST || 0,
+                        inv.GST_Amount || 0,
+                        inv.total_Amount || 0,
+                        inv.balance_due || 0,
+                        `"${inv.emailSentDate || (inv.lastEmailSentAt ? new Date(inv.lastEmailSentAt).toLocaleDateString('en-IN') : '')}"`
+                    ];
+                    csvRows.push(row.join(','));
+                });
+
+                const csvContent = "\uFEFF" + csvRows.join('\n'); // Add BOM for Excel
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+                link.setAttribute('download', `invoice_${filterStatus.toLowerCase()}_${dateStr}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast("CSV exported successfully", "success");
+            } else {
+                showToast("Failed to fetch data for export", "error");
+            }
+        } catch (error) {
+            console.error('Export error:', error);
+            showToast("Error exporting data", "error");
+        }
+    };
+
 
     return (
         <div className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto dark:bg-slate-950 min-h-screen transition-colors duration-500 font-sans selection:bg-slate-200 selection:text-slate-900">
@@ -241,13 +319,20 @@ const InvoiceList = () => {
                 </div>
                 <div className="flex items-center gap-3">
                     <button
+                        onClick={handleExportCSV}
+                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 dark:bg-emerald-500/20 text-white dark:text-emerald-400 border border-emerald-500/30 rounded-lg font-bold hover:bg-emerald-700 dark:hover:bg-emerald-500/30 transition-all text-sm shadow-md active:scale-95"
+                    >
+                        <Download size={16} />
+                        <span className="hidden sm:inline">Export CSV</span>
+                    </button>
+                    <button
                         onClick={() => navigate('/add-invoice')}
                         className="flex items-center gap-2 px-4 py-2 bg-slate-900 dark:bg-slate-800 text-white rounded-lg font-bold hover:bg-black dark:hover:bg-slate-700 transition-all text-sm shadow-md active:scale-95"
                     >
                         <Plus size={16} />
                         <span>New Invoice</span>
                     </button>
-                    <div className="bg-white dark:bg-slate-900 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+                    <div className="bg-white dark:bg-slate-900 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center gap-3 hidden sm:flex">
                         <div className="p-1.5 bg-slate-50 dark:bg-slate-800 rounded-md">
                             <Calendar size={16} className="text-slate-500" />
                         </div>
@@ -447,7 +532,7 @@ const InvoiceList = () => {
                                         {/* Sent Days Count */}
                                         <div className="w-[100px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
                                             {(() => {
-                                                if (!invoice.lastEmailSentAt || status === 'Paid') return '-';
+                                                if (!invoice.lastEmailSentAt) return '-';
                                                 const sentDate = new Date(invoice.lastEmailSentAt); sentDate.setHours(0, 0, 0, 0);
                                                 const today = new Date(); today.setHours(0, 0, 0, 0);
                                                 const diffDays = Math.round((today.getTime() - sentDate.getTime()) / (1000 * 3600 * 24));
@@ -463,16 +548,12 @@ const InvoiceList = () => {
                                                     const today = new Date(); today.setHours(0, 0, 0, 0);
                                                     const diffDays = lastSent ? Math.round((today.getTime() - lastSent.setHours(0, 0, 0, 0)) / (1000 * 3600 * 24)) : null;
 
-                                                    const isPaid = status === 'Paid';
                                                     const isDueOrOverdue = status === 'Due' || status === 'Overdue' || status === 'Due Today' || status === 'PartiallyPaid';
 
                                                     let isDisabled = false;
                                                     let tooltip = "Send Email";
 
-                                                    if (isPaid && lastSent) {
-                                                        isDisabled = true;
-                                                        tooltip = "Email already sent for Paid invoice";
-                                                    } else if (isDueOrOverdue && lastSent && diffDays < 1) {
+                                                    if (isDueOrOverdue && lastSent && diffDays < 1) {
                                                         isDisabled = true;
                                                         tooltip = `Wait ${1 - diffDays} more days to resend`;
                                                     }
