@@ -553,11 +553,6 @@ const InvoiceList = () => {
                                                     let isDisabled = false;
                                                     let tooltip = "Send Email";
 
-                                                    if (isDueOrOverdue && lastSent && diffDays < 1) {
-                                                        isDisabled = true;
-                                                        tooltip = `Wait ${1 - diffDays} more days to resend`;
-                                                    }
-
                                                     return (
                                                         <>
                                                             <button onClick={() => { setSelectedInvoice(invoice); setShowViewModal(true); }}
