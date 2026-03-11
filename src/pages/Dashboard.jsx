@@ -55,18 +55,20 @@ const Dashboard = () => {
                         totalInvoices: statsData.totalInvoices,
                         totalAmount: statsData.totalAmount,
                         paidAmount: statsData.paidAmount,
-                        pendingAmount: statsData.balanceDue,
+                        pendingAmount: statsData.pendingAmount,
                         overdueAmount: statsData.overdueAmount,
+                        partialAmount: statsData.partialAmount,
                         paidCount: statsData.paidCount,
                         pendingCount: statsData.pendingCount,
-                        overdueCount: statsData.overdueCount
+                        overdueCount: statsData.overdueCount,
+                        partialCount: statsData.partialCount
                     });
 
                     // 📊 Revenue Bar Chart Data
                     setRevenueData([
                         { name: "Total", amount: statsData.totalAmount },
                         { name: "Collected", amount: statsData.paidAmount },
-                        { name: "Pending", amount: statsData.balanceDue },
+                        { name: "Pending", amount: statsData.pendingAmount },
                         { name: "Overdue", amount: statsData.overdueAmount }
                     ]);
 
@@ -74,7 +76,7 @@ const Dashboard = () => {
                     setStatusData([
                         { name: "Paid", value: statsData.paidCount },
                         { name: "Pending", value: statsData.pendingCount },
-                        { name: "Overdue", value: statsData.overdueCount }
+                        { name: "Overdue", value: Math.max(0, statsData.overdueCount) }
                     ]);
 
                     // 📈 Monthly Trend Calculation (Keep as is for now until we have a trend endpoint)
@@ -110,7 +112,7 @@ const Dashboard = () => {
         fetchStats();
     }, []);
 
-    const COLORS = ["#10B981", "#F59E0B", "#EF4444"];
+    const COLORS = ["#10B981", "#F59E0B", "#6366F1", "#EF4444"];
 
     const StatCard = ({ title, value, icon: Icon, colorClass, bgColorClass, subText }) => (
         <div className={`bg-white dark:bg-slate-900 p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-xl transition-all duration-300 ${isLoading ? 'animate-pulse' : ''}`}>
@@ -164,22 +166,21 @@ const Dashboard = () => {
 
                 <StatCard
                     title="Pending Dues"
-                    value={`₹${Math.round(stats.pendingAmount - stats.overdueAmount).toLocaleString('en-IN')}`}
+                    value={`₹${Math.round(stats.pendingAmount || 0).toLocaleString('en-IN')}`}
                     icon={Clock}
                     colorClass="text-amber-600"
                     bgColorClass="bg-amber-50"
+                    subText={`${stats.pendingCount || 0} Invoices`}
                 />
 
                 <StatCard
                     title="Overdue"
-                    value={`₹${Math.round(stats.overdueAmount).toLocaleString('en-IN')}`}
+                    value={`₹${Math.round(stats.overdueAmount || 0).toLocaleString('en-IN')}`}
                     icon={Clock}
                     colorClass="text-rose-600"
                     bgColorClass="bg-rose-50"
-                    subText={`${stats.overdueCount} Invoices`}
+                    subText={`${stats.overdueCount || 0} Invoices`}
                 />
-
-
             </div>
 
             {/* Invoice Status */}
