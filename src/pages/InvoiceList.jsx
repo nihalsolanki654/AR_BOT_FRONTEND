@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Plus, Search, Filter, Trash2, Eye, X, MapPin, Receipt, Wallet, Check, Mail, FileText, Tag, Building2, Package, Percent, Calendar, ArrowRight, Clock, AlertCircle, Download } from 'lucide-react';
 
 const InvoiceList = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    
+    // Initialize filter state from URL query params
+    const queryParams = new URLSearchParams(location.search);
+    const initialStatus = queryParams.get('status') || 'All';
+
     const [invoices, setInvoices] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterStatus, setFilterStatus] = useState('All');
+    const [filterStatus, setFilterStatus] = useState(initialStatus);
     const [selectedInvoice, setSelectedInvoice] = useState(null);
     const [showViewModal, setShowViewModal] = useState(false);
     const [paymentInput, setPaymentInput] = useState('');

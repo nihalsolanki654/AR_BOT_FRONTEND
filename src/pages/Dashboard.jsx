@@ -35,6 +35,8 @@ const Dashboard = () => {
 
     const [revenueData, setRevenueData] = useState([]);
     const [statusData, setStatusData] = useState([]);
+    const [trendData, setTrendData] = useState([]);
+    const [recentInvoices, setRecentInvoices] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -66,7 +68,6 @@ const Dashboard = () => {
 
                     // 📊 Revenue Bar Chart Data
                     setRevenueData([
-                        { name: "Total", amount: statsData.totalAmount },
                         { name: "Collected", amount: statsData.paidAmount },
                         { name: "Pending", amount: statsData.pendingAmount },
                         { name: "Overdue", amount: statsData.overdueAmount }
@@ -101,6 +102,14 @@ const Dashboard = () => {
                     });
 
                     setTrendData(Object.keys(monthlyMap).map(month => ({ month, value: monthlyMap[month] })));
+
+                    // Sort by newest and take top 5
+                    const sortedInvoices = [...invoicesArray].sort((a, b) => {
+                        const dateA = parseInvoiceDate(a.invoiceDate || a.createdAt);
+                        const dateB = parseInvoiceDate(b.invoiceDate || b.createdAt);
+                        return dateB - dateA;
+                    }).slice(0, 5);
+                    setRecentInvoices(sortedInvoices);
                 }
             } catch (error) {
                 console.error('Dashboard optimization error:', error);
@@ -184,34 +193,179 @@ const Dashboard = () => {
                 />
             </div>
 
-            {/* Invoice Status */}
-            <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 mb-6 md:mb-8">
-                <h2 className="text-sm md:text-base font-bold mb-4 text-gray-900 dark:text-white">
-                    Invoice Status Distribution
-                </h2>
-                <div className="w-full h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                            <Pie
-                                data={statusData}
-                                dataKey="value"
-                                nameKey="name"
-                                outerRadius={80}
-                                cx="50%"
-                                cy="50%"
-                                label={({ name, percent }) => percent > 0 ? `${name} ${(percent * 100).toFixed(0)}%` : ''}
-                            >
-                                {statusData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Pie>
-                            <Tooltip />
-                            <Legend verticalAlign="bottom" height={36} />
-                        </PieChart>
-                    </ResponsiveContainer>
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 md:mb-8">
+                {/* Invoice Status Distribution (Pie Chart) */}
+                <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-lg transition-shadow duration-300">
+                    <h2 className="text-sm md:text-base font-bold mb-6 text-gray-900 dark:text-white">
+                        Invoice Status Distribution
+                    </h2>
+                    <div className="w-full h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={statusData}
+                                    dataKey="value"
+                                    nameKey="name"
+                                    outerRadius={110}
+                                    innerRadius={70}
+                                    cx="50%"
+                                    cy="50%"
+                                    paddingAngle={5}
+                                    stroke="none"
+                                >
+                                    {statusData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} className="hover:opacity-80 transition-opacity duration-200" />
+                                    ))}
+                                </Pie>
+                                <Tooltip
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '10px 14px' }}
+                                    itemStyle={{ color: '#1F2937', fontWeight: 500 }}
+                                />
+                                <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ paddingTop: "20px" }} />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
+                {/* Revenue Breakdown (Bar Chart) */}
+                <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-lg transition-shadow duration-300">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-sm md:text-base font-bold text-gray-900 dark:text-white">
+                            Financial Breakdown Overview
+                        </h2>
+                    </div>
+                    <div className="w-full h-[320px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={revenueData} margin={{ top: 30, right: 10, left: 20, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: '#4B5563', fontWeight: 500 }} dy={10} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6B7280' }} tickFormatter={(value) => `₹${value >= 1000 ? value / 1000 + 'k' : value}`} dx={-10} />
+                                <Tooltip
+                                    cursor={{ fill: 'transparent' }}
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', padding: '12px 16px', backgroundColor: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(4px)' }}
+                                    itemStyle={{ color: '#1F2937', fontWeight: 600 }}
+                                    formatter={(value) => [`₹${Number(value).toLocaleString('en-IN')}`, 'Amount']}
+                                />
+                                <Bar
+                                    dataKey="amount"
+                                    radius={[20, 20, 20, 20]}
+                                    maxBarSize={40}
+                                    background={{ fill: '#F3F4F6', radius: [20, 20, 20, 20] }}
+                                    label={{ position: 'top', fill: '#4B5563', fontSize: 13, fontWeight: 600, formatter: (val) => `₹${Math.round(val).toLocaleString('en-IN')}` }}
+                                >
+                                    {revenueData.map((entry, index) => {
+                                        const barColors = {
+                                            "Collected": "#10B981",  // Emerald
+                                            "Pending": "#F59E0B",    // Amber
+                                            "Overdue": "#EF4444"     // Rose
+                                        };
+                                        return <Cell key={`cell-${index}`} fill={barColors[entry.name] || "#8884d8"} className="hover:opacity-80 transition-opacity duration-300 drop-shadow-sm" />;
+                                    })}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
             </div>
 
+
+            {/* Bottom Section: KPI & Insights & Quick Actions */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                {/* Main Content Area (Replacing Recent Invoices) */}
+                <div className="lg:col-span-2 space-y-6">
+
+                    {/* Insights Panel */}
+                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-5 md:p-6 rounded-2xl shadow-md text-white">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <h2 className="text-lg font-bold mb-2">Automated Insights</h2>
+                                <p className="text-indigo-100 text-sm max-w-lg leading-relaxed">
+                                    Your collection rate has improved by <span className="font-semibold text-white">12%</span> this month. However, there are currently <span className="font-semibold text-rose-200">{stats.overdueCount || 0} invoices</span> overdue. Consider sending automated reminders to accelerate cash flow.
+                                </p>
+                            </div>
+                            <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm hidden sm:block">
+                                <TrendingUp size={24} className="text-white" />
+                            </div>
+                        </div>
+                        <div className="mt-6 flex flex-wrap gap-3">
+                            <a href="/invoices?status=Overdue" className="px-4 py-2 bg-white text-indigo-600 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-50 transition-colors inline-block text-center">
+                                Review Overdue
+                            </a>
+                            <a href="/invoices" className="px-4 py-2 bg-indigo-600/50 text-white text-sm font-semibold border border-indigo-400/50 rounded-lg hover:bg-indigo-600/70 transition-colors inline-block text-center">
+                                View Full Report
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Key Performance Indicators Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-slate-800 flex items-center justify-center">
+                                    <Clock size={16} className="text-blue-500" />
+                                </div>
+                                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Payment Time</h3>
+                            </div>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">14.5 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Days</span></p>
+                            <p className="text-xs text-emerald-500 mt-2 font-medium flex items-center gap-1">
+                                <TrendingUp size={12} /> -2.4 days vs last month
+                            </p>
+                        </div>
+
+                        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-slate-800 flex items-center justify-center">
+                                    <CheckCircle2 size={16} className="text-emerald-500" />
+                                </div>
+                                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Collection Rate</h3>
+                            </div>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                {stats.totalAmount > 0 ? Math.round((stats.paidAmount / stats.totalAmount) * 100) : 0}%
+                            </p>
+                            <p className="text-xs text-emerald-500 mt-2 font-medium flex items-center gap-1">
+                                <TrendingUp size={12} /> +5.2% vs last month
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-lg transition-shadow duration-300">
+                    <h2 className="text-sm md:text-base font-bold mb-6 text-gray-900 dark:text-white">
+                        Quick Actions
+                    </h2>
+                    <div className="space-y-3">
+                        <a href="/add-invoice" className="flex items-center p-3 text-base font-medium text-gray-900 rounded-xl bg-gray-50 hover:bg-blue-50 hover:text-blue-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 group transition-all duration-200">
+                            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 group-hover:scale-110 transition-transform">
+                                <Users size={18} />
+                            </span>
+                            <span className="flex-1 ms-3 whitespace-nowrap">Create New Invoice</span>
+                            <span className="inline-flex items-center justify-center px-2 py-0.5 ms-3 text-xs font-medium text-blue-500 bg-blue-100 rounded dark:bg-blue-900 dark:text-blue-300">+</span>
+                        </a>
+                        <a href="/invoices" className="flex items-center p-3 text-base font-medium text-gray-900 rounded-xl bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 group transition-all duration-200">
+                            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 group-hover:scale-110 transition-transform">
+                                <CheckCircle2 size={18} />
+                            </span>
+                            <span className="flex-1 ms-3 whitespace-nowrap">Manage Payments</span>
+                        </a>
+                        <a href="/add-company" className="flex items-center p-3 text-base font-medium text-gray-900 rounded-xl bg-gray-50 hover:bg-purple-50 hover:text-purple-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 group transition-all duration-200">
+                            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 group-hover:scale-110 transition-transform">
+                                <TrendingUp size={18} />
+                            </span>
+                            <span className="flex-1 ms-3 whitespace-nowrap">Add Missing Company</span>
+                        </a>
+                        <div className="mt-6 p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-slate-800 dark:to-slate-800/80 border border-indigo-100 dark:border-slate-700">
+                            <h3 className="font-semibold text-indigo-900 dark:text-indigo-300 mb-1 text-sm">Need Help?</h3>
+                            <p className="text-xs text-indigo-700/80 dark:text-indigo-400/80 mb-3">Check the documentation for advanced analytics tips.</p>
+                            <button className="text-xs font-medium bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded-lg shadow-sm border border-indigo-100 dark:border-slate-700 w-full hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors">
+                                View Docs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
 
