@@ -112,9 +112,9 @@ const Dashboard = () => {
         fetchStats();
     }, []);
 
-    const COLORS = ["#10B981", "#F59E0B", "#6366F1", "#EF4444"];
+    const COLORS = ["#10B981", "#F59E0B", "#EF4444"];
 
-    const StatCard = ({ title, value, icon: Icon, colorClass, bgColorClass, subText }) => (
+    const StatCard = ({ title, value, icon: Icon, colorClass, bgColorClass, subText, valueColorClass }) => (
         <div className={`bg-white dark:bg-slate-900 p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-xl transition-all duration-300 ${isLoading ? 'animate-pulse' : ''}`}>
             <div className="flex items-center justify-between mb-3">
                 <div className={`p-2.5 rounded-xl ${isLoading ? 'bg-gray-100 dark:bg-slate-800' : `${bgColorClass} ${colorClass}`}`}>
@@ -125,7 +125,7 @@ const Dashboard = () => {
             {isLoading ? (
                 <div className="h-6 bg-gray-100 dark:bg-slate-800 rounded-md w-2/3 mb-1" />
             ) : (
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{value}</h3>
+                <h3 className={`text-xl md:text-2xl font-bold tracking-tight ${valueColorClass ? valueColorClass : 'text-gray-900 dark:text-white'}`}>{value}</h3>
             )}
             {subText && (
                 <p className="text-[11px] text-gray-400 dark:text-slate-500 mt-1.5 font-medium">{subText}</p>
@@ -179,6 +179,7 @@ const Dashboard = () => {
                     icon={Clock}
                     colorClass="text-rose-600"
                     bgColorClass="bg-rose-50"
+                    valueColorClass="text-rose-600 dark:text-rose-400"
                     subText={`${stats.overdueCount || 0} Invoices`}
                 />
             </div>

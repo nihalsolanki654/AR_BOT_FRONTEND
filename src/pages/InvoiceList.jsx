@@ -332,17 +332,6 @@ const InvoiceList = () => {
                         <Plus size={16} />
                         <span>New Invoice</span>
                     </button>
-                    <div className="bg-white dark:bg-slate-900 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center gap-3 hidden sm:flex">
-                        <div className="p-1.5 bg-slate-50 dark:bg-slate-800 rounded-md">
-                            <Calendar size={16} className="text-slate-500" />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Today</p>
-                            <p className="text-sm font-bold text-slate-700 dark:text-slate-200 tabular-nums">
-                                {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-                            </p>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -393,7 +382,6 @@ const InvoiceList = () => {
                             <div className="w-[130px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Total</div>
                             <div className="w-[130px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Pending</div>
                             <div className="w-[140px] shrink-0 px-4 py-4 text-left text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Email Sent</div>
-                            <div className="w-[100px] shrink-0 px-4 py-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em]">Sent Days</div>
                             <div className="w-[160px] shrink-0 px-4 py-4 text-right text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em] pr-8">Actions</div>
                         </div>
 
@@ -432,28 +420,28 @@ const InvoiceList = () => {
                                 return (
                                     <div key={invoice._id} className="group hover:bg-gray-50/30 dark:hover:bg-slate-800/20 transition-all duration-200 flex items-center px-4 py-3 border-b border-white/5 dark:border-slate-800/10">
                                         {/* Invoice # */}
-                                        <div className="w-[120px] shrink-0 px-4 font-medium text-slate-1200 dark:text-slate-100 text-[12px] tracking-tight tabular-nums sticky left-0 z-20 bg-white dark:bg-slate-900 group-hover:bg-[#f8fafc] dark:group-hover:bg-[#152033] shadow-[1px_0_0_0_rgba(0,0,0,0.05)] dark:shadow-[1px_0_0_0_rgba(255,255,255,0.05)] h-full flex items-center py-3 -my-3">
+                                        <div className="w-[120px] shrink-0 px-4 font-medium text-black dark:text-white text-[12px] tracking-tight tabular-nums sticky left-0 z-20 bg-white dark:bg-slate-900 group-hover:bg-[#f8fafc] dark:group-hover:bg-[#152033] shadow-[1px_0_0_0_rgba(0,0,0,0.05)] dark:shadow-[1px_0_0_0_rgba(255,255,255,0.05)] h-full flex items-center py-3 -my-3">
                                             {getInvoiceNumber(invoice)}
                                         </div>
 
                                         {/* Company */}
                                         <div className="w-[220px] shrink-0 px-4 sticky left-[120px] z-20 bg-white dark:bg-slate-900 group-hover:bg-[#f8fafc] dark:group-hover:bg-[#152033] shadow-[1px_0_0_0_rgba(0,0,0,0.05)] dark:shadow-[1px_0_0_0_rgba(255,255,255,0.05)] h-full py-3 -my-3 flex flex-col justify-center">
-                                            <div className="font-semibold text-slate-900 dark:text-slate-100 text-[13px] whitespace-normal leading-tight line-clamp-2" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
+                                            <div className="font-medium text-slate-900 dark:text-slate-100 text-[13px] whitespace-normal leading-tight line-clamp-2" title={invoice.companyName}>{invoice.companyName || 'N/A'}</div>
                                             {invoice.State && <div className="text-[10px] text-blue-500 dark:text-slate-400 mt-1 uppercase font-semibold tracking-wider">{invoice.State}</div>}
                                         </div>
 
                                         {/* Invoice Date */}
-                                        <div className="w-[110px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                        <div className="w-[110px] shrink-0 px-4 text-[13px] font-medium tabular-nums text-black dark:text-white">
                                             {invoice.invoiceDate || '-'}
                                         </div>
 
                                         {/* Due Date */}
-                                        <div className="w-[110px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                        <div className="w-[110px] shrink-0 px-4 text-[13px] font-medium tabular-nums text-black dark:text-white">
                                             {invoice.dueDate || '-'}
                                         </div>
 
                                         {/* Today Date */}
-                                        <div className="w-[110px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
+                                        <div className="w-[110px] shrink-0 px-4 text-[13px] font-medium tabular-nums text-black dark:text-white">
                                             {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
                                         </div>
 
@@ -525,18 +513,44 @@ const InvoiceList = () => {
                                         </div>
 
                                         {/* Email Sent Date */}
-                                        <div className="w-[140px] shrink-0 px-4 text-[13px] text-slate-600 dark:text-slate-300 font-medium tabular-nums">
-                                            {invoice.emailSentDate || (invoice.lastEmailSentAt ? new Date(invoice.lastEmailSentAt).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-') : '-')}
-                                        </div>
-
-                                        {/* Sent Days Count */}
-                                        <div className="w-[100px] shrink-0 px-4 text-center text-[13px] text-slate-600 dark:text-slate-300 font-semibold tabular-nums">
+                                        <div className="w-[140px] shrink-0 px-4 flex flex-col justify-center">
                                             {(() => {
-                                                if (!invoice.lastEmailSentAt) return '-';
-                                                const sentDate = new Date(invoice.lastEmailSentAt); sentDate.setHours(0, 0, 0, 0);
-                                                const today = new Date(); today.setHours(0, 0, 0, 0);
-                                                const diffDays = Math.round((today.getTime() - sentDate.getTime()) / (1000 * 3600 * 24));
-                                                return diffDays === 0 ? 'Today' : diffDays;
+                                                if (!invoice.lastEmailSentAt) return <span className="text-[13px] text-slate-400 font-medium">-</span>;
+
+                                                const sentDate = new Date(invoice.lastEmailSentAt);
+                                                const today = new Date();
+                                                const diffMs = today.getTime() - sentDate.getTime();
+                                                const diffMins = Math.floor(diffMs / (1000 * 60));
+                                                const diffHours = Math.floor(diffMins / 60);
+
+                                                const dateOnly = new Date(sentDate); dateOnly.setHours(0, 0, 0, 0);
+                                                const todayOnly = new Date(today); todayOnly.setHours(0, 0, 0, 0);
+                                                const diffDays = Math.round((todayOnly.getTime() - dateOnly.getTime()) / (1000 * 3600 * 24));
+
+                                                // Handle "Sent Now" vs exact days
+                                                let relativeText = "";
+                                                if (diffMins < 5) relativeText = "Sent Now";
+                                                else if (diffHours < 1) relativeText = `Sent ${diffMins}m ago`;
+                                                else if (diffHours < 24 && diffDays === 0) relativeText = `Sent ${diffHours}h ago`;
+                                                else if (diffDays === 0) relativeText = "Sent Today"; // Fallback
+                                                else if (diffDays === 1) relativeText = "Sent Yesterday";
+                                                else relativeText = `Sent ${diffDays}d ago`;
+
+                                                const isRecent = diffDays <= 1;
+
+                                                return (
+                                                    <div className="flex flex-col gap-1">
+                                                        <div className="flex items-center gap-1.5">
+                                                            {isRecent && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>}
+                                                            <span className="text-[12px] font-bold text-emerald-600 dark:text-emerald-400">
+                                                                {relativeText}
+                                                            </span>
+                                                        </div>
+                                                        <span className="text-[11px] text-black dark:text-white font-medium tabular-nums">
+                                                            {invoice.emailSentDate || sentDate.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
+                                                        </span>
+                                                    </div>
+                                                );
                                             })()}
                                         </div>
 
@@ -749,7 +763,9 @@ const InvoiceList = () => {
                                                 <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2 relative z-10">Amount Due</p>
                                                 <p className={`text-3xl font-black tabular-nums tracking-tight relative z-10 ${status === 'Paid'
                                                     ? 'text-emerald-600 dark:text-emerald-400'
-                                                    : 'text-slate-900 dark:text-white'
+                                                    : status === 'Overdue'
+                                                        ? 'text-red-600 dark:text-red-400'
+                                                        : 'text-slate-900 dark:text-white'
                                                     }`}>
                                                     ₹{balanceDue.toLocaleString('en-IN')}
                                                 </p>
