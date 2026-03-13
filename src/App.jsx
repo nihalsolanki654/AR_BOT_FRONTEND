@@ -9,6 +9,7 @@ import AddMember from './pages/AddMember';
 import CompanyEmails from './pages/CompanyEmails';
 
 import { ThemeProvider, useTheme } from './context/ThemeContext';
+import SessionTimeout from './components/SessionTimeout';
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -34,6 +35,7 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
+        <SessionTimeout />
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
